@@ -3,6 +3,12 @@ import { XMLParser } from "fast-xml-parser";
 
 const ALGORITHM = "aes-256-cbc";
 
+const EBAY_OAUTH_SCOPES = [
+  "https://api.ebay.com/oauth/api_scope",
+  "https://api.ebay.com/oauth/api_scope/sell.inventory",
+  "https://api.ebay.com/oauth/api_scope/sell.account",
+] as const;
+
 function getKey(): Buffer {
   const keyHex = process.env.TOKEN_ENCRYPTION_KEY;
   if (!keyHex || keyHex.length !== 64) {
@@ -32,10 +38,7 @@ export function getEbayOAuthUrl(state: string): string {
     client_id: process.env.EBAY_CLIENT_ID ?? "",
     response_type: "code",
     redirect_uri: process.env.EBAY_REDIRECT_URI_NAME ?? "",
-    scope: [
-      "https://api.ebay.com/oauth/api_scope/sell.inventory",
-      "https://api.ebay.com/oauth/api_scope/sell.account",
-    ].join(" "),
+    scope: EBAY_OAUTH_SCOPES.join(" "),
     state,
   });
   return `${base}?${params.toString()}`;
@@ -88,10 +91,7 @@ export async function refreshAccessToken(refreshToken: string) {
   const body = new URLSearchParams({
     grant_type: "refresh_token",
     refresh_token: refreshToken,
-    scope: [
-      "https://api.ebay.com/oauth/api_scope/sell.inventory",
-      "https://api.ebay.com/oauth/api_scope/sell.account",
-    ].join(" "),
+    scope: EBAY_OAUTH_SCOPES.join(" "),
   });
 
   const res = await fetch(url, {
@@ -184,46 +184,59 @@ export class EbayApiError extends Error {
   }
 }
 
-function getAck(parsed: Record<string, unknown>) {
-  const envelope = parsed["soapenv:Envelope"] as Record<string, unknown> | undefined;
-  const body = (envelope?.["soapenv:Body"] ?? {}) as Record<string, unknown>;
-  const callResponse = Object.values(body).find(
-    (v): v is Record<string, unknown> => typeof v === "object" && v !== null
-  ) as Record<string, unknown> | undefined;
+type TradingResponse = Record<string, unknown>;
 
-  const ack = callResponse?.Ack as string | undefined;
-  const rawErrors = callResponse?.Errors;
+function getResponseRoot(parsed: TradingResponse): Record<string, unknown> | undefined {
+  const root = Object.values(parsed).find(
+    (value): value is Record<string, unknown> => typeof value === "object" && value !== null
+  );
+  return root;
+}
+
+function getAck(parsed: TradingResponse) {
+  const response = getResponseRoot(parsed);
+  const ack = response?.Ack as string | undefined;
+  const rawErrors = response?.Errors;
   const errors = Array.isArray(rawErrors) ? rawErrors : rawErrors ? [rawErrors] : [];
-  return { ack, errors, response: callResponse };
+  return { ack, errors, response };
+}
+
+function valueAsString(value: unknown): string | undefined {
+  if (typeof value === "string") return value;
+  if (typeof value === "number" || typeof value === "boolean") return String(value);
+  if (value && typeof value === "object") {
+    const record = value as Record<string, unknown>;
+    const text = record["#text"];
+    if (typeof text === "string" || typeof text === "number") return String(text);
+  }
+  return undefined;
 }
 
 function formatEbayErrors(errors: unknown[]): { message: string; code?: string } {
-  const parts = errors.map((e) => {
-    const err = (e ?? {}) as Record<string, unknown>;
-    const code = (err.ErrorCode ?? err["@_code"]) as string | undefined;
-    const msg = (err.LongMessage ?? err.ShortMessage ?? "eBay API error") as string;
-    return `${code ? `[${code}] ` : ""}${msg}`;
+  const parts = errors.map((entry) => {
+    const err = (entry ?? {}) as Record<string, unknown>;
+    const code = valueAsString(err.ErrorCode) ?? valueAsString(err["@_code"]);
+    const message =
+      valueAsString(err.LongMessage) ??
+      valueAsString(err.ShortMessage) ??
+      valueAsString(err.SeverityCode) ??
+      "eBay API error";
+    return `${code ? `[${code}] ` : ""}${message}`;
   });
 
   const first = (errors[0] ?? {}) as Record<string, unknown>;
   return {
-    message: parts.join("; "),
-    code: (first.ErrorCode ?? first["@_code"]) as string | undefined,
+    message: parts.length ? parts.join("; ") : "eBay returned a failure response without error details",
+    code: valueAsString(first.ErrorCode) ?? valueAsString(first["@_code"]),
   };
 }
 
-function xmlEnvelope(body: string): string {
-  return `<?xml version="1.0" encoding="utf-8"?>
-<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ebl="urn:ebay:apis:eBLBaseComponents">
-  <soapenv:Header>
-    <ebl:RequesterCredentials>
-      <ebl:eBayAuthToken></ebl:eBayAuthToken>
-    </ebl:RequesterCredentials>
-  </soapenv:Header>
-  <soapenv:Body>
-    ${body}
-  </soapenv:Body>
-</soapenv:Envelope>`;
+function sanitizeEbayResponse(text: string): string {
+  return text
+    .replace(/<eBayAuthToken>[\s\S]*?<\/eBayAuthToken>/gi, "<eBayAuthToken>[REDACTED]</eBayAuthToken>")
+    .replace(/(<[^>]*(?:token|credential)[^>]*>)[\s\S]*?(<\/[^>]+>)/gi, "$1[REDACTED]$2")
+    .slice(0, 2000)
+    .replace(/[\r\n]+/g, " ");
 }
 
 export async function callTradingApi(options: {
@@ -234,37 +247,65 @@ export async function callTradingApi(options: {
 }) {
   const { callName, siteId, accessToken, xmlBody } = options;
   const endpoint = "https://api.ebay.com/ws/api.dll";
+  const body = `<?xml version="1.0" encoding="utf-8"?>\n${xmlBody.trim()}`;
 
-  const body = xmlEnvelope(xmlBody);
-
-  const res = await fetch(endpoint, {
-    method: "POST",
-    headers: {
-      "Content-Type": "text/xml",
-      "X-EBAY-API-CALL-NAME": callName,
-      "X-EBAY-API-COMPATIBILITY-LEVEL": "1227",
-      "X-EBAY-API-SITEID": siteId.toString(),
-      "X-EBAY-API-APP-NAME": process.env.EBAY_APP_ID ?? "",
-      "X-EBAY-API-DEV-NAME": process.env.EBAY_DEV_ID ?? "",
-      "X-EBAY-API-CERT-NAME": process.env.EBAY_CERT_ID ?? "",
-      "X-EBAY-API-IAF-TOKEN": accessToken,
-    },
-    body,
-  });
+  let res: Response;
+  try {
+    res = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "text/xml; charset=utf-8",
+        "X-EBAY-API-CALL-NAME": callName,
+        "X-EBAY-API-COMPATIBILITY-LEVEL": "1227",
+        "X-EBAY-API-SITEID": siteId.toString(),
+        "X-EBAY-API-APP-NAME": process.env.EBAY_APP_ID ?? "",
+        "X-EBAY-API-DEV-NAME": process.env.EBAY_DEV_ID ?? "",
+        "X-EBAY-API-CERT-NAME": process.env.EBAY_CERT_ID ?? "",
+        "X-EBAY-API-IAF-TOKEN": accessToken,
+      },
+      body,
+      cache: "no-store",
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    throw new EbayApiError(callName, `${callName} network request failed: ${message}`);
+  }
 
   const text = await res.text();
   console.error(
-    `[eBay Trading API] ${callName} HTTP ${res.status} response: ${text
-      .slice(0, 2000)
-      .replace(/[\r\n]+/g, " ")}`
+    `[eBay Trading API] ${callName} HTTP ${res.status} response: ${sanitizeEbayResponse(text)}`
   );
-  const parser = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: "@_" });
-  const parsed = parser.parse(text) as Record<string, unknown>;
+
+  if (!text.trim()) {
+    throw new EbayApiError(
+      callName,
+      `eBay Trading API ${callName} returned HTTP ${res.status} with an empty response`,
+      res.status.toString()
+    );
+  }
+
+  let parsed: TradingResponse;
+  try {
+    const parser = new XMLParser({
+      ignoreAttributes: false,
+      attributeNamePrefix: "@_",
+      parseTagValue: true,
+      trimValues: true,
+    });
+    parsed = parser.parse(text) as TradingResponse;
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    throw new EbayApiError(
+      callName,
+      `Unable to parse eBay ${callName} XML response: ${message}. Response: ${sanitizeEbayResponse(text)}`,
+      res.status.toString()
+    );
+  }
 
   if (!res.ok) {
     throw new EbayApiError(
       callName,
-      `eBay Trading API ${callName} HTTP ${res.status}: ${text.slice(0, 500)}`,
+      `eBay Trading API ${callName} HTTP ${res.status}: ${sanitizeEbayResponse(text)}`,
       res.status.toString()
     );
   }
@@ -272,7 +313,11 @@ export async function callTradingApi(options: {
   const { ack, errors } = getAck(parsed);
   if (ack !== "Success" && ack !== "PartialSuccess" && ack !== "Warning") {
     const { message, code } = formatEbayErrors(errors);
-    throw new EbayApiError(callName, `${callName} failed: ${message}`, code);
+    throw new EbayApiError(
+      callName,
+      `${callName} failed${ack ? ` (${ack})` : ""}: ${message}`,
+      code
+    );
   }
 
   return parsed;
@@ -280,12 +325,10 @@ export async function callTradingApi(options: {
 
 export async function getEbayUser(accessToken: string, siteId = 0) {
   const xml = `<GetUserRequest xmlns="urn:ebay:apis:eBLBaseComponents"></GetUserRequest>`;
-  const res = (await callTradingApi({ callName: "GetUser", siteId, accessToken, xmlBody: xml })) as {
-    "soapenv:Envelope"?: { "soapenv:Body"?: { GetUserResponse?: { User?: { UserID: string } } } };
-  };
-
-  const userId =
-    res["soapenv:Envelope"]?.["soapenv:Body"]?.GetUserResponse?.User?.UserID;
+  const res = await callTradingApi({ callName: "GetUser", siteId, accessToken, xmlBody: xml });
+  const response = getResponseRoot(res);
+  const user = response?.User as Record<string, unknown> | undefined;
+  const userId = valueAsString(user?.UserID);
 
   if (!userId) {
     throw new Error("Unable to retrieve eBay user ID");
@@ -345,22 +388,13 @@ export async function* getSellerList(
   </Pagination>
 </GetSellerListRequest>`;
 
-    const res = (await callTradingApi({ callName: "GetSellerList", siteId, accessToken, xmlBody: xml })) as {
-      "soapenv:Envelope"?: {
-        "soapenv:Body"?: {
-          GetSellerListResponse?: {
-            ItemArray?: { Item?: EbayListingItem | EbayListingItem[] };
-            PaginationResult?: { TotalNumberOfPages?: number };
-          };
-        };
-      };
-    };
-
-    const response = res["soapenv:Envelope"]?.["soapenv:Body"]?.GetSellerListResponse;
-    const itemArray = response?.ItemArray;
+    const res = await callTradingApi({ callName: "GetSellerList", siteId, accessToken, xmlBody: xml });
+    const response = getResponseRoot(res);
+    const itemArray = response?.ItemArray as { Item?: EbayListingItem | EbayListingItem[] } | undefined;
+    const pagination = response?.PaginationResult as { TotalNumberOfPages?: number | string } | undefined;
 
     const items = itemArray?.Item;
-    const totalPages = response?.PaginationResult?.TotalNumberOfPages ?? 1;
+    const totalPages = Number(pagination?.TotalNumberOfPages ?? 1);
 
     if (items) {
       const list = Array.isArray(items) ? items : [items];
@@ -394,24 +428,17 @@ export async function* getActiveListings(
   </ActiveList>
 </GetMyeBaySellingRequest>`;
 
-    const res = (await callTradingApi({ callName: "GetMyeBaySelling", siteId, accessToken, xmlBody: xml })) as {
-      "soapenv:Envelope"?: {
-        "soapenv:Body"?: {
-          GetMyeBaySellingResponse?: {
-            ActiveList?: {
-              ItemArray?: { Item?: EbayListingItem | EbayListingItem[] };
-              PaginationResult?: { TotalNumberOfPages?: number };
-            };
-          };
-        };
-      };
-    };
-
-    const activeList =
-      res["soapenv:Envelope"]?.["soapenv:Body"]?.GetMyeBaySellingResponse?.ActiveList;
+    const res = await callTradingApi({ callName: "GetMyeBaySelling", siteId, accessToken, xmlBody: xml });
+    const response = getResponseRoot(res);
+    const activeList = response?.ActiveList as
+      | {
+          ItemArray?: { Item?: EbayListingItem | EbayListingItem[] };
+          PaginationResult?: { TotalNumberOfPages?: number | string };
+        }
+      | undefined;
 
     const items = activeList?.ItemArray?.Item;
-    const totalPages = activeList?.PaginationResult?.TotalNumberOfPages ?? 1;
+    const totalPages = Number(activeList?.PaginationResult?.TotalNumberOfPages ?? 1);
 
     if (items) {
       const list = Array.isArray(items) ? items : [items];
