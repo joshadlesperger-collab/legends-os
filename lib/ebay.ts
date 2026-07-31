@@ -187,10 +187,27 @@ export class EbayApiError extends Error {
 type TradingResponse = Record<string, unknown>;
 
 function getResponseRoot(parsed: TradingResponse): Record<string, unknown> | undefined {
-  const root = Object.values(parsed).find(
-    (value): value is Record<string, unknown> => typeof value === "object" && value !== null
-  );
-  return root;
+  // fast-xml-parser may include the XML declaration as the first object (the "?xml" key).
+  // Select the actual eBay response element instead of relying on object insertion order.
+  const responseEntry = Object.entries(parsed).find(([key, value]) => {
+    const localName = key.includes(":") ? key.split(":").pop() ?? key : key;
+    return (
+      localName.endsWith("Response") &&
+      typeof value === "object" &&
+      value !== null
+    );
+  });
+
+  if (responseEntry) {
+    return responseEntry[1] as Record<string, unknown>;
+  }
+
+  // Defensive fallback for an already-unwrapped response object.
+  if ("Ack" in parsed || "Errors" in parsed) {
+    return parsed;
+  }
+
+  return undefined;
 }
 
 function getAck(parsed: TradingResponse) {
