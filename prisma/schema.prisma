@@ -1,0 +1,221 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  id           String        @id @default(cuid())
+  name         String
+  plan         String        @default("free")
+  createdAt    DateTime      @default(now())
+  users        User[]
+  stores       Store[]
+  scoreConfigs ScoreConfig[]
+}
+
+model User {
+  id        String   @id @default(cuid())
+  accountId String
+  email     String   @unique
+  role      String   @default("admin")
+  account   Account  @relation(fields: [accountId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model Store {
+  id                 String     @id @default(cuid())
+  accountId          String
+  ebaySellerUsername String?
+  marketplace        String?
+  connectionStatus   String     @default("pending")
+  oauthAccessToken   String?
+  oauthRefreshToken  String?
+  oauthState         String?
+  tokenExpiresAt     DateTime?
+  isActive           Boolean    @default(true)
+  lastSyncAt         DateTime?
+  createdAt          DateTime   @default(now())
+  account            Account    @relation(fields: [accountId], references: [id])
+  listings           Listing[]
+  syncRuns           SyncRun[]
+  apiQuotas          ApiQuota[]
+  apiErrors          ApiErrorLog[]
+}
+
+model Listing {
+  id              String            @id @default(cuid())
+  storeId         String
+  ebayItemId      String
+  title           String
+  description     String?
+  categoryId      String?
+  currentPrice    Decimal           @db.Decimal(10, 2)
+  quantity        Int               @default(1)
+  quantitySold    Int               @default(0)
+  condition       String?
+  listingStatus   String            @default("active")
+  listingFormat   String?
+  startTime       DateTime?
+  endTime         DateTime?
+  watchers        Int               @default(0)
+  views           Int               @default(0)
+  imageUrls       String[]
+  promotionStatus String?
+  listingQuality  Json?
+  lastSyncedAt    DateTime          @default(now())
+  createdAt       DateTime          @default(now())
+  store           Store             @relation(fields: [storeId], references: [id])
+  snapshots       ListingSnapshot[]
+  priceChanges    PriceChange[]
+  saleEvents      SaleEvent[]
+  scores          ListingScore[]
+  recommendations Recommendation[]
+
+  @@unique([storeId, ebayItemId])
+}
+
+model ListingSnapshot {
+  id              String   @id @default(cuid())
+  listingId       String
+  storeId         String
+  capturedAt      DateTime @default(now())
+  currentPrice    Decimal  @db.Decimal(10, 2)
+  quantity        Int
+  quantitySold    Int
+  watchers        Int
+  views           Int
+  listingStatus   String
+  promotionStatus String?
+  source          String
+  listing         Listing  @relation(fields: [listingId], references: [id])
+
+  @@index([storeId, capturedAt])
+}
+
+model PriceChange {
+  id        String   @id @default(cuid())
+  listingId String
+  oldPrice  Decimal  @db.Decimal(10, 2)
+  newPrice  Decimal  @db.Decimal(10, 2)
+  changedAt DateTime @default(now())
+  source    String
+  listing   Listing  @relation(fields: [listingId], references: [id])
+}
+
+model SaleEvent {
+  id        String   @id @default(cuid())
+  listingId String
+  quantity  Int
+  price     Decimal  @db.Decimal(10, 2)
+  soldAt    DateTime
+  listing   Listing  @relation(fields: [listingId], references: [id])
+}
+
+model ScoreRun {
+  id          String    @id @default(cuid())
+  storeId     String
+  startedAt   DateTime  @default(now())
+  completedAt DateTime?
+  status      String    @default("running")
+  notes       String?
+}
+
+model ListingScore {
+  id                 String   @id @default(cuid())
+  listingId          String
+  scoreRunId         String
+  healthScore        Int
+  opportunityScore   Int
+  healthFactors      Json?
+  opportunityFactors Json?
+  calculatedAt       DateTime @default(now())
+  listing            Listing  @relation(fields: [listingId], references: [id])
+
+  @@index([listingId, calculatedAt])
+}
+
+model Recommendation {
+  id                   String        @id @default(cuid())
+  listingId            String
+  storeId              String
+  type                 String
+  suggestedPrice       Decimal?      @db.Decimal(10, 2)
+  reason               String
+  expectedProfitImpact Decimal?      @db.Decimal(10, 2)
+  confidence           Int?
+  generatedAt          DateTime      @default(now())
+  dismissedAt          DateTime?
+  appliedAt            DateTime?
+  status               String        @default("pending")
+  listing              Listing       @relation(fields: [listingId], references: [id])
+  actionQueue          ActionQueue[]
+
+  @@index([listingId, generatedAt])
+}
+
+model ActionQueue {
+  id               String         @id @default(cuid())
+  recommendationId String
+  accountId        String
+  storeId          String
+  rank             Int
+  queueDate        DateTime       @default(now())
+  status           String         @default("pending")
+  recommendation   Recommendation @relation(fields: [recommendationId], references: [id])
+}
+
+model ActionLog {
+  id            String   @id @default(cuid())
+  actionQueueId String
+  userId        String
+  action        String
+  createdAt     DateTime @default(now())
+}
+
+model SyncRun {
+  id                String    @id @default(cuid())
+  storeId           String
+  type              String
+  startedAt         DateTime  @default(now())
+  completedAt       DateTime?
+  status            String    @default("running")
+  listingsProcessed Int       @default(0)
+  errorMessage      String?
+  Store             Store     @relation(fields: [storeId], references: [id])
+}
+
+model ScoreConfig {
+  id                 String  @id @default(cuid())
+  accountId          String
+  healthWeights      Json
+  opportunityWeights Json
+  priceDropRules     Json
+  relistRules        Json
+  isActive           Boolean @default(true)
+  account            Account @relation(fields: [accountId], references: [id])
+}
+
+model ApiQuota {
+  id         String    @id @default(cuid())
+  storeId    String
+  apiName    String
+  callsUsed  Int       @default(0)
+  callsLimit Int       @default(0)
+  resetAt    DateTime?
+  store      Store     @relation(fields: [storeId], references: [id])
+}
+
+model ApiErrorLog {
+  id          String   @id @default(cuid())
+  storeId     String
+  apiName     String
+  errorCode   String?
+  message     String
+  requestBody String?
+  createdAt   DateTime @default(now())
+  store       Store    @relation(fields: [storeId], references: [id])
+}
