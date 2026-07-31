@@ -1,10 +1,134 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getValidAccessToken, getActiveListings, setStoredToken } from "@/lib/ebay";
+import {
+  getValidAccessToken,
+  getActiveListings,
+  getSellerList,
+  setStoredToken,
+  EbayApiError,
+  type EbayListingItem,
+} from "@/lib/ebay";
 import { Prisma } from "@prisma/client";
 
+type SyncSource = "full" | "incremental";
+
+function asDecimal(value: unknown): Prisma.Decimal {
+  if (typeof value === "number") return new Prisma.Decimal(value);
+  if (typeof value === "string") return new Prisma.Decimal(value);
+  return new Prisma.Decimal(0);
+}
+
+function getPrice(item: EbayListingItem): Prisma.Decimal {
+  return asDecimal(item.SellingStatus?.CurrentPrice?.["#text"]);
+}
+
+async function importItems(params: {
+  storeId: string;
+  items: EbayListingItem[];
+  source: SyncSource;
+}): Promise<number> {
+  const { storeId, items, source } = params;
+  for (const item of items) {
+    const price = getPrice(item);
+    const quantity = Number(item.QuantityAvailable ?? item.Quantity ?? 0);
+    const quantitySold = Number(item.SellingStatus?.QuantitySold ?? 0);
+    const watchers = Number(item.WatchCount ?? 0);
+    const views = Number(item.HitCount ?? 0);
+
+    const imageUrls: string[] = item.PictureDetails?.PictureURL
+      ? Array.isArray(item.PictureDetails.PictureURL)
+        ? item.PictureDetails.PictureURL
+        : [item.PictureDetails.PictureURL]
+      : [];
+
+    const startTime = item.ListingDetails?.StartTime
+      ? new Date(item.ListingDetails.StartTime)
+      : null;
+    const endTime = item.ListingDetails?.EndTime
+      ? new Date(item.ListingDetails.EndTime)
+      : null;
+
+    const listing = await prisma.listing.upsert({
+      where: {
+        storeId_ebayItemId: {
+          storeId,
+          ebayItemId: item.ItemID,
+        },
+      },
+      create: {
+        storeId,
+        ebayItemId: item.ItemID,
+        title: item.Title,
+        description: item.Description,
+        categoryId: item.PrimaryCategory?.CategoryID,
+        currentPrice: price,
+        quantity,
+        quantitySold,
+        condition: item.ConditionDisplayName,
+        listingStatus: "active",
+        listingFormat: item.ListingType,
+        startTime,
+        endTime,
+        watchers,
+        views,
+        imageUrls,
+        lastSyncedAt: new Date(),
+      },
+      update: {
+        title: item.Title,
+        description: item.Description,
+        categoryId: item.PrimaryCategory?.CategoryID,
+        currentPrice: price,
+        quantity,
+        quantitySold,
+        condition: item.ConditionDisplayName,
+        listingFormat: item.ListingType,
+        endTime,
+        watchers,
+        views,
+        imageUrls,
+        lastSyncedAt: new Date(),
+      },
+    });
+
+    await prisma.listingSnapshot.create({
+      data: {
+        listingId: listing.id,
+        storeId,
+        currentPrice: price,
+        quantity,
+        quantitySold,
+        watchers,
+        views,
+        listingStatus: "active",
+        source,
+      },
+    });
+  }
+  return items.length;
+}
+
+async function logSyncError(params: {
+  storeId: string;
+  apiName: string;
+  error: unknown;
+}): Promise<void> {
+  const { storeId, apiName, error } = params;
+  const message = error instanceof Error ? error.message : String(error);
+  const code = error instanceof EbayApiError ? error.code ?? null : null;
+
+  await prisma.apiErrorLog.create({
+    data: {
+      storeId,
+      apiName,
+      errorCode: code,
+      message,
+    },
+  });
+}
+
 export async function POST(
-  _request: Request,
+  request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   const store = await prisma.store.findUnique({ where: { id: params.id } });
@@ -12,10 +136,15 @@ export async function POST(
     return NextResponse.json({ error: "Store not found" }, { status: 404 });
   }
 
+  const mode = (request.nextUrl.searchParams.get("mode") as SyncSource) ?? "full";
+  if (mode !== "full" && mode !== "incremental") {
+    return NextResponse.json({ error: "mode must be full or incremental" }, { status: 400 });
+  }
+
   const syncRun = await prisma.syncRun.create({
     data: {
       storeId: store.id,
-      type: "full",
+      type: mode,
       status: "running",
     },
   });
@@ -34,89 +163,44 @@ export async function POST(
       },
     });
 
-    for await (const page of getActiveListings(accessToken, 0)) {
-      for (const item of page) {
-        const price = new Prisma.Decimal(
-          typeof item.SellingStatus?.CurrentPrice?.["#text"] === "number"
-            ? item.SellingStatus.CurrentPrice["#text"]
-            : 0
-        );
-        const quantity = Number(item.QuantityAvailable ?? item.Quantity ?? 0);
-        const quantitySold = Number(item.SellingStatus?.QuantitySold ?? 0);
-        const watchers = Number(item.WatchCount ?? 0);
-        const views = Number(item.HitCount ?? 0);
+    const now = new Date();
+    const lastSync = store.lastSyncAt;
 
-        const imageUrls: string[] = item.PictureDetails?.PictureURL
-          ? Array.isArray(item.PictureDetails.PictureURL)
-            ? item.PictureDetails.PictureURL
-            : [item.PictureDetails.PictureURL]
-          : [];
+    if (mode === "full") {
+      for await (const page of getActiveListings(accessToken, 0)) {
+        const count = await importItems({ storeId: store.id, items: page, source: "full" });
+        imported += count;
 
-        const startTime = item.ListingDetails?.StartTime
-          ? new Date(item.ListingDetails.StartTime)
-          : null;
-        const endTime = item.ListingDetails?.EndTime
-          ? new Date(item.ListingDetails.EndTime)
-          : null;
-
-        const listing = await prisma.listing.upsert({
-          where: {
-            storeId_ebayItemId: {
-              storeId: store.id,
-              ebayItemId: item.ItemID,
-            },
-          },
-          create: {
-            storeId: store.id,
-            ebayItemId: item.ItemID,
-            title: item.Title,
-            description: item.Description,
-            categoryId: item.PrimaryCategory?.CategoryID,
-            currentPrice: price,
-            quantity,
-            quantitySold,
-            condition: item.ConditionDisplayName,
-            listingStatus: "active",
-            listingFormat: item.ListingType,
-            startTime,
-            endTime,
-            watchers,
-            views,
-            imageUrls,
-            lastSyncedAt: new Date(),
-          },
-          update: {
-            title: item.Title,
-            description: item.Description,
-            categoryId: item.PrimaryCategory?.CategoryID,
-            currentPrice: price,
-            quantity,
-            quantitySold,
-            condition: item.ConditionDisplayName,
-            listingFormat: item.ListingType,
-            endTime,
-            watchers,
-            views,
-            imageUrls,
-            lastSyncedAt: new Date(),
-          },
+        await prisma.syncRun.update({
+          where: { id: syncRun.id },
+          data: { listingsProcessed: imported },
         });
+      }
+    } else {
+      const startFrom = lastSync ?? new Date(Date.now() - 60 * 60 * 1000);
+      const startTo = now;
 
-        await prisma.listingSnapshot.create({
-          data: {
-            listingId: listing.id,
-            storeId: store.id,
-            currentPrice: price,
-            quantity,
-            quantitySold,
-            watchers,
-            views,
-            listingStatus: "active",
-            source: "full",
-          },
+      for await (const page of getSellerList(accessToken, 0, { startFrom, startTo })) {
+        const count = await importItems({ storeId: store.id, items: page, source: "incremental" });
+        imported += count;
+
+        await prisma.syncRun.update({
+          where: { id: syncRun.id },
+          data: { listingsProcessed: imported },
         });
+      }
 
-        imported += 1;
+      const endFrom = lastSync ?? new Date(Date.now() - 60 * 60 * 1000);
+      const endTo = now;
+
+      for await (const page of getSellerList(accessToken, 0, { endFrom, endTo })) {
+        const count = await importItems({ storeId: store.id, items: page, source: "incremental" });
+        imported += count;
+
+        await prisma.syncRun.update({
+          where: { id: syncRun.id },
+          data: { listingsProcessed: imported },
+        });
       }
     }
 
@@ -134,13 +218,11 @@ export async function POST(
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : String(err);
 
-    await prisma.apiErrorLog.create({
-      data: {
-        storeId: store.id,
-        apiName: "GetMyeBaySelling",
-        message,
-      },
-    });
+    if (err instanceof EbayApiError) {
+      await logSyncError({ storeId: store.id, apiName: err.callName, error: err });
+    } else {
+      await logSyncError({ storeId: store.id, apiName: "SyncPipeline", error: err });
+    }
 
     await prisma.syncRun.update({
       where: { id: syncRun.id },

@@ -174,6 +174,46 @@ export async function getValidAccessToken(store: StoreWithTokens) {
   };
 }
 
+export class EbayApiError extends Error {
+  callName: string;
+  code?: string;
+
+  constructor(callName: string, message: string, code?: string) {
+    super(message);
+    this.callName = callName;
+    this.code = code;
+    this.name = "EbayApiError";
+  }
+}
+
+function getAck(parsed: Record<string, unknown>) {
+  const envelope = parsed["soapenv:Envelope"] as Record<string, unknown> | undefined;
+  const body = (envelope?.["soapenv:Body"] ?? {}) as Record<string, unknown>;
+  const callResponse = Object.values(body).find(
+    (v): v is Record<string, unknown> => typeof v === "object" && v !== null
+  ) as Record<string, unknown> | undefined;
+
+  const ack = callResponse?.Ack as string | undefined;
+  const rawErrors = callResponse?.Errors;
+  const errors = Array.isArray(rawErrors) ? rawErrors : rawErrors ? [rawErrors] : [];
+  return { ack, errors, response: callResponse };
+}
+
+function formatEbayErrors(errors: unknown[]): { message: string; code?: string } {
+  const parts = errors.map((e) => {
+    const err = (e ?? {}) as Record<string, unknown>;
+    const code = (err.ErrorCode ?? err["@_code"]) as string | undefined;
+    const msg = (err.LongMessage ?? err.ShortMessage ?? "eBay API error") as string;
+    return `${code ? `[${code}] ` : ""}${msg}`;
+  });
+
+  const first = (errors[0] ?? {}) as Record<string, unknown>;
+  return {
+    message: parts.join("; "),
+    code: (first.ErrorCode ?? first["@_code"]) as string | undefined,
+  };
+}
+
 function xmlEnvelope(body: string): string {
   return `<?xml version="1.0" encoding="utf-8"?>
 <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ebl="urn:ebay:apis:eBLBaseComponents">
@@ -219,7 +259,17 @@ export async function callTradingApi(options: {
   const parsed = parser.parse(text) as Record<string, unknown>;
 
   if (!res.ok) {
-    throw new Error(`eBay Trading API ${callName} failed: ${res.status} ${text.slice(0, 500)}`);
+    throw new EbayApiError(
+      callName,
+      `eBay Trading API ${callName} HTTP ${res.status}: ${text.slice(0, 500)}`,
+      res.status.toString()
+    );
+  }
+
+  const { ack, errors } = getAck(parsed);
+  if (ack !== "Success" && ack !== "PartialSuccess" && ack !== "Warning") {
+    const { message, code } = formatEbayErrors(errors);
+    throw new EbayApiError(callName, `${callName} failed: ${message}`, code);
   }
 
   return parsed;
@@ -259,6 +309,67 @@ export type EbayListingItem = {
   PrimaryCategory?: { CategoryID?: string; CategoryName?: string };
   PictureDetails?: { PictureURL?: string | string[] };
 };
+
+export type SellerListWindow = {
+  startFrom?: Date;
+  startTo?: Date;
+  endFrom?: Date;
+  endTo?: Date;
+};
+
+export async function* getSellerList(
+  accessToken: string,
+  siteId = 0,
+  window: SellerListWindow = {}
+): AsyncGenerator<EbayListingItem[]> {
+  let page = 1;
+  const perPage = 200;
+  let hasMore = true;
+
+  while (hasMore) {
+    const filters: string[] = [];
+    if (window.startFrom) filters.push(`<StartTimeFrom>${window.startFrom.toISOString()}</StartTimeFrom>`);
+    if (window.startTo) filters.push(`<StartTimeTo>${window.startTo.toISOString()}</StartTimeTo>`);
+    if (window.endFrom) filters.push(`<EndTimeFrom>${window.endFrom.toISOString()}</EndTimeFrom>`);
+    if (window.endTo) filters.push(`<EndTimeTo>${window.endTo.toISOString()}</EndTimeTo>`);
+
+    const xml = `<GetSellerListRequest xmlns="urn:ebay:apis:eBLBaseComponents">
+  <GranularityLevel>Fine</GranularityLevel>
+  ${filters.join("\n  ")}
+  <Pagination>
+    <EntriesPerPage>${perPage}</EntriesPerPage>
+    <PageNumber>${page}</PageNumber>
+  </Pagination>
+</GetSellerListRequest>`;
+
+    const res = (await callTradingApi({ callName: "GetSellerList", siteId, accessToken, xmlBody: xml })) as {
+      "soapenv:Envelope"?: {
+        "soapenv:Body"?: {
+          GetSellerListResponse?: {
+            ItemArray?: { Item?: EbayListingItem | EbayListingItem[] };
+            PaginationResult?: { TotalNumberOfPages?: number };
+          };
+        };
+      };
+    };
+
+    const response = res["soapenv:Envelope"]?.["soapenv:Body"]?.GetSellerListResponse;
+    const itemArray = response?.ItemArray;
+
+    const items = itemArray?.Item;
+    const totalPages = response?.PaginationResult?.TotalNumberOfPages ?? 1;
+
+    if (items) {
+      const list = Array.isArray(items) ? items : [items];
+      yield list;
+    } else {
+      yield [];
+    }
+
+    hasMore = page < totalPages;
+    page += 1;
+  }
+}
 
 export async function* getActiveListings(
   accessToken: string,
