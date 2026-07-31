@@ -3,9 +3,20 @@ import { prisma } from "@/lib/prisma";
 import { exchangeCodeForTokens, getEbayUser, setStoredToken } from "@/lib/ebay";
 
 export async function GET(req: NextRequest) {
-  const { searchParams } = new URL(req.url);
+  const requestUrl = req.url;
+  const nextUrl = req.nextUrl.toString();
+  const searchParams = req.nextUrl.searchParams;
   const code = searchParams.get("code");
   const state = searchParams.get("state");
+
+  console.log("OAuth callback received", {
+    requestUrl,
+    nextUrl,
+    hasCode: Boolean(code),
+    codeLength: code?.length ?? 0,
+    hasState: Boolean(state),
+    stateLength: state?.length ?? 0,
+  });
 
   if (!code || !state) {
     return NextResponse.json({ error: "Missing code or state" }, { status: 400 });

@@ -35,7 +35,6 @@ export function getEbayOAuthUrl(state: string): string {
     scope: [
       "https://api.ebay.com/oauth/api_scope/sell.inventory",
       "https://api.ebay.com/oauth/api_scope/sell.account",
-      "https://api.ebay.com/oauth/api_scope/sell.account:readonly",
     ].join(" "),
     state,
   });
@@ -92,7 +91,6 @@ export async function refreshAccessToken(refreshToken: string) {
     scope: [
       "https://api.ebay.com/oauth/api_scope/sell.inventory",
       "https://api.ebay.com/oauth/api_scope/sell.account",
-      "https://api.ebay.com/oauth/api_scope/sell.account:readonly",
     ].join(" "),
   });
 

@@ -1,0 +1,3 @@
+{
+  "buildCommand": "export DATABASE_URL=\"$PRISMA_DATABASE_URL\" && yes | npx prisma db push && next build"
+}
