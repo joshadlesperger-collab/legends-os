@@ -2,6 +2,8 @@ import { prisma } from "@/lib/prisma";
 import SyncButton from "@/components/SyncButton";
 import ConnectButton from "@/components/ConnectButton";
 
+export const dynamic = "force-dynamic";
+
 export default async function StoresPage() {
   const stores = await prisma.store.findMany({
     orderBy: { createdAt: "desc" },

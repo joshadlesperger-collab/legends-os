@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import ConnectButton from "@/components/ConnectButton";
 
+export const dynamic = "force-dynamic";
+
 function daysSince(date: Date | null) {
   if (!date) return "—";
   const diff = Date.now() - new Date(date).getTime();
