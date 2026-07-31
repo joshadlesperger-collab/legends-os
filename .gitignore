@@ -16,3 +16,5 @@ prisma/migrations/
 # Misc
 *.log
 .DS_Store
+
+.vercel

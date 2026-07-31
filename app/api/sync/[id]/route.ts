@@ -7,7 +7,7 @@ export async function GET(
 ) {
   const syncRun = await prisma.syncRun.findUnique({
     where: { id: params.id },
-    include: { store: { select: { ebaySellerUsername: true } } },
+    include: { Store: { select: { ebaySellerUsername: true } } },
   });
 
   if (!syncRun) {
