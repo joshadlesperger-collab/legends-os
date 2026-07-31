@@ -253,6 +253,11 @@ export async function callTradingApi(options: {
   });
 
   const text = await res.text();
+  console.error(
+    `[eBay Trading API] ${callName} HTTP ${res.status} response: ${text
+      .slice(0, 2000)
+      .replace(/[\r\n]+/g, " ")}`
+  );
   const parser = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: "@_" });
   const parsed = parser.parse(text) as Record<string, unknown>;
 
