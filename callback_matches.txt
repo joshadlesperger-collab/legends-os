@@ -1,0 +1,172 @@
+MATCH LINE 1344:
+l-sc-basepath\":\"\",\"x-vercel-sc-headers\":\"{\\\"Authorization\\\":\\\"Beare
+r eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyZXF1ZXN0SWQiOiJ6NmtiMi0xNzg1NTI4Mzg0
+NzMxLTAzNGQ4MTZjM2M5NCIsIm5leHRWZXJzaW9uIjoiMTQuMi41IiwiaWF0IjoxNzg1NTI4Mzg0LCJ
+kZXBsb3ltZW50SWQiOiJkcGxfSERVOGpUUkdieTR4ZVBkNmRkVDIzWUJUWlRIVyIsInByb2plY3RJZC
+I6InByal94NmVTUXdLQWMzbjdGYzBQbmFlVGU4SGdEbmJIIiwiZG9tYWluIjoibGVnZW5kcy1vcy1iZ
+XRhLnZlcmNlbC5hcHAiLCJibG9jayI6ZmFsc2UsInBsYW4iOiJob2JieSIsImlzcyI6InNlcnZlcmxl
+c3MiLCJ1bmxpbWl0ZWQiOmZhbHNlLCJvd25lcklkIjoidGVhbV9kRHVGbFd1bjE4R0R6SHJRQUZONDV
+DZFYiLCJleHAiOjE3ODU1MzAyMDQsImVudiI6InByb2R1Y3Rpb24ifQ.6ckJJbPNz5wQUkZN_PI-fvN
+3G-j6xGdphZxtYLNocRw\\\",\\\"x-vercel-function-platform\\\":\\\"vercel\\\\/prox
+y+serverless\\\",\\\"x-vercel-ept\\\":\\\"1\\\"}\",\"x-vercel-sc-host\":\"iad1.
+suspense-cache.vercel-infra.com\"},\"payload\":{\"metadata\":{\"topic\":\"MARKE
+TPLACE_ACCOUNT_DELETION\",\"schemaVersion\":\"1.0\",\"deprecated\":false},\"not
+ification\":{\"notificationId\":\"f22ce977-221a-464d-9ff0-c4e23866c6e8_d980f2fe
+-33eb-4420-a737-b2987bd67ef7\",\"eventDate\":\"2026-07-31T20:06:24.610Z\",\"pub
+lishDate\":\"2026-07-31T20:06:24.619Z\",\"publishAttemptCount\":1,\"data\":{\"u
+sername\":\"lom2329\",\"userId\":\"0v0dd-9jrhq\",\"eiasToken\":\"nY+sHZ2PrBmdj6
+wVnY+sEZ2PrA2dj6MMloCmAZWFow6dj6x9nY+seQ==\"}}}}"}]}
+> vercel_logs.json:14:{"id":"v8lxt-1785528360612-cc880ca837e2","timestamp":1785
+528360612,"deploymentId":"dpl_HDU8jTRGby4xePd6ddT23YBTZTHW","projectId":"prj_x6
+eSQwKAc3n7Fc0PnaeTe8HgDnbH","level":"info","message":"Incoming callback URL 
+{\n  requestUrl: 'https://legends-os-beta.vercel.app/api/stores/callback?state=
+d862519a7c1fc4955865b9ca14c74538&code=v%5E1.1%23i%5E1%23r%5E1%23f%5E0%23p%5E3%2
+3I%5E3%23t%5EUl41XzU6NUQ4RTBFRUVEOUMyNTA2QjhFRTdCMzZERDJFQ0Y3QUVfMV8xI0VeMjYw&e
+xpires_in=299',\n  nextUrl: 'https://legends-os-beta.vercel.app/api/stores/call
+back?state=d862519a7c1fc4955865b9ca14c74538&code=v%5E1.1%23i%5E1%23r%5E1%23f%5E
+0%23p%5E3%23I%5E3%23t%5EUl41XzU6NUQ4RTBFRUVEOUMyNTA2QjhFRTdCMzZERDJFQ0Y3QUVfMV8
+xI0VeMjYw&expires_in=299'\n}","source":"serverless","domain":"legends-os-beta.v
+ercel.app","requestMethod":"GET","requestPath":"/api/stores/callback","response
+StatusCode":500,"environment":"production","branch":"","cache":"MISS","cacheRea
+son":"","pprState":"","traceId":"","logs":[{"level":"info","message":"Incoming 
+callback URL {\n  requestUrl: 'https://legends-os-beta.vercel.app/api/stores/ca
+llback?state=d862519a7c1fc4955865b9ca14c74538&code=v%5E1.1%23i%5E1%23r%5E1%23f%
+5E0%23p%5E3%23I%5E3%23t%5EUl41XzU6NUQ4RTBFRUVEOUMyNTA2QjhFRTdCMzZERDJFQ0Y3QUVfM
+V8xI0VeMjYw&expires_in=299',\n  nextUrl: 'https://legends-os-beta.vercel.app/ap
+i/stores/callback?state=d862519a7c1fc4955865b9ca14c74538&code=v%5E1.1%23i%5E1%2
+3r%5E1%23f%5E0%23p%5E3%23I%5E3%23t%5EUl41XzU6NUQ4RTBFRUVEOUMyNTA2QjhFRTdCMzZERD
+JFQ0Y3QUVfMV8xI0VeMjYw&expires_in=299'\n}"},{"level":"info","message":"OAuth 
+callback received {\n  requestUrl: 'https://legends-os-beta.vercel.app/api/stor
+es/callback?state=d862519a7c1fc4955865b9ca14c74538&code=v%5E1.1%23i%5E1%23r%5E1
+%23f%5E0%23p%5E3%23I%5E3%23t%5EUl41XzU6NUQ4RTBFRUVEOUMyNTA2QjhFRTdCMzZERDJFQ0Y3
+QUVfMV8xI0VeMjYw&expires_in=299',\n  nextUrl: 'https://legends-os-beta.vercel.a
+-----
+MATCH LINE 1351:
+DZFYiLCJleHAiOjE3ODU1MzAyMDQsImVudiI6InByb2R1Y3Rpb24ifQ.6ckJJbPNz5wQUkZN_PI-fvN
+3G-j6xGdphZxtYLNocRw\\\",\\\"x-vercel-function-platform\\\":\\\"vercel\\\\/prox
+y+serverless\\\",\\\"x-vercel-ept\\\":\\\"1\\\"}\",\"x-vercel-sc-host\":\"iad1.
+suspense-cache.vercel-infra.com\"},\"payload\":{\"metadata\":{\"topic\":\"MARKE
+TPLACE_ACCOUNT_DELETION\",\"schemaVersion\":\"1.0\",\"deprecated\":false},\"not
+ification\":{\"notificationId\":\"f22ce977-221a-464d-9ff0-c4e23866c6e8_d980f2fe
+-33eb-4420-a737-b2987bd67ef7\",\"eventDate\":\"2026-07-31T20:06:24.610Z\",\"pub
+lishDate\":\"2026-07-31T20:06:24.619Z\",\"publishAttemptCount\":1,\"data\":{\"u
+sername\":\"lom2329\",\"userId\":\"0v0dd-9jrhq\",\"eiasToken\":\"nY+sHZ2PrBmdj6
+wVnY+sEZ2PrA2dj6MMloCmAZWFow6dj6x9nY+seQ==\"}}}}"}]}
+> vercel_logs.json:14:{"id":"v8lxt-1785528360612-cc880ca837e2","timestamp":1785
+528360612,"deploymentId":"dpl_HDU8jTRGby4xePd6ddT23YBTZTHW","projectId":"prj_x6
+eSQwKAc3n7Fc0PnaeTe8HgDnbH","level":"info","message":"Incoming callback URL 
+{\n  requestUrl: 'https://legends-os-beta.vercel.app/api/stores/callback?state=
+d862519a7c1fc4955865b9ca14c74538&code=v%5E1.1%23i%5E1%23r%5E1%23f%5E0%23p%5E3%2
+3I%5E3%23t%5EUl41XzU6NUQ4RTBFRUVEOUMyNTA2QjhFRTdCMzZERDJFQ0Y3QUVfMV8xI0VeMjYw&e
+xpires_in=299',\n  nextUrl: 'https://legends-os-beta.vercel.app/api/stores/call
+back?state=d862519a7c1fc4955865b9ca14c74538&code=v%5E1.1%23i%5E1%23r%5E1%23f%5E
+0%23p%5E3%23I%5E3%23t%5EUl41XzU6NUQ4RTBFRUVEOUMyNTA2QjhFRTdCMzZERDJFQ0Y3QUVfMV8
+xI0VeMjYw&expires_in=299'\n}","source":"serverless","domain":"legends-os-beta.v
+ercel.app","requestMethod":"GET","requestPath":"/api/stores/callback","response
+StatusCode":500,"environment":"production","branch":"","cache":"MISS","cacheRea
+son":"","pprState":"","traceId":"","logs":[{"level":"info","message":"Incoming 
+callback URL {\n  requestUrl: 'https://legends-os-beta.vercel.app/api/stores/ca
+llback?state=d862519a7c1fc4955865b9ca14c74538&code=v%5E1.1%23i%5E1%23r%5E1%23f%
+5E0%23p%5E3%23I%5E3%23t%5EUl41XzU6NUQ4RTBFRUVEOUMyNTA2QjhFRTdCMzZERDJFQ0Y3QUVfM
+V8xI0VeMjYw&expires_in=299',\n  nextUrl: 'https://legends-os-beta.vercel.app/ap
+i/stores/callback?state=d862519a7c1fc4955865b9ca14c74538&code=v%5E1.1%23i%5E1%2
+3r%5E1%23f%5E0%23p%5E3%23I%5E3%23t%5EUl41XzU6NUQ4RTBFRUVEOUMyNTA2QjhFRTdCMzZERD
+JFQ0Y3QUVfMV8xI0VeMjYw&expires_in=299'\n}"},{"level":"info","message":"OAuth 
+callback received {\n  requestUrl: 'https://legends-os-beta.vercel.app/api/stor
+es/callback?state=d862519a7c1fc4955865b9ca14c74538&code=v%5E1.1%23i%5E1%23r%5E1
+%23f%5E0%23p%5E3%23I%5E3%23t%5EUl41XzU6NUQ4RTBFRUVEOUMyNTA2QjhFRTdCMzZERDJFQ0Y3
+QUVfMV8xI0VeMjYw&expires_in=299',\n  nextUrl: 'https://legends-os-beta.vercel.a
+pp/api/stores/callback?state=d862519a7c1fc4955865b9ca14c74538&code=v%5E1.1%23i%
+5E1%23r%5E1%23f%5E0%23p%5E3%23I%5E3%23t%5EUl41XzU6NUQ4RTBFRUVEOUMyNTA2QjhFRTdCM
+zZERDJFQ0Y3QUVfMV8xI0VeMjYw&expires_in=299',\n  hasCode: true,\n  codeLength: 
+92,\n  hasState: true,\n  stateLength: 32\n}"}]}
+  vercel_logs.json:15:{"id":"4whgn-1785528358063-491e703d8ea6","timestamp":1785
+528358063,"deploymentId":"dpl_HDU8jTRGby4xePd6ddT23YBTZTHW","projectId":"prj_x6
+eSQwKAc3n7Fc0PnaeTe8HgDnbH","level":"info","message":"","source":"serverless","
+-----
+MATCH LINE 1358:
+lishDate\":\"2026-07-31T20:06:24.619Z\",\"publishAttemptCount\":1,\"data\":{\"u
+sername\":\"lom2329\",\"userId\":\"0v0dd-9jrhq\",\"eiasToken\":\"nY+sHZ2PrBmdj6
+wVnY+sEZ2PrA2dj6MMloCmAZWFow6dj6x9nY+seQ==\"}}}}"}]}
+> vercel_logs.json:14:{"id":"v8lxt-1785528360612-cc880ca837e2","timestamp":1785
+528360612,"deploymentId":"dpl_HDU8jTRGby4xePd6ddT23YBTZTHW","projectId":"prj_x6
+eSQwKAc3n7Fc0PnaeTe8HgDnbH","level":"info","message":"Incoming callback URL 
+{\n  requestUrl: 'https://legends-os-beta.vercel.app/api/stores/callback?state=
+d862519a7c1fc4955865b9ca14c74538&code=v%5E1.1%23i%5E1%23r%5E1%23f%5E0%23p%5E3%2
+3I%5E3%23t%5EUl41XzU6NUQ4RTBFRUVEOUMyNTA2QjhFRTdCMzZERDJFQ0Y3QUVfMV8xI0VeMjYw&e
+xpires_in=299',\n  nextUrl: 'https://legends-os-beta.vercel.app/api/stores/call
+back?state=d862519a7c1fc4955865b9ca14c74538&code=v%5E1.1%23i%5E1%23r%5E1%23f%5E
+0%23p%5E3%23I%5E3%23t%5EUl41XzU6NUQ4RTBFRUVEOUMyNTA2QjhFRTdCMzZERDJFQ0Y3QUVfMV8
+xI0VeMjYw&expires_in=299'\n}","source":"serverless","domain":"legends-os-beta.v
+ercel.app","requestMethod":"GET","requestPath":"/api/stores/callback","response
+StatusCode":500,"environment":"production","branch":"","cache":"MISS","cacheRea
+son":"","pprState":"","traceId":"","logs":[{"level":"info","message":"Incoming 
+callback URL {\n  requestUrl: 'https://legends-os-beta.vercel.app/api/stores/ca
+llback?state=d862519a7c1fc4955865b9ca14c74538&code=v%5E1.1%23i%5E1%23r%5E1%23f%
+5E0%23p%5E3%23I%5E3%23t%5EUl41XzU6NUQ4RTBFRUVEOUMyNTA2QjhFRTdCMzZERDJFQ0Y3QUVfM
+V8xI0VeMjYw&expires_in=299',\n  nextUrl: 'https://legends-os-beta.vercel.app/ap
+i/stores/callback?state=d862519a7c1fc4955865b9ca14c74538&code=v%5E1.1%23i%5E1%2
+3r%5E1%23f%5E0%23p%5E3%23I%5E3%23t%5EUl41XzU6NUQ4RTBFRUVEOUMyNTA2QjhFRTdCMzZERD
+JFQ0Y3QUVfMV8xI0VeMjYw&expires_in=299'\n}"},{"level":"info","message":"OAuth 
+callback received {\n  requestUrl: 'https://legends-os-beta.vercel.app/api/stor
+es/callback?state=d862519a7c1fc4955865b9ca14c74538&code=v%5E1.1%23i%5E1%23r%5E1
+%23f%5E0%23p%5E3%23I%5E3%23t%5EUl41XzU6NUQ4RTBFRUVEOUMyNTA2QjhFRTdCMzZERDJFQ0Y3
+QUVfMV8xI0VeMjYw&expires_in=299',\n  nextUrl: 'https://legends-os-beta.vercel.a
+pp/api/stores/callback?state=d862519a7c1fc4955865b9ca14c74538&code=v%5E1.1%23i%
+5E1%23r%5E1%23f%5E0%23p%5E3%23I%5E3%23t%5EUl41XzU6NUQ4RTBFRUVEOUMyNTA2QjhFRTdCM
+zZERDJFQ0Y3QUVfMV8xI0VeMjYw&expires_in=299',\n  hasCode: true,\n  codeLength: 
+92,\n  hasState: true,\n  stateLength: 32\n}"}]}
+  vercel_logs.json:15:{"id":"4whgn-1785528358063-491e703d8ea6","timestamp":1785
+528358063,"deploymentId":"dpl_HDU8jTRGby4xePd6ddT23YBTZTHW","projectId":"prj_x6
+eSQwKAc3n7Fc0PnaeTe8HgDnbH","level":"info","message":"","source":"serverless","
+domain":"legends-os-beta.vercel.app","requestMethod":"POST","requestPath":"/api
+/stores","responseStatusCode":200,"environment":"production","branch":"","cache
+":"MISS","cacheReason":"","pprState":"","traceId":"","logs":[]}
+  vercel_logs.json:16:{"id":"ksq8x-1785528353547-f5c533b773fc","timestamp":1785
+528353547,"deploymentId":"dpl_HDU8jTRGby4xePd6ddT23YBTZTHW","projectId":"prj_x6
+eSQwKAc3n7Fc0PnaeTe8HgDnbH","level":"info","message":"","source":"serverless","
+domain":"legends-os-beta.vercel.app","requestMethod":"GET","requestPath":"/","r
+-----
+MATCH LINE 1365:
+d862519a7c1fc4955865b9ca14c74538&code=v%5E1.1%23i%5E1%23r%5E1%23f%5E0%23p%5E3%2
+3I%5E3%23t%5EUl41XzU6NUQ4RTBFRUVEOUMyNTA2QjhFRTdCMzZERDJFQ0Y3QUVfMV8xI0VeMjYw&e
+xpires_in=299',\n  nextUrl: 'https://legends-os-beta.vercel.app/api/stores/call
+back?state=d862519a7c1fc4955865b9ca14c74538&code=v%5E1.1%23i%5E1%23r%5E1%23f%5E
+0%23p%5E3%23I%5E3%23t%5EUl41XzU6NUQ4RTBFRUVEOUMyNTA2QjhFRTdCMzZERDJFQ0Y3QUVfMV8
+xI0VeMjYw&expires_in=299'\n}","source":"serverless","domain":"legends-os-beta.v
+ercel.app","requestMethod":"GET","requestPath":"/api/stores/callback","response
+StatusCode":500,"environment":"production","branch":"","cache":"MISS","cacheRea
+son":"","pprState":"","traceId":"","logs":[{"level":"info","message":"Incoming 
+callback URL {\n  requestUrl: 'https://legends-os-beta.vercel.app/api/stores/ca
+llback?state=d862519a7c1fc4955865b9ca14c74538&code=v%5E1.1%23i%5E1%23r%5E1%23f%
+5E0%23p%5E3%23I%5E3%23t%5EUl41XzU6NUQ4RTBFRUVEOUMyNTA2QjhFRTdCMzZERDJFQ0Y3QUVfM
+V8xI0VeMjYw&expires_in=299',\n  nextUrl: 'https://legends-os-beta.vercel.app/ap
+i/stores/callback?state=d862519a7c1fc4955865b9ca14c74538&code=v%5E1.1%23i%5E1%2
+3r%5E1%23f%5E0%23p%5E3%23I%5E3%23t%5EUl41XzU6NUQ4RTBFRUVEOUMyNTA2QjhFRTdCMzZERD
+JFQ0Y3QUVfMV8xI0VeMjYw&expires_in=299'\n}"},{"level":"info","message":"OAuth 
+callback received {\n  requestUrl: 'https://legends-os-beta.vercel.app/api/stor
+es/callback?state=d862519a7c1fc4955865b9ca14c74538&code=v%5E1.1%23i%5E1%23r%5E1
+%23f%5E0%23p%5E3%23I%5E3%23t%5EUl41XzU6NUQ4RTBFRUVEOUMyNTA2QjhFRTdCMzZERDJFQ0Y3
+QUVfMV8xI0VeMjYw&expires_in=299',\n  nextUrl: 'https://legends-os-beta.vercel.a
+pp/api/stores/callback?state=d862519a7c1fc4955865b9ca14c74538&code=v%5E1.1%23i%
+5E1%23r%5E1%23f%5E0%23p%5E3%23I%5E3%23t%5EUl41XzU6NUQ4RTBFRUVEOUMyNTA2QjhFRTdCM
+zZERDJFQ0Y3QUVfMV8xI0VeMjYw&expires_in=299',\n  hasCode: true,\n  codeLength: 
+92,\n  hasState: true,\n  stateLength: 32\n}"}]}
+  vercel_logs.json:15:{"id":"4whgn-1785528358063-491e703d8ea6","timestamp":1785
+528358063,"deploymentId":"dpl_HDU8jTRGby4xePd6ddT23YBTZTHW","projectId":"prj_x6
+eSQwKAc3n7Fc0PnaeTe8HgDnbH","level":"info","message":"","source":"serverless","
+domain":"legends-os-beta.vercel.app","requestMethod":"POST","requestPath":"/api
+/stores","responseStatusCode":200,"environment":"production","branch":"","cache
+":"MISS","cacheReason":"","pprState":"","traceId":"","logs":[]}
+  vercel_logs.json:16:{"id":"ksq8x-1785528353547-f5c533b773fc","timestamp":1785
+528353547,"deploymentId":"dpl_HDU8jTRGby4xePd6ddT23YBTZTHW","projectId":"prj_x6
+eSQwKAc3n7Fc0PnaeTe8HgDnbH","level":"info","message":"","source":"serverless","
+domain":"legends-os-beta.vercel.app","requestMethod":"GET","requestPath":"/","r
+esponseStatusCode":200,"environment":"production","branch":"","cache":"MISS","c
+acheReason":"","pprState":"","traceId":"","logs":[]}
+  vercel_logs.json:17:{"id":"bbt2f-1785528349825-d4db6fde9834","timestamp":1785
+528349825,"deploymentId":"dpl_HDU8jTRGby4xePd6ddT23YBTZTHW","projectId":"prj_x6
+eSQwKAc3n7Fc0PnaeTe8HgDnbH","level":"info","message":"","source":"serverless","
+domain":"legends-os-beta.vercel.app","requestMethod":"GET","requestPath":"/","r
+esponseStatusCode":200,"environment":"production","branch":"","cache":"MISS","c
+-----

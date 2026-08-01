@@ -1,0 +1,2384 @@
+MATCH LINE 4:
+
+> vercel_logs.json:1:{"id":"94kqc-1785528601010-39f7ca7ec3b9","timestamp":17855
+28601010,"deploymentId":"dpl_HDU8jTRGby4xePd6ddT23YBTZTHW","projectId":"prj_x6e
+SQwKAc3n7Fc0PnaeTe8HgDnbH","level":"info","message":"[eBay MADN] received 
+notification: {\"headers\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"c
+onnection\":\"close\",\"content-length\":\"447\",\"content-type\":\"application
+/json\",\"forwarded\":\"for=216.113.184.101;host=legends-os-beta.vercel.app;pro
+to=https;sig=0QmVhcmVyIGQ3MWE2MTY4ODZlZDk0MDFjOWU2ZmQ3NTgwMTU0OGVkZDk1M2NhZDFkO
+GFhZDM4ZDI5YzEyNGM2MGY5MzE4MWY=;exp=1785528901\",\"host\":\"legends-os-beta.ver
+cel.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGci
+OiJlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25
+hdHVyZSI6Ik1FVUNJSDVzSVlRZVhtM0V5MUoxdnlQZURDMzg5dGY4S0JHVVlaRUVDWnhwU0R1c0FpRU
+E3bkFVdGRqYzVXT3daSVpBb2I5bGtvSmRiUGhBaFRVNkhUQlY1OXgzalk4PSIsImRpZ2VzdCI6IlNIQ
+TEifQ==\",\"x-forwarded-for\":\"216.113.184.101\",\"x-forwarded-host\":\"legend
+-----
+MATCH LINE 10:
+
+> vercel_logs.json:1:{"id":"94kqc-1785528601010-39f7ca7ec3b9","timestamp":17855
+28601010,"deploymentId":"dpl_HDU8jTRGby4xePd6ddT23YBTZTHW","projectId":"prj_x6e
+SQwKAc3n7Fc0PnaeTe8HgDnbH","level":"info","message":"[eBay MADN] received 
+notification: {\"headers\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"c
+onnection\":\"close\",\"content-length\":\"447\",\"content-type\":\"application
+/json\",\"forwarded\":\"for=216.113.184.101;host=legends-os-beta.vercel.app;pro
+to=https;sig=0QmVhcmVyIGQ3MWE2MTY4ODZlZDk0MDFjOWU2ZmQ3NTgwMTU0OGVkZDk1M2NhZDFkO
+GFhZDM4ZDI5YzEyNGM2MGY5MzE4MWY=;exp=1785528901\",\"host\":\"legends-os-beta.ver
+cel.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGci
+OiJlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25
+hdHVyZSI6Ik1FVUNJSDVzSVlRZVhtM0V5MUoxdnlQZURDMzg5dGY4S0JHVVlaRUVDWnhwU0R1c0FpRU
+E3bkFVdGRqYzVXT3daSVpBb2I5bGtvSmRiUGhBaFRVNkhUQlY1OXgzalk4PSIsImRpZ2VzdCI6IlNIQ
+TEifQ==\",\"x-forwarded-for\":\"216.113.184.101\",\"x-forwarded-host\":\"legend
+s-os-beta.vercel.app\",\"x-forwarded-port\":\"443\",\"x-forwarded-proto\":\"htt
+ps\",\"x-invocation-id\":\"cle1::94kqc-1785528601010-39f7ca7ec3b9\",\"x-matched
+-path\":\"/api/ebay/account-deletion\",\"x-real-ip\":\"216.113.184.101\",\"x-ve
+rcel-deployment-url\":\"legends-ohn61g79x-legends17.vercel.app\",\"x-vercel-ena
+ble-rewrite-caching\":\"1\",\"x-vercel-forwarded-for\":\"216.113.184.101\",\"x-
+vercel-id\":\"cle1::94kqc-1785528601010-39f7ca7ec3b9\",\"x-vercel-ip-as-number\
+-----
+MATCH LINE 17:
+/json\",\"forwarded\":\"for=216.113.184.101;host=legends-os-beta.vercel.app;pro
+to=https;sig=0QmVhcmVyIGQ3MWE2MTY4ODZlZDk0MDFjOWU2ZmQ3NTgwMTU0OGVkZDk1M2NhZDFkO
+GFhZDM4ZDI5YzEyNGM2MGY5MzE4MWY=;exp=1785528901\",\"host\":\"legends-os-beta.ver
+cel.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGci
+OiJlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25
+hdHVyZSI6Ik1FVUNJSDVzSVlRZVhtM0V5MUoxdnlQZURDMzg5dGY4S0JHVVlaRUVDWnhwU0R1c0FpRU
+E3bkFVdGRqYzVXT3daSVpBb2I5bGtvSmRiUGhBaFRVNkhUQlY1OXgzalk4PSIsImRpZ2VzdCI6IlNIQ
+TEifQ==\",\"x-forwarded-for\":\"216.113.184.101\",\"x-forwarded-host\":\"legend
+s-os-beta.vercel.app\",\"x-forwarded-port\":\"443\",\"x-forwarded-proto\":\"htt
+ps\",\"x-invocation-id\":\"cle1::94kqc-1785528601010-39f7ca7ec3b9\",\"x-matched
+-path\":\"/api/ebay/account-deletion\",\"x-real-ip\":\"216.113.184.101\",\"x-ve
+rcel-deployment-url\":\"legends-ohn61g79x-legends17.vercel.app\",\"x-vercel-ena
+ble-rewrite-caching\":\"1\",\"x-vercel-forwarded-for\":\"216.113.184.101\",\"x-
+vercel-id\":\"cle1::94kqc-1785528601010-39f7ca7ec3b9\",\"x-vercel-ip-as-number\
+":\"11643\",\"x-vercel-ip-continent\":\"NA\",\"x-vercel-ip-country\":\"US\",\"x
+-vercel-ip-latitude\":\"37.751\",\"x-vercel-ip-longitude\":\"-97.822\",\"x-verc
+el-ip-timezone\":\"America/Chicago\",\"x-vercel-ja4-digest\":\"t12d091100_08d6d
+9b33cd7_6d6c278f61f2\",\"x-vercel-oidc-token\":\"eyJ0eXAiOiJKV1QiLCJraWQiOiJtcm
+stNDMwMmVjMWI2NzBmNDhhOThhZDYxZGFkZTRhMjNiZTciLCJhbGciOiJSUzI1NiJ9.eyJuYmYiOjE3
+ODU1MjMzOTgsImlzcyI6Imh0dHBzOlwvXC9vaWRjLnZlcmNlbC5jb21cL2xlZ2VuZHMxNyIsInByb2p
+lY3QiOiJsZWdlbmRzLW9zIiwic3ViIjoib3duZXI6bGVnZW5kczE3OnByb2plY3Q6bGVnZW5kcy1vcz
+-----
+MATCH LINE 58:
+SFcifQ.Beca_SOJjC2GTzxrPL8Gx8JBOTUcikH2FHkCYf3Zmd8\\\",\\\"x-vercel-ept\\\":\\\
+"1\\\",\\\"x-vercel-function-platform\\\":\\\"vercel\\\\/proxy+serverless\\\"}\
+",\"x-vercel-sc-host\":\"iad1.suspense-cache.vercel-infra.com\"},\"payload\":{\
+"metadata\":{\"topic\":\"MARKETPLACE_ACCOUNT_DELETION\",\"schemaVersion\":\"1.0
+\",\"deprecated\":false},\"notification\":{\"notificationId\":\"779afaa7-623b-4
+b6a-98ce-0a728a704455_5135ff75-335d-4fd7-bb36-85fb9ea40e14\",\"eventDate\":\"20
+26-07-31T20:10:00.728Z\",\"publishDate\":\"2026-07-31T20:10:00.751Z\",\"publish
+AttemptCount\":1,\"data\":{\"username\":\"lonestar_assetexchange\",\"userId\":\
+"bt19pkvnrdo\",\"eiasToken\":\"nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6MMloqhCZWGpgSdj6x9
+nY+seQ==\"}}}}","source":"serverless","domain":"legends-os-beta.vercel.app","re
+questMethod":"POST","requestPath":"/api/ebay/account-deletion","responseStatusC
+ode":200,"environment":"production","branch":"","cache":"MISS","cacheReason":""
+,"pprState":"","traceId":"","logs":[{"level":"info","message":"[eBay MADN] 
+received notification: {\"headers\":{\"accept\":\"*/*\",\"accept-encoding\":\"g
+zip\",\"connection\":\"close\",\"content-length\":\"447\",\"content-type\":\"ap
+plication/json\",\"forwarded\":\"for=216.113.184.101;host=legends-os-beta.verce
+l.app;proto=https;sig=0QmVhcmVyIGQ3MWE2MTY4ODZlZDk0MDFjOWU2ZmQ3NTgwMTU0OGVkZDk1
+M2NhZDFkOGFhZDM4ZDI5YzEyNGM2MGY5MzE4MWY=;exp=1785528901\",\"host\":\"legends-os
+-beta.vercel.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\
+"eyJhbGciOiJlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5Ni
+IsInNpZ25hdHVyZSI6Ik1FVUNJSDVzSVlRZVhtM0V5MUoxdnlQZURDMzg5dGY4S0JHVVlaRUVDWnhwU
+-----
+MATCH LINE 60:
+",\"x-vercel-sc-host\":\"iad1.suspense-cache.vercel-infra.com\"},\"payload\":{\
+"metadata\":{\"topic\":\"MARKETPLACE_ACCOUNT_DELETION\",\"schemaVersion\":\"1.0
+\",\"deprecated\":false},\"notification\":{\"notificationId\":\"779afaa7-623b-4
+b6a-98ce-0a728a704455_5135ff75-335d-4fd7-bb36-85fb9ea40e14\",\"eventDate\":\"20
+26-07-31T20:10:00.728Z\",\"publishDate\":\"2026-07-31T20:10:00.751Z\",\"publish
+AttemptCount\":1,\"data\":{\"username\":\"lonestar_assetexchange\",\"userId\":\
+"bt19pkvnrdo\",\"eiasToken\":\"nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6MMloqhCZWGpgSdj6x9
+nY+seQ==\"}}}}","source":"serverless","domain":"legends-os-beta.vercel.app","re
+questMethod":"POST","requestPath":"/api/ebay/account-deletion","responseStatusC
+ode":200,"environment":"production","branch":"","cache":"MISS","cacheReason":""
+,"pprState":"","traceId":"","logs":[{"level":"info","message":"[eBay MADN] 
+received notification: {\"headers\":{\"accept\":\"*/*\",\"accept-encoding\":\"g
+zip\",\"connection\":\"close\",\"content-length\":\"447\",\"content-type\":\"ap
+plication/json\",\"forwarded\":\"for=216.113.184.101;host=legends-os-beta.verce
+l.app;proto=https;sig=0QmVhcmVyIGQ3MWE2MTY4ODZlZDk0MDFjOWU2ZmQ3NTgwMTU0OGVkZDk1
+M2NhZDFkOGFhZDM4ZDI5YzEyNGM2MGY5MzE4MWY=;exp=1785528901\",\"host\":\"legends-os
+-beta.vercel.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\
+"eyJhbGciOiJlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5Ni
+IsInNpZ25hdHVyZSI6Ik1FVUNJSDVzSVlRZVhtM0V5MUoxdnlQZURDMzg5dGY4S0JHVVlaRUVDWnhwU
+0R1c0FpRUE3bkFVdGRqYzVXT3daSVpBb2I5bGtvSmRiUGhBaFRVNkhUQlY1OXgzalk4PSIsImRpZ2Vz
+dCI6IlNIQTEifQ==\",\"x-forwarded-for\":\"216.113.184.101\",\"x-forwarded-host\"
+-----
+MATCH LINE 66:
+"bt19pkvnrdo\",\"eiasToken\":\"nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6MMloqhCZWGpgSdj6x9
+nY+seQ==\"}}}}","source":"serverless","domain":"legends-os-beta.vercel.app","re
+questMethod":"POST","requestPath":"/api/ebay/account-deletion","responseStatusC
+ode":200,"environment":"production","branch":"","cache":"MISS","cacheReason":""
+,"pprState":"","traceId":"","logs":[{"level":"info","message":"[eBay MADN] 
+received notification: {\"headers\":{\"accept\":\"*/*\",\"accept-encoding\":\"g
+zip\",\"connection\":\"close\",\"content-length\":\"447\",\"content-type\":\"ap
+plication/json\",\"forwarded\":\"for=216.113.184.101;host=legends-os-beta.verce
+l.app;proto=https;sig=0QmVhcmVyIGQ3MWE2MTY4ODZlZDk0MDFjOWU2ZmQ3NTgwMTU0OGVkZDk1
+M2NhZDFkOGFhZDM4ZDI5YzEyNGM2MGY5MzE4MWY=;exp=1785528901\",\"host\":\"legends-os
+-beta.vercel.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\
+"eyJhbGciOiJlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5Ni
+IsInNpZ25hdHVyZSI6Ik1FVUNJSDVzSVlRZVhtM0V5MUoxdnlQZURDMzg5dGY4S0JHVVlaRUVDWnhwU
+0R1c0FpRUE3bkFVdGRqYzVXT3daSVpBb2I5bGtvSmRiUGhBaFRVNkhUQlY1OXgzalk4PSIsImRpZ2Vz
+dCI6IlNIQTEifQ==\",\"x-forwarded-for\":\"216.113.184.101\",\"x-forwarded-host\"
+:\"legends-os-beta.vercel.app\",\"x-forwarded-port\":\"443\",\"x-forwarded-prot
+o\":\"https\",\"x-invocation-id\":\"cle1::94kqc-1785528601010-39f7ca7ec3b9\",\"
+x-matched-path\":\"/api/ebay/account-deletion\",\"x-real-ip\":\"216.113.184.101
+\",\"x-vercel-deployment-url\":\"legends-ohn61g79x-legends17.vercel.app\",\"x-v
+ercel-enable-rewrite-caching\":\"1\",\"x-vercel-forwarded-for\":\"216.113.184.1
+01\",\"x-vercel-id\":\"cle1::94kqc-1785528601010-39f7ca7ec3b9\",\"x-vercel-ip-a
+-----
+MATCH LINE 73:
+plication/json\",\"forwarded\":\"for=216.113.184.101;host=legends-os-beta.verce
+l.app;proto=https;sig=0QmVhcmVyIGQ3MWE2MTY4ODZlZDk0MDFjOWU2ZmQ3NTgwMTU0OGVkZDk1
+M2NhZDFkOGFhZDM4ZDI5YzEyNGM2MGY5MzE4MWY=;exp=1785528901\",\"host\":\"legends-os
+-beta.vercel.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\
+"eyJhbGciOiJlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5Ni
+IsInNpZ25hdHVyZSI6Ik1FVUNJSDVzSVlRZVhtM0V5MUoxdnlQZURDMzg5dGY4S0JHVVlaRUVDWnhwU
+0R1c0FpRUE3bkFVdGRqYzVXT3daSVpBb2I5bGtvSmRiUGhBaFRVNkhUQlY1OXgzalk4PSIsImRpZ2Vz
+dCI6IlNIQTEifQ==\",\"x-forwarded-for\":\"216.113.184.101\",\"x-forwarded-host\"
+:\"legends-os-beta.vercel.app\",\"x-forwarded-port\":\"443\",\"x-forwarded-prot
+o\":\"https\",\"x-invocation-id\":\"cle1::94kqc-1785528601010-39f7ca7ec3b9\",\"
+x-matched-path\":\"/api/ebay/account-deletion\",\"x-real-ip\":\"216.113.184.101
+\",\"x-vercel-deployment-url\":\"legends-ohn61g79x-legends17.vercel.app\",\"x-v
+ercel-enable-rewrite-caching\":\"1\",\"x-vercel-forwarded-for\":\"216.113.184.1
+01\",\"x-vercel-id\":\"cle1::94kqc-1785528601010-39f7ca7ec3b9\",\"x-vercel-ip-a
+s-number\":\"11643\",\"x-vercel-ip-continent\":\"NA\",\"x-vercel-ip-country\":\
+"US\",\"x-vercel-ip-latitude\":\"37.751\",\"x-vercel-ip-longitude\":\"-97.822\"
+,\"x-vercel-ip-timezone\":\"America/Chicago\",\"x-vercel-ja4-digest\":\"t12d091
+100_08d6d9b33cd7_6d6c278f61f2\",\"x-vercel-oidc-token\":\"eyJ0eXAiOiJKV1QiLCJra
+WQiOiJtcmstNDMwMmVjMWI2NzBmNDhhOThhZDYxZGFkZTRhMjNiZTciLCJhbGciOiJSUzI1NiJ9.eyJ
+uYmYiOjE3ODU1MjMzOTgsImlzcyI6Imh0dHBzOlwvXC9vaWRjLnZlcmNlbC5jb21cL2xlZ2VuZHMxNy
+IsInByb2plY3QiOiJsZWdlbmRzLW9zIiwic3ViIjoib3duZXI6bGVnZW5kczE3OnByb2plY3Q6bGVnZ
+-----
+MATCH LINE 116:
+ess\\\"}\",\"x-vercel-sc-host\":\"iad1.suspense-cache.vercel-infra.com\"},\"pay
+load\":{\"metadata\":{\"topic\":\"MARKETPLACE_ACCOUNT_DELETION\",\"schemaVersio
+n\":\"1.0\",\"deprecated\":false},\"notification\":{\"notificationId\":\"779afa
+a7-623b-4b6a-98ce-0a728a704455_5135ff75-335d-4fd7-bb36-85fb9ea40e14\",\"eventDa
+te\":\"2026-07-31T20:10:00.728Z\",\"publishDate\":\"2026-07-31T20:10:00.751Z\",
+\"publishAttemptCount\":1,\"data\":{\"username\":\"lonestar_assetexchange\",\"u
+serId\":\"bt19pkvnrdo\",\"eiasToken\":\"nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6MMloqhCZW
+GpgSdj6x9nY+seQ==\"}}}}"}]}
+  vercel_logs.json:2:{"id":"pxvnw-1785528525719-5934685378f0","timestamp":17855
+28525719,"deploymentId":"dpl_HDU8jTRGby4xePd6ddT23YBTZTHW","projectId":"prj_x6e
+SQwKAc3n7Fc0PnaeTe8HgDnbH","level":"info","message":"[eBay MADN] received 
+notification: {\"headers\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"c
+onnection\":\"close\",\"content-length\":\"434\",\"content-type\":\"application
+/json\",\"forwarded\":\"for=66.135.223.40;host=legends-os-beta.vercel.app;proto
+=https;sig=0QmVhcmVyIGU3NjQ2NzFjNzRkZmM5ZmYxYWJmYjEyOWZmZGM5NzJiNWIyMTJlMTE2YmZ
+hOWE2Zjc2NTg2ODdhOTA2NjYyMGE=;exp=1785528825\",\"host\":\"legends-os-beta.verce
+l.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGciOi
+JlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25hd
+HVyZSI6Ik1FWUNJUURrcnZyRTZDdjZsU1AzMGFIS3ByMTdLV2c2Y1M2SVRRWXIzdHJRbE5SdjVBSWhB
+SW5OMEFmS0lXNGpEQ1krbEZPVk1nZmJsWEpnc3J6eGF5Z0RtbFZFZmdXMCIsImRpZ2VzdCI6IlNIQTE
+ifQ==\",\"x-forwarded-for\":\"66.135.223.40\",\"x-forwarded-host\":\"legends-os
+-----
+MATCH LINE 122:
+serId\":\"bt19pkvnrdo\",\"eiasToken\":\"nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6MMloqhCZW
+GpgSdj6x9nY+seQ==\"}}}}"}]}
+  vercel_logs.json:2:{"id":"pxvnw-1785528525719-5934685378f0","timestamp":17855
+28525719,"deploymentId":"dpl_HDU8jTRGby4xePd6ddT23YBTZTHW","projectId":"prj_x6e
+SQwKAc3n7Fc0PnaeTe8HgDnbH","level":"info","message":"[eBay MADN] received 
+notification: {\"headers\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"c
+onnection\":\"close\",\"content-length\":\"434\",\"content-type\":\"application
+/json\",\"forwarded\":\"for=66.135.223.40;host=legends-os-beta.vercel.app;proto
+=https;sig=0QmVhcmVyIGU3NjQ2NzFjNzRkZmM5ZmYxYWJmYjEyOWZmZGM5NzJiNWIyMTJlMTE2YmZ
+hOWE2Zjc2NTg2ODdhOTA2NjYyMGE=;exp=1785528825\",\"host\":\"legends-os-beta.verce
+l.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGciOi
+JlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25hd
+HVyZSI6Ik1FWUNJUURrcnZyRTZDdjZsU1AzMGFIS3ByMTdLV2c2Y1M2SVRRWXIzdHJRbE5SdjVBSWhB
+SW5OMEFmS0lXNGpEQ1krbEZPVk1nZmJsWEpnc3J6eGF5Z0RtbFZFZmdXMCIsImRpZ2VzdCI6IlNIQTE
+ifQ==\",\"x-forwarded-for\":\"66.135.223.40\",\"x-forwarded-host\":\"legends-os
+-beta.vercel.app\",\"x-forwarded-port\":\"443\",\"x-forwarded-proto\":\"https\"
+,\"x-invocation-id\":\"sfo1::pxvnw-1785528525719-5934685378f0\",\"x-matched-pat
+h\":\"/api/ebay/account-deletion\",\"x-real-ip\":\"66.135.223.40\",\"x-vercel-d
+eployment-url\":\"legends-ohn61g79x-legends17.vercel.app\",\"x-vercel-enable-re
+write-caching\":\"1\",\"x-vercel-forwarded-for\":\"66.135.223.40\",\"x-vercel-i
+d\":\"sfo1::pxvnw-1785528525719-5934685378f0\",\"x-vercel-ip-as-number\":\"1164
+-----
+MATCH LINE 129:
+/json\",\"forwarded\":\"for=66.135.223.40;host=legends-os-beta.vercel.app;proto
+=https;sig=0QmVhcmVyIGU3NjQ2NzFjNzRkZmM5ZmYxYWJmYjEyOWZmZGM5NzJiNWIyMTJlMTE2YmZ
+hOWE2Zjc2NTg2ODdhOTA2NjYyMGE=;exp=1785528825\",\"host\":\"legends-os-beta.verce
+l.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGciOi
+JlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25hd
+HVyZSI6Ik1FWUNJUURrcnZyRTZDdjZsU1AzMGFIS3ByMTdLV2c2Y1M2SVRRWXIzdHJRbE5SdjVBSWhB
+SW5OMEFmS0lXNGpEQ1krbEZPVk1nZmJsWEpnc3J6eGF5Z0RtbFZFZmdXMCIsImRpZ2VzdCI6IlNIQTE
+ifQ==\",\"x-forwarded-for\":\"66.135.223.40\",\"x-forwarded-host\":\"legends-os
+-beta.vercel.app\",\"x-forwarded-port\":\"443\",\"x-forwarded-proto\":\"https\"
+,\"x-invocation-id\":\"sfo1::pxvnw-1785528525719-5934685378f0\",\"x-matched-pat
+h\":\"/api/ebay/account-deletion\",\"x-real-ip\":\"66.135.223.40\",\"x-vercel-d
+eployment-url\":\"legends-ohn61g79x-legends17.vercel.app\",\"x-vercel-enable-re
+write-caching\":\"1\",\"x-vercel-forwarded-for\":\"66.135.223.40\",\"x-vercel-i
+d\":\"sfo1::pxvnw-1785528525719-5934685378f0\",\"x-vercel-ip-as-number\":\"1164
+3\",\"x-vercel-ip-continent\":\"NA\",\"x-vercel-ip-country\":\"US\",\"x-vercel-
+ip-latitude\":\"37.751\",\"x-vercel-ip-longitude\":\"-97.822\",\"x-vercel-ip-ti
+mezone\":\"America/Chicago\",\"x-vercel-ja4-digest\":\"t12d091100_08d6d9b33cd7_
+6d6c278f61f2\",\"x-vercel-oidc-token\":\"eyJ0eXAiOiJKV1QiLCJraWQiOiJtcmstNDMwMm
+VjMWI2NzBmNDhhOThhZDYxZGFkZTRhMjNiZTciLCJhbGciOiJSUzI1NiJ9.eyJzY29wZSI6Im93bmVy
+OmxlZ2VuZHMxNzpwcm9qZWN0OmxlZ2VuZHMtb3M6ZW52aXJvbm1lbnQ6cHJvZHVjdGlvbiIsImF1ZCI
+6Imh0dHBzOlwvXC92ZXJjZWwuY29tXC9sZWdlbmRzMTciLCJleHAiOjE3ODU1MzQ5MjgsInN1YiI6Im
+-----
+MATCH LINE 170:
+d_urnF_nqfRUTw4K5j7OSc4FbKpjiYdAIp9p2h_A\\\",\\\"x-vercel-ept\\\":\\\"1\\\",\\\
+"x-vercel-function-platform\\\":\\\"vercel\\\\/proxy+serverless\\\"}\",\"x-verc
+el-sc-host\":\"iad1.suspense-cache.vercel-infra.com\"},\"payload\":{\"metadata\
+":{\"topic\":\"MARKETPLACE_ACCOUNT_DELETION\",\"schemaVersion\":\"1.0\",\"depre
+cated\":false},\"notification\":{\"notificationId\":\"e15d08d9-db79-4568-a644-1
+6b85ebe65f1_ddc64d42-8979-49c6-be50-117512aa1a0d\",\"eventDate\":\"2026-07-31T2
+0:08:45.550Z\",\"publishDate\":\"2026-07-31T20:08:45.564Z\",\"publishAttemptCou
+nt\":1,\"data\":{\"username\":\"wake-1360\",\"userId\":\"xka_w4ofrha\",\"eiasTo
+ken\":\"nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6MDmYCoCZeHpgWdj6x9nY+seQ==\"}}}}","source
+":"serverless","domain":"legends-os-beta.vercel.app","requestMethod":"POST","re
+questPath":"/api/ebay/account-deletion","responseStatusCode":200,"environment":
+"production","branch":"","cache":"MISS","cacheReason":"","pprState":"","traceId
+":"","logs":[{"level":"info","message":"[eBay MADN] received notification: {\"h
+eaders\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"connection\":\"clos
+e\",\"content-length\":\"434\",\"content-type\":\"application/json\",\"forwarde
+d\":\"for=66.135.223.40;host=legends-os-beta.vercel.app;proto=https;sig=0QmVhcm
+VyIGU3NjQ2NzFjNzRkZmM5ZmYxYWJmYjEyOWZmZGM5NzJiNWIyMTJlMTE2YmZhOWE2Zjc2NTg2ODdhO
+TA2NjYyMGE=;exp=1785528825\",\"host\":\"legends-os-beta.vercel.app\",\"user-age
+nt\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGciOiJlY2RzYSIsImtpZCI6
+IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25hdHVyZSI6Ik1FWUNJUUR
+rcnZyRTZDdjZsU1AzMGFIS3ByMTdLV2c2Y1M2SVRRWXIzdHJRbE5SdjVBSWhBSW5OMEFmS0lXNGpEQ1
+-----
+MATCH LINE 172:
+el-sc-host\":\"iad1.suspense-cache.vercel-infra.com\"},\"payload\":{\"metadata\
+":{\"topic\":\"MARKETPLACE_ACCOUNT_DELETION\",\"schemaVersion\":\"1.0\",\"depre
+cated\":false},\"notification\":{\"notificationId\":\"e15d08d9-db79-4568-a644-1
+6b85ebe65f1_ddc64d42-8979-49c6-be50-117512aa1a0d\",\"eventDate\":\"2026-07-31T2
+0:08:45.550Z\",\"publishDate\":\"2026-07-31T20:08:45.564Z\",\"publishAttemptCou
+nt\":1,\"data\":{\"username\":\"wake-1360\",\"userId\":\"xka_w4ofrha\",\"eiasTo
+ken\":\"nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6MDmYCoCZeHpgWdj6x9nY+seQ==\"}}}}","source
+":"serverless","domain":"legends-os-beta.vercel.app","requestMethod":"POST","re
+questPath":"/api/ebay/account-deletion","responseStatusCode":200,"environment":
+"production","branch":"","cache":"MISS","cacheReason":"","pprState":"","traceId
+":"","logs":[{"level":"info","message":"[eBay MADN] received notification: {\"h
+eaders\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"connection\":\"clos
+e\",\"content-length\":\"434\",\"content-type\":\"application/json\",\"forwarde
+d\":\"for=66.135.223.40;host=legends-os-beta.vercel.app;proto=https;sig=0QmVhcm
+VyIGU3NjQ2NzFjNzRkZmM5ZmYxYWJmYjEyOWZmZGM5NzJiNWIyMTJlMTE2YmZhOWE2Zjc2NTg2ODdhO
+TA2NjYyMGE=;exp=1785528825\",\"host\":\"legends-os-beta.vercel.app\",\"user-age
+nt\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGciOiJlY2RzYSIsImtpZCI6
+IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25hdHVyZSI6Ik1FWUNJUUR
+rcnZyRTZDdjZsU1AzMGFIS3ByMTdLV2c2Y1M2SVRRWXIzdHJRbE5SdjVBSWhBSW5OMEFmS0lXNGpEQ1
+krbEZPVk1nZmJsWEpnc3J6eGF5Z0RtbFZFZmdXMCIsImRpZ2VzdCI6IlNIQTEifQ==\",\"x-forwar
+ded-for\":\"66.135.223.40\",\"x-forwarded-host\":\"legends-os-beta.vercel.app\"
+-----
+MATCH LINE 178:
+ken\":\"nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6MDmYCoCZeHpgWdj6x9nY+seQ==\"}}}}","source
+":"serverless","domain":"legends-os-beta.vercel.app","requestMethod":"POST","re
+questPath":"/api/ebay/account-deletion","responseStatusCode":200,"environment":
+"production","branch":"","cache":"MISS","cacheReason":"","pprState":"","traceId
+":"","logs":[{"level":"info","message":"[eBay MADN] received notification: {\"h
+eaders\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"connection\":\"clos
+e\",\"content-length\":\"434\",\"content-type\":\"application/json\",\"forwarde
+d\":\"for=66.135.223.40;host=legends-os-beta.vercel.app;proto=https;sig=0QmVhcm
+VyIGU3NjQ2NzFjNzRkZmM5ZmYxYWJmYjEyOWZmZGM5NzJiNWIyMTJlMTE2YmZhOWE2Zjc2NTg2ODdhO
+TA2NjYyMGE=;exp=1785528825\",\"host\":\"legends-os-beta.vercel.app\",\"user-age
+nt\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGciOiJlY2RzYSIsImtpZCI6
+IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25hdHVyZSI6Ik1FWUNJUUR
+rcnZyRTZDdjZsU1AzMGFIS3ByMTdLV2c2Y1M2SVRRWXIzdHJRbE5SdjVBSWhBSW5OMEFmS0lXNGpEQ1
+krbEZPVk1nZmJsWEpnc3J6eGF5Z0RtbFZFZmdXMCIsImRpZ2VzdCI6IlNIQTEifQ==\",\"x-forwar
+ded-for\":\"66.135.223.40\",\"x-forwarded-host\":\"legends-os-beta.vercel.app\"
+,\"x-forwarded-port\":\"443\",\"x-forwarded-proto\":\"https\",\"x-invocation-id
+\":\"sfo1::pxvnw-1785528525719-5934685378f0\",\"x-matched-path\":\"/api/ebay/ac
+count-deletion\",\"x-real-ip\":\"66.135.223.40\",\"x-vercel-deployment-url\":\"
+legends-ohn61g79x-legends17.vercel.app\",\"x-vercel-enable-rewrite-caching\":\"
+1\",\"x-vercel-forwarded-for\":\"66.135.223.40\",\"x-vercel-id\":\"sfo1::pxvnw-
+1785528525719-5934685378f0\",\"x-vercel-ip-as-number\":\"11643\",\"x-vercel-ip-
+-----
+MATCH LINE 184:
+e\",\"content-length\":\"434\",\"content-type\":\"application/json\",\"forwarde
+d\":\"for=66.135.223.40;host=legends-os-beta.vercel.app;proto=https;sig=0QmVhcm
+VyIGU3NjQ2NzFjNzRkZmM5ZmYxYWJmYjEyOWZmZGM5NzJiNWIyMTJlMTE2YmZhOWE2Zjc2NTg2ODdhO
+TA2NjYyMGE=;exp=1785528825\",\"host\":\"legends-os-beta.vercel.app\",\"user-age
+nt\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGciOiJlY2RzYSIsImtpZCI6
+IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25hdHVyZSI6Ik1FWUNJUUR
+rcnZyRTZDdjZsU1AzMGFIS3ByMTdLV2c2Y1M2SVRRWXIzdHJRbE5SdjVBSWhBSW5OMEFmS0lXNGpEQ1
+krbEZPVk1nZmJsWEpnc3J6eGF5Z0RtbFZFZmdXMCIsImRpZ2VzdCI6IlNIQTEifQ==\",\"x-forwar
+ded-for\":\"66.135.223.40\",\"x-forwarded-host\":\"legends-os-beta.vercel.app\"
+,\"x-forwarded-port\":\"443\",\"x-forwarded-proto\":\"https\",\"x-invocation-id
+\":\"sfo1::pxvnw-1785528525719-5934685378f0\",\"x-matched-path\":\"/api/ebay/ac
+count-deletion\",\"x-real-ip\":\"66.135.223.40\",\"x-vercel-deployment-url\":\"
+legends-ohn61g79x-legends17.vercel.app\",\"x-vercel-enable-rewrite-caching\":\"
+1\",\"x-vercel-forwarded-for\":\"66.135.223.40\",\"x-vercel-id\":\"sfo1::pxvnw-
+1785528525719-5934685378f0\",\"x-vercel-ip-as-number\":\"11643\",\"x-vercel-ip-
+continent\":\"NA\",\"x-vercel-ip-country\":\"US\",\"x-vercel-ip-latitude\":\"37
+.751\",\"x-vercel-ip-longitude\":\"-97.822\",\"x-vercel-ip-timezone\":\"America
+/Chicago\",\"x-vercel-ja4-digest\":\"t12d091100_08d6d9b33cd7_6d6c278f61f2\",\"x
+-vercel-oidc-token\":\"eyJ0eXAiOiJKV1QiLCJraWQiOiJtcmstNDMwMmVjMWI2NzBmNDhhOThh
+ZDYxZGFkZTRhMjNiZTciLCJhbGciOiJSUzI1NiJ9.eyJzY29wZSI6Im93bmVyOmxlZ2VuZHMxNzpwcm
+9qZWN0OmxlZ2VuZHMtb3M6ZW52aXJvbm1lbnQ6cHJvZHVjdGlvbiIsImF1ZCI6Imh0dHBzOlwvXC92Z
+-----
+MATCH LINE 227:
+-platform\\\":\\\"vercel\\\\/proxy+serverless\\\"}\",\"x-vercel-sc-host\":\"iad
+1.suspense-cache.vercel-infra.com\"},\"payload\":{\"metadata\":{\"topic\":\"MAR
+KETPLACE_ACCOUNT_DELETION\",\"schemaVersion\":\"1.0\",\"deprecated\":false},\"n
+otification\":{\"notificationId\":\"e15d08d9-db79-4568-a644-16b85ebe65f1_ddc64d
+42-8979-49c6-be50-117512aa1a0d\",\"eventDate\":\"2026-07-31T20:08:45.550Z\",\"p
+ublishDate\":\"2026-07-31T20:08:45.564Z\",\"publishAttemptCount\":1,\"data\":{\
+"username\":\"wake-1360\",\"userId\":\"xka_w4ofrha\",\"eiasToken\":\"nY+sHZ2PrB
+mdj6wVnY+sEZ2PrA2dj6MDmYCoCZeHpgWdj6x9nY+seQ==\"}}}}"}]}
+  vercel_logs.json:3:{"id":"bdndv-1785528493306-d932a4220b18","timestamp":17855
+28493306,"deploymentId":"dpl_HDU8jTRGby4xePd6ddT23YBTZTHW","projectId":"prj_x6e
+SQwKAc3n7Fc0PnaeTe8HgDnbH","level":"info","message":"[eBay MADN] received 
+notification: {\"headers\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"c
+onnection\":\"close\",\"content-length\":\"435\",\"content-type\":\"application
+/json\",\"forwarded\":\"for=66.135.223.43;host=legends-os-beta.vercel.app;proto
+=https;sig=0QmVhcmVyIGZjYzYxOTRjZTMxZjEyMDVkZWJhYjJlYzJhMmY1NjlkYTA4NzNkNDkzMTN
+mOWZmOTMzMmNmNmVlNGU0ZjZmZWE=;exp=1785528793\",\"host\":\"legends-os-beta.verce
+l.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGciOi
+JlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25hd
+HVyZSI6Ik1FUUNJRURSVlhkcEs4SWJnSUdia1MydXp3NWpGM1QwSGh6UnRLNjRlNUVDeVBpa0FpQUZ5
+VTRyc2c2RmN6QlN0b1dtMFY0dWJvWFpzUDRGT2tydVJLbkl5eEFQV0E9PSIsImRpZ2VzdCI6IlNIQTE
+ifQ==\",\"x-forwarded-for\":\"66.135.223.43\",\"x-forwarded-host\":\"legends-os
+-----
+MATCH LINE 233:
+"username\":\"wake-1360\",\"userId\":\"xka_w4ofrha\",\"eiasToken\":\"nY+sHZ2PrB
+mdj6wVnY+sEZ2PrA2dj6MDmYCoCZeHpgWdj6x9nY+seQ==\"}}}}"}]}
+  vercel_logs.json:3:{"id":"bdndv-1785528493306-d932a4220b18","timestamp":17855
+28493306,"deploymentId":"dpl_HDU8jTRGby4xePd6ddT23YBTZTHW","projectId":"prj_x6e
+SQwKAc3n7Fc0PnaeTe8HgDnbH","level":"info","message":"[eBay MADN] received 
+notification: {\"headers\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"c
+onnection\":\"close\",\"content-length\":\"435\",\"content-type\":\"application
+/json\",\"forwarded\":\"for=66.135.223.43;host=legends-os-beta.vercel.app;proto
+=https;sig=0QmVhcmVyIGZjYzYxOTRjZTMxZjEyMDVkZWJhYjJlYzJhMmY1NjlkYTA4NzNkNDkzMTN
+mOWZmOTMzMmNmNmVlNGU0ZjZmZWE=;exp=1785528793\",\"host\":\"legends-os-beta.verce
+l.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGciOi
+JlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25hd
+HVyZSI6Ik1FUUNJRURSVlhkcEs4SWJnSUdia1MydXp3NWpGM1QwSGh6UnRLNjRlNUVDeVBpa0FpQUZ5
+VTRyc2c2RmN6QlN0b1dtMFY0dWJvWFpzUDRGT2tydVJLbkl5eEFQV0E9PSIsImRpZ2VzdCI6IlNIQTE
+ifQ==\",\"x-forwarded-for\":\"66.135.223.43\",\"x-forwarded-host\":\"legends-os
+-beta.vercel.app\",\"x-forwarded-port\":\"443\",\"x-forwarded-proto\":\"https\"
+,\"x-invocation-id\":\"sfo1::bdndv-1785528493306-d932a4220b18\",\"x-matched-pat
+h\":\"/api/ebay/account-deletion\",\"x-real-ip\":\"66.135.223.43\",\"x-vercel-d
+eployment-url\":\"legends-ohn61g79x-legends17.vercel.app\",\"x-vercel-enable-re
+write-caching\":\"1\",\"x-vercel-forwarded-for\":\"66.135.223.43\",\"x-vercel-i
+d\":\"sfo1::bdndv-1785528493306-d932a4220b18\",\"x-vercel-ip-as-number\":\"1164
+-----
+MATCH LINE 240:
+/json\",\"forwarded\":\"for=66.135.223.43;host=legends-os-beta.vercel.app;proto
+=https;sig=0QmVhcmVyIGZjYzYxOTRjZTMxZjEyMDVkZWJhYjJlYzJhMmY1NjlkYTA4NzNkNDkzMTN
+mOWZmOTMzMmNmNmVlNGU0ZjZmZWE=;exp=1785528793\",\"host\":\"legends-os-beta.verce
+l.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGciOi
+JlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25hd
+HVyZSI6Ik1FUUNJRURSVlhkcEs4SWJnSUdia1MydXp3NWpGM1QwSGh6UnRLNjRlNUVDeVBpa0FpQUZ5
+VTRyc2c2RmN6QlN0b1dtMFY0dWJvWFpzUDRGT2tydVJLbkl5eEFQV0E9PSIsImRpZ2VzdCI6IlNIQTE
+ifQ==\",\"x-forwarded-for\":\"66.135.223.43\",\"x-forwarded-host\":\"legends-os
+-beta.vercel.app\",\"x-forwarded-port\":\"443\",\"x-forwarded-proto\":\"https\"
+,\"x-invocation-id\":\"sfo1::bdndv-1785528493306-d932a4220b18\",\"x-matched-pat
+h\":\"/api/ebay/account-deletion\",\"x-real-ip\":\"66.135.223.43\",\"x-vercel-d
+eployment-url\":\"legends-ohn61g79x-legends17.vercel.app\",\"x-vercel-enable-re
+write-caching\":\"1\",\"x-vercel-forwarded-for\":\"66.135.223.43\",\"x-vercel-i
+d\":\"sfo1::bdndv-1785528493306-d932a4220b18\",\"x-vercel-ip-as-number\":\"1164
+3\",\"x-vercel-ip-continent\":\"NA\",\"x-vercel-ip-country\":\"US\",\"x-vercel-
+ip-latitude\":\"37.751\",\"x-vercel-ip-longitude\":\"-97.822\",\"x-vercel-ip-ti
+mezone\":\"America/Chicago\",\"x-vercel-ja4-digest\":\"t12d091100_08d6d9b33cd7_
+6d6c278f61f2\",\"x-vercel-oidc-token\":\"eyJ0eXAiOiJKV1QiLCJraWQiOiJtcmstNDMwMm
+VjMWI2NzBmNDhhOThhZDYxZGFkZTRhMjNiZTciLCJhbGciOiJSUzI1NiJ9.eyJzY29wZSI6Im93bmVy
+OmxlZ2VuZHMxNzpwcm9qZWN0OmxlZ2VuZHMtb3M6ZW52aXJvbm1lbnQ6cHJvZHVjdGlvbiIsImF1ZCI
+6Imh0dHBzOlwvXC92ZXJjZWwuY29tXC9sZWdlbmRzMTciLCJleHAiOjE3ODU1MzQ5MjgsInN1YiI6Im
+-----
+MATCH LINE 281:
+4LJoBwIMh2oKUoTsFFaETKkEY0qHCXRvSgU6f3ZA\\\",\\\"x-vercel-function-platform\\\"
+:\\\"vercel\\\\/proxy+serverless\\\",\\\"x-vercel-ept\\\":\\\"1\\\"}\",\"x-verc
+el-sc-host\":\"iad1.suspense-cache.vercel-infra.com\"},\"payload\":{\"metadata\
+":{\"topic\":\"MARKETPLACE_ACCOUNT_DELETION\",\"schemaVersion\":\"1.0\",\"depre
+cated\":false},\"notification\":{\"notificationId\":\"53055074-7e6e-4ee6-b338-f
+520685d412f_9a3fe07c-a976-44b7-9ac3-483740d84678\",\"eventDate\":\"2026-07-31T2
+0:08:13.153Z\",\"publishDate\":\"2026-07-31T20:08:13.167Z\",\"publishAttemptCou
+nt\":1,\"data\":{\"username\":\"car-943217\",\"userId\":\"b2bcfmynq-a\",\"eiasT
+oken\":\"nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6MMk4emDpWAowSdj6x9nY+seQ==\"}}}}","sourc
+e":"serverless","domain":"legends-os-beta.vercel.app","requestMethod":"POST","r
+equestPath":"/api/ebay/account-deletion","responseStatusCode":200,"environment"
+:"production","branch":"","cache":"MISS","cacheReason":"","pprState":"","traceI
+d":"","logs":[{"level":"info","message":"[eBay MADN] received notification: {\"
+headers\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"connection\":\"clo
+se\",\"content-length\":\"435\",\"content-type\":\"application/json\",\"forward
+ed\":\"for=66.135.223.43;host=legends-os-beta.vercel.app;proto=https;sig=0QmVhc
+mVyIGZjYzYxOTRjZTMxZjEyMDVkZWJhYjJlYzJhMmY1NjlkYTA4NzNkNDkzMTNmOWZmOTMzMmNmNmVl
+NGU0ZjZmZWE=;exp=1785528793\",\"host\":\"legends-os-beta.vercel.app\",\"user-ag
+ent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGciOiJlY2RzYSIsImtpZCI
+6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25hdHVyZSI6Ik1FUUNJRU
+RSVlhkcEs4SWJnSUdia1MydXp3NWpGM1QwSGh6UnRLNjRlNUVDeVBpa0FpQUZ5VTRyc2c2RmN6QlN0b
+-----
+MATCH LINE 283:
+el-sc-host\":\"iad1.suspense-cache.vercel-infra.com\"},\"payload\":{\"metadata\
+":{\"topic\":\"MARKETPLACE_ACCOUNT_DELETION\",\"schemaVersion\":\"1.0\",\"depre
+cated\":false},\"notification\":{\"notificationId\":\"53055074-7e6e-4ee6-b338-f
+520685d412f_9a3fe07c-a976-44b7-9ac3-483740d84678\",\"eventDate\":\"2026-07-31T2
+0:08:13.153Z\",\"publishDate\":\"2026-07-31T20:08:13.167Z\",\"publishAttemptCou
+nt\":1,\"data\":{\"username\":\"car-943217\",\"userId\":\"b2bcfmynq-a\",\"eiasT
+oken\":\"nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6MMk4emDpWAowSdj6x9nY+seQ==\"}}}}","sourc
+e":"serverless","domain":"legends-os-beta.vercel.app","requestMethod":"POST","r
+equestPath":"/api/ebay/account-deletion","responseStatusCode":200,"environment"
+:"production","branch":"","cache":"MISS","cacheReason":"","pprState":"","traceI
+d":"","logs":[{"level":"info","message":"[eBay MADN] received notification: {\"
+headers\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"connection\":\"clo
+se\",\"content-length\":\"435\",\"content-type\":\"application/json\",\"forward
+ed\":\"for=66.135.223.43;host=legends-os-beta.vercel.app;proto=https;sig=0QmVhc
+mVyIGZjYzYxOTRjZTMxZjEyMDVkZWJhYjJlYzJhMmY1NjlkYTA4NzNkNDkzMTNmOWZmOTMzMmNmNmVl
+NGU0ZjZmZWE=;exp=1785528793\",\"host\":\"legends-os-beta.vercel.app\",\"user-ag
+ent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGciOiJlY2RzYSIsImtpZCI
+6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25hdHVyZSI6Ik1FUUNJRU
+RSVlhkcEs4SWJnSUdia1MydXp3NWpGM1QwSGh6UnRLNjRlNUVDeVBpa0FpQUZ5VTRyc2c2RmN6QlN0b
+1dtMFY0dWJvWFpzUDRGT2tydVJLbkl5eEFQV0E9PSIsImRpZ2VzdCI6IlNIQTEifQ==\",\"x-forwa
+rded-for\":\"66.135.223.43\",\"x-forwarded-host\":\"legends-os-beta.vercel.app\
+-----
+MATCH LINE 289:
+oken\":\"nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6MMk4emDpWAowSdj6x9nY+seQ==\"}}}}","sourc
+e":"serverless","domain":"legends-os-beta.vercel.app","requestMethod":"POST","r
+equestPath":"/api/ebay/account-deletion","responseStatusCode":200,"environment"
+:"production","branch":"","cache":"MISS","cacheReason":"","pprState":"","traceI
+d":"","logs":[{"level":"info","message":"[eBay MADN] received notification: {\"
+headers\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"connection\":\"clo
+se\",\"content-length\":\"435\",\"content-type\":\"application/json\",\"forward
+ed\":\"for=66.135.223.43;host=legends-os-beta.vercel.app;proto=https;sig=0QmVhc
+mVyIGZjYzYxOTRjZTMxZjEyMDVkZWJhYjJlYzJhMmY1NjlkYTA4NzNkNDkzMTNmOWZmOTMzMmNmNmVl
+NGU0ZjZmZWE=;exp=1785528793\",\"host\":\"legends-os-beta.vercel.app\",\"user-ag
+ent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGciOiJlY2RzYSIsImtpZCI
+6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25hdHVyZSI6Ik1FUUNJRU
+RSVlhkcEs4SWJnSUdia1MydXp3NWpGM1QwSGh6UnRLNjRlNUVDeVBpa0FpQUZ5VTRyc2c2RmN6QlN0b
+1dtMFY0dWJvWFpzUDRGT2tydVJLbkl5eEFQV0E9PSIsImRpZ2VzdCI6IlNIQTEifQ==\",\"x-forwa
+rded-for\":\"66.135.223.43\",\"x-forwarded-host\":\"legends-os-beta.vercel.app\
+",\"x-forwarded-port\":\"443\",\"x-forwarded-proto\":\"https\",\"x-invocation-i
+d\":\"sfo1::bdndv-1785528493306-d932a4220b18\",\"x-matched-path\":\"/api/ebay/a
+ccount-deletion\",\"x-real-ip\":\"66.135.223.43\",\"x-vercel-deployment-url\":\
+"legends-ohn61g79x-legends17.vercel.app\",\"x-vercel-enable-rewrite-caching\":\
+"1\",\"x-vercel-forwarded-for\":\"66.135.223.43\",\"x-vercel-id\":\"sfo1::bdndv
+-1785528493306-d932a4220b18\",\"x-vercel-ip-as-number\":\"11643\",\"x-vercel-ip
+-----
+MATCH LINE 295:
+se\",\"content-length\":\"435\",\"content-type\":\"application/json\",\"forward
+ed\":\"for=66.135.223.43;host=legends-os-beta.vercel.app;proto=https;sig=0QmVhc
+mVyIGZjYzYxOTRjZTMxZjEyMDVkZWJhYjJlYzJhMmY1NjlkYTA4NzNkNDkzMTNmOWZmOTMzMmNmNmVl
+NGU0ZjZmZWE=;exp=1785528793\",\"host\":\"legends-os-beta.vercel.app\",\"user-ag
+ent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGciOiJlY2RzYSIsImtpZCI
+6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25hdHVyZSI6Ik1FUUNJRU
+RSVlhkcEs4SWJnSUdia1MydXp3NWpGM1QwSGh6UnRLNjRlNUVDeVBpa0FpQUZ5VTRyc2c2RmN6QlN0b
+1dtMFY0dWJvWFpzUDRGT2tydVJLbkl5eEFQV0E9PSIsImRpZ2VzdCI6IlNIQTEifQ==\",\"x-forwa
+rded-for\":\"66.135.223.43\",\"x-forwarded-host\":\"legends-os-beta.vercel.app\
+",\"x-forwarded-port\":\"443\",\"x-forwarded-proto\":\"https\",\"x-invocation-i
+d\":\"sfo1::bdndv-1785528493306-d932a4220b18\",\"x-matched-path\":\"/api/ebay/a
+ccount-deletion\",\"x-real-ip\":\"66.135.223.43\",\"x-vercel-deployment-url\":\
+"legends-ohn61g79x-legends17.vercel.app\",\"x-vercel-enable-rewrite-caching\":\
+"1\",\"x-vercel-forwarded-for\":\"66.135.223.43\",\"x-vercel-id\":\"sfo1::bdndv
+-1785528493306-d932a4220b18\",\"x-vercel-ip-as-number\":\"11643\",\"x-vercel-ip
+-continent\":\"NA\",\"x-vercel-ip-country\":\"US\",\"x-vercel-ip-latitude\":\"3
+7.751\",\"x-vercel-ip-longitude\":\"-97.822\",\"x-vercel-ip-timezone\":\"Americ
+a/Chicago\",\"x-vercel-ja4-digest\":\"t12d091100_08d6d9b33cd7_6d6c278f61f2\",\"
+x-vercel-oidc-token\":\"eyJ0eXAiOiJKV1QiLCJraWQiOiJtcmstNDMwMmVjMWI2NzBmNDhhOTh
+hZDYxZGFkZTRhMjNiZTciLCJhbGciOiJSUzI1NiJ9.eyJzY29wZSI6Im93bmVyOmxlZ2VuZHMxNzpwc
+m9qZWN0OmxlZ2VuZHMtb3M6ZW52aXJvbm1lbnQ6cHJvZHVjdGlvbiIsImF1ZCI6Imh0dHBzOlwvXC92
+-----
+MATCH LINE 338:
+roxy+serverless\\\",\\\"x-vercel-ept\\\":\\\"1\\\"}\",\"x-vercel-sc-host\":\"ia
+d1.suspense-cache.vercel-infra.com\"},\"payload\":{\"metadata\":{\"topic\":\"MA
+RKETPLACE_ACCOUNT_DELETION\",\"schemaVersion\":\"1.0\",\"deprecated\":false},\"
+notification\":{\"notificationId\":\"53055074-7e6e-4ee6-b338-f520685d412f_9a3fe
+07c-a976-44b7-9ac3-483740d84678\",\"eventDate\":\"2026-07-31T20:08:13.153Z\",\"
+publishDate\":\"2026-07-31T20:08:13.167Z\",\"publishAttemptCount\":1,\"data\":{
+\"username\":\"car-943217\",\"userId\":\"b2bcfmynq-a\",\"eiasToken\":\"nY+sHZ2P
+rBmdj6wVnY+sEZ2PrA2dj6MMk4emDpWAowSdj6x9nY+seQ==\"}}}}"}]}
+  vercel_logs.json:4:{"id":"9m764-1785528484519-7d880660f918","timestamp":17855
+28484519,"deploymentId":"dpl_HDU8jTRGby4xePd6ddT23YBTZTHW","projectId":"prj_x6e
+SQwKAc3n7Fc0PnaeTe8HgDnbH","level":"info","message":"[eBay MADN] received 
+notification: {\"headers\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"c
+onnection\":\"close\",\"content-length\":\"433\",\"content-type\":\"application
+/json\",\"forwarded\":\"for=216.113.184.102;host=legends-os-beta.vercel.app;pro
+to=https;sig=0QmVhcmVyIDMyMDI2NzY5MmQ5MDU3YzAwMDNhMGU3ODVmN2RhMzBhMTkyZjY1NDcxN
+mY0MGMxNDEzZGFkMjllZGM5OTExNDk=;exp=1785528784\",\"host\":\"legends-os-beta.ver
+cel.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGci
+OiJlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25
+hdHVyZSI6Ik1FUUNJR1hMUlEreVRqVElrcHI1SndiaUhFSHNVdk11eXRBTzBkVjRkVHNsejI2cUFpQU
+NLbDk5c29ianRCWDFOblovdjgreUdUYUx1ZUt1R1lWSFNaZ3BLN2xHaHc9PSIsImRpZ2VzdCI6IlNIQ
+TEifQ==\",\"x-forwarded-for\":\"216.113.184.102\",\"x-forwarded-host\":\"legend
+-----
+MATCH LINE 344:
+\"username\":\"car-943217\",\"userId\":\"b2bcfmynq-a\",\"eiasToken\":\"nY+sHZ2P
+rBmdj6wVnY+sEZ2PrA2dj6MMk4emDpWAowSdj6x9nY+seQ==\"}}}}"}]}
+  vercel_logs.json:4:{"id":"9m764-1785528484519-7d880660f918","timestamp":17855
+28484519,"deploymentId":"dpl_HDU8jTRGby4xePd6ddT23YBTZTHW","projectId":"prj_x6e
+SQwKAc3n7Fc0PnaeTe8HgDnbH","level":"info","message":"[eBay MADN] received 
+notification: {\"headers\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"c
+onnection\":\"close\",\"content-length\":\"433\",\"content-type\":\"application
+/json\",\"forwarded\":\"for=216.113.184.102;host=legends-os-beta.vercel.app;pro
+to=https;sig=0QmVhcmVyIDMyMDI2NzY5MmQ5MDU3YzAwMDNhMGU3ODVmN2RhMzBhMTkyZjY1NDcxN
+mY0MGMxNDEzZGFkMjllZGM5OTExNDk=;exp=1785528784\",\"host\":\"legends-os-beta.ver
+cel.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGci
+OiJlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25
+hdHVyZSI6Ik1FUUNJR1hMUlEreVRqVElrcHI1SndiaUhFSHNVdk11eXRBTzBkVjRkVHNsejI2cUFpQU
+NLbDk5c29ianRCWDFOblovdjgreUdUYUx1ZUt1R1lWSFNaZ3BLN2xHaHc9PSIsImRpZ2VzdCI6IlNIQ
+TEifQ==\",\"x-forwarded-for\":\"216.113.184.102\",\"x-forwarded-host\":\"legend
+s-os-beta.vercel.app\",\"x-forwarded-port\":\"443\",\"x-forwarded-proto\":\"htt
+ps\",\"x-invocation-id\":\"cle1::9m764-1785528484519-7d880660f918\",\"x-matched
+-path\":\"/api/ebay/account-deletion\",\"x-real-ip\":\"216.113.184.102\",\"x-ve
+rcel-deployment-url\":\"legends-ohn61g79x-legends17.vercel.app\",\"x-vercel-ena
+ble-rewrite-caching\":\"1\",\"x-vercel-forwarded-for\":\"216.113.184.102\",\"x-
+vercel-id\":\"cle1::9m764-1785528484519-7d880660f918\",\"x-vercel-ip-as-number\
+-----
+MATCH LINE 351:
+/json\",\"forwarded\":\"for=216.113.184.102;host=legends-os-beta.vercel.app;pro
+to=https;sig=0QmVhcmVyIDMyMDI2NzY5MmQ5MDU3YzAwMDNhMGU3ODVmN2RhMzBhMTkyZjY1NDcxN
+mY0MGMxNDEzZGFkMjllZGM5OTExNDk=;exp=1785528784\",\"host\":\"legends-os-beta.ver
+cel.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGci
+OiJlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25
+hdHVyZSI6Ik1FUUNJR1hMUlEreVRqVElrcHI1SndiaUhFSHNVdk11eXRBTzBkVjRkVHNsejI2cUFpQU
+NLbDk5c29ianRCWDFOblovdjgreUdUYUx1ZUt1R1lWSFNaZ3BLN2xHaHc9PSIsImRpZ2VzdCI6IlNIQ
+TEifQ==\",\"x-forwarded-for\":\"216.113.184.102\",\"x-forwarded-host\":\"legend
+s-os-beta.vercel.app\",\"x-forwarded-port\":\"443\",\"x-forwarded-proto\":\"htt
+ps\",\"x-invocation-id\":\"cle1::9m764-1785528484519-7d880660f918\",\"x-matched
+-path\":\"/api/ebay/account-deletion\",\"x-real-ip\":\"216.113.184.102\",\"x-ve
+rcel-deployment-url\":\"legends-ohn61g79x-legends17.vercel.app\",\"x-vercel-ena
+ble-rewrite-caching\":\"1\",\"x-vercel-forwarded-for\":\"216.113.184.102\",\"x-
+vercel-id\":\"cle1::9m764-1785528484519-7d880660f918\",\"x-vercel-ip-as-number\
+":\"11643\",\"x-vercel-ip-continent\":\"NA\",\"x-vercel-ip-country\":\"US\",\"x
+-vercel-ip-latitude\":\"37.751\",\"x-vercel-ip-longitude\":\"-97.822\",\"x-verc
+el-ip-timezone\":\"America/Chicago\",\"x-vercel-ja4-digest\":\"t12d091100_08d6d
+9b33cd7_6d6c278f61f2\",\"x-vercel-oidc-token\":\"eyJ0eXAiOiJKV1QiLCJraWQiOiJtcm
+stNDMwMmVjMWI2NzBmNDhhOThhZDYxZGFkZTRhMjNiZTciLCJhbGciOiJSUzI1NiJ9.eyJuYmYiOjE3
+ODU1MjMzOTgsImlzcyI6Imh0dHBzOlwvXC9vaWRjLnZlcmNlbC5jb21cL2xlZ2VuZHMxNyIsInByb2p
+lY3QiOiJsZWdlbmRzLW9zIiwic3ViIjoib3duZXI6bGVnZW5kczE3OnByb2plY3Q6bGVnZW5kcy1vcz
+-----
+MATCH LINE 392:
+bHNlfQ.-DN4D6y3NUpcZS5v_XtEIc4raoANWlm3oGzUIw8OXr4\\\",\\\"x-vercel-ept\\\":\\\
+"1\\\",\\\"x-vercel-function-platform\\\":\\\"vercel\\\\/proxy+serverless\\\"}\
+",\"x-vercel-sc-host\":\"iad1.suspense-cache.vercel-infra.com\"},\"payload\":{\
+"metadata\":{\"topic\":\"MARKETPLACE_ACCOUNT_DELETION\",\"schemaVersion\":\"1.0
+\",\"deprecated\":false},\"notification\":{\"notificationId\":\"c600afe3-e251-4
+c60-a253-463bad13855a_8cf40dc3-ae18-4776-ba31-190e91960483\",\"eventDate\":\"20
+26-07-31T20:08:04.212Z\",\"publishDate\":\"2026-07-31T20:08:04.228Z\",\"publish
+AttemptCount\":1,\"data\":{\"username\":\"crf23737\",\"userId\":\"kyh9ky_ltya\"
+,\"eiasToken\":\"nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6MMkIWnC5GBpgmdj6x9nY+seQ==\"}}}}
+","source":"serverless","domain":"legends-os-beta.vercel.app","requestMethod":"
+POST","requestPath":"/api/ebay/account-deletion","responseStatusCode":200,"envi
+ronment":"production","branch":"","cache":"MISS","cacheReason":"","pprState":""
+,"traceId":"","logs":[{"level":"info","message":"[eBay MADN] received 
+notification: {\"headers\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"c
+onnection\":\"close\",\"content-length\":\"433\",\"content-type\":\"application
+/json\",\"forwarded\":\"for=216.113.184.102;host=legends-os-beta.vercel.app;pro
+to=https;sig=0QmVhcmVyIDMyMDI2NzY5MmQ5MDU3YzAwMDNhMGU3ODVmN2RhMzBhMTkyZjY1NDcxN
+mY0MGMxNDEzZGFkMjllZGM5OTExNDk=;exp=1785528784\",\"host\":\"legends-os-beta.ver
+cel.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGci
+OiJlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25
+hdHVyZSI6Ik1FUUNJR1hMUlEreVRqVElrcHI1SndiaUhFSHNVdk11eXRBTzBkVjRkVHNsejI2cUFpQU
+-----
+MATCH LINE 394:
+",\"x-vercel-sc-host\":\"iad1.suspense-cache.vercel-infra.com\"},\"payload\":{\
+"metadata\":{\"topic\":\"MARKETPLACE_ACCOUNT_DELETION\",\"schemaVersion\":\"1.0
+\",\"deprecated\":false},\"notification\":{\"notificationId\":\"c600afe3-e251-4
+c60-a253-463bad13855a_8cf40dc3-ae18-4776-ba31-190e91960483\",\"eventDate\":\"20
+26-07-31T20:08:04.212Z\",\"publishDate\":\"2026-07-31T20:08:04.228Z\",\"publish
+AttemptCount\":1,\"data\":{\"username\":\"crf23737\",\"userId\":\"kyh9ky_ltya\"
+,\"eiasToken\":\"nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6MMkIWnC5GBpgmdj6x9nY+seQ==\"}}}}
+","source":"serverless","domain":"legends-os-beta.vercel.app","requestMethod":"
+POST","requestPath":"/api/ebay/account-deletion","responseStatusCode":200,"envi
+ronment":"production","branch":"","cache":"MISS","cacheReason":"","pprState":""
+,"traceId":"","logs":[{"level":"info","message":"[eBay MADN] received 
+notification: {\"headers\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"c
+onnection\":\"close\",\"content-length\":\"433\",\"content-type\":\"application
+/json\",\"forwarded\":\"for=216.113.184.102;host=legends-os-beta.vercel.app;pro
+to=https;sig=0QmVhcmVyIDMyMDI2NzY5MmQ5MDU3YzAwMDNhMGU3ODVmN2RhMzBhMTkyZjY1NDcxN
+mY0MGMxNDEzZGFkMjllZGM5OTExNDk=;exp=1785528784\",\"host\":\"legends-os-beta.ver
+cel.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGci
+OiJlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25
+hdHVyZSI6Ik1FUUNJR1hMUlEreVRqVElrcHI1SndiaUhFSHNVdk11eXRBTzBkVjRkVHNsejI2cUFpQU
+NLbDk5c29ianRCWDFOblovdjgreUdUYUx1ZUt1R1lWSFNaZ3BLN2xHaHc9PSIsImRpZ2VzdCI6IlNIQ
+TEifQ==\",\"x-forwarded-for\":\"216.113.184.102\",\"x-forwarded-host\":\"legend
+-----
+MATCH LINE 400:
+,\"eiasToken\":\"nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6MMkIWnC5GBpgmdj6x9nY+seQ==\"}}}}
+","source":"serverless","domain":"legends-os-beta.vercel.app","requestMethod":"
+POST","requestPath":"/api/ebay/account-deletion","responseStatusCode":200,"envi
+ronment":"production","branch":"","cache":"MISS","cacheReason":"","pprState":""
+,"traceId":"","logs":[{"level":"info","message":"[eBay MADN] received 
+notification: {\"headers\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"c
+onnection\":\"close\",\"content-length\":\"433\",\"content-type\":\"application
+/json\",\"forwarded\":\"for=216.113.184.102;host=legends-os-beta.vercel.app;pro
+to=https;sig=0QmVhcmVyIDMyMDI2NzY5MmQ5MDU3YzAwMDNhMGU3ODVmN2RhMzBhMTkyZjY1NDcxN
+mY0MGMxNDEzZGFkMjllZGM5OTExNDk=;exp=1785528784\",\"host\":\"legends-os-beta.ver
+cel.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGci
+OiJlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25
+hdHVyZSI6Ik1FUUNJR1hMUlEreVRqVElrcHI1SndiaUhFSHNVdk11eXRBTzBkVjRkVHNsejI2cUFpQU
+NLbDk5c29ianRCWDFOblovdjgreUdUYUx1ZUt1R1lWSFNaZ3BLN2xHaHc9PSIsImRpZ2VzdCI6IlNIQ
+TEifQ==\",\"x-forwarded-for\":\"216.113.184.102\",\"x-forwarded-host\":\"legend
+s-os-beta.vercel.app\",\"x-forwarded-port\":\"443\",\"x-forwarded-proto\":\"htt
+ps\",\"x-invocation-id\":\"cle1::9m764-1785528484519-7d880660f918\",\"x-matched
+-path\":\"/api/ebay/account-deletion\",\"x-real-ip\":\"216.113.184.102\",\"x-ve
+rcel-deployment-url\":\"legends-ohn61g79x-legends17.vercel.app\",\"x-vercel-ena
+ble-rewrite-caching\":\"1\",\"x-vercel-forwarded-for\":\"216.113.184.102\",\"x-
+vercel-id\":\"cle1::9m764-1785528484519-7d880660f918\",\"x-vercel-ip-as-number\
+-----
+MATCH LINE 407:
+/json\",\"forwarded\":\"for=216.113.184.102;host=legends-os-beta.vercel.app;pro
+to=https;sig=0QmVhcmVyIDMyMDI2NzY5MmQ5MDU3YzAwMDNhMGU3ODVmN2RhMzBhMTkyZjY1NDcxN
+mY0MGMxNDEzZGFkMjllZGM5OTExNDk=;exp=1785528784\",\"host\":\"legends-os-beta.ver
+cel.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGci
+OiJlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25
+hdHVyZSI6Ik1FUUNJR1hMUlEreVRqVElrcHI1SndiaUhFSHNVdk11eXRBTzBkVjRkVHNsejI2cUFpQU
+NLbDk5c29ianRCWDFOblovdjgreUdUYUx1ZUt1R1lWSFNaZ3BLN2xHaHc9PSIsImRpZ2VzdCI6IlNIQ
+TEifQ==\",\"x-forwarded-for\":\"216.113.184.102\",\"x-forwarded-host\":\"legend
+s-os-beta.vercel.app\",\"x-forwarded-port\":\"443\",\"x-forwarded-proto\":\"htt
+ps\",\"x-invocation-id\":\"cle1::9m764-1785528484519-7d880660f918\",\"x-matched
+-path\":\"/api/ebay/account-deletion\",\"x-real-ip\":\"216.113.184.102\",\"x-ve
+rcel-deployment-url\":\"legends-ohn61g79x-legends17.vercel.app\",\"x-vercel-ena
+ble-rewrite-caching\":\"1\",\"x-vercel-forwarded-for\":\"216.113.184.102\",\"x-
+vercel-id\":\"cle1::9m764-1785528484519-7d880660f918\",\"x-vercel-ip-as-number\
+":\"11643\",\"x-vercel-ip-continent\":\"NA\",\"x-vercel-ip-country\":\"US\",\"x
+-vercel-ip-latitude\":\"37.751\",\"x-vercel-ip-longitude\":\"-97.822\",\"x-verc
+el-ip-timezone\":\"America/Chicago\",\"x-vercel-ja4-digest\":\"t12d091100_08d6d
+9b33cd7_6d6c278f61f2\",\"x-vercel-oidc-token\":\"eyJ0eXAiOiJKV1QiLCJraWQiOiJtcm
+stNDMwMmVjMWI2NzBmNDhhOThhZDYxZGFkZTRhMjNiZTciLCJhbGciOiJSUzI1NiJ9.eyJuYmYiOjE3
+ODU1MjMzOTgsImlzcyI6Imh0dHBzOlwvXC9vaWRjLnZlcmNlbC5jb21cL2xlZ2VuZHMxNyIsInByb2p
+lY3QiOiJsZWdlbmRzLW9zIiwic3ViIjoib3duZXI6bGVnZW5kczE3OnByb2plY3Q6bGVnZW5kcy1vcz
+-----
+MATCH LINE 450:
+",\"x-vercel-sc-host\":\"iad1.suspense-cache.vercel-infra.com\"},\"payload\":{\
+"metadata\":{\"topic\":\"MARKETPLACE_ACCOUNT_DELETION\",\"schemaVersion\":\"1.0
+\",\"deprecated\":false},\"notification\":{\"notificationId\":\"c600afe3-e251-4
+c60-a253-463bad13855a_8cf40dc3-ae18-4776-ba31-190e91960483\",\"eventDate\":\"20
+26-07-31T20:08:04.212Z\",\"publishDate\":\"2026-07-31T20:08:04.228Z\",\"publish
+AttemptCount\":1,\"data\":{\"username\":\"crf23737\",\"userId\":\"kyh9ky_ltya\"
+,\"eiasToken\":\"nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6MMkIWnC5GBpgmdj6x9nY+seQ==\"}}}}
+"}]}
+  vercel_logs.json:5:{"id":"lq2rn-1785528410906-792bfc8f70fd","timestamp":17855
+28410906,"deploymentId":"dpl_HDU8jTRGby4xePd6ddT23YBTZTHW","projectId":"prj_x6e
+SQwKAc3n7Fc0PnaeTe8HgDnbH","level":"info","message":"[eBay MADN] received 
+notification: {\"headers\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"c
+onnection\":\"close\",\"content-length\":\"439\",\"content-type\":\"application
+/json\",\"forwarded\":\"for=66.211.183.72;host=legends-os-beta.vercel.app;proto
+=https;sig=0QmVhcmVyIDE3YjlmYzRmNzFmOGEwMWZiYTVlY2QyZjc0MDYzNzgwYzlmYWI4ZGVjM2E
+xNTYxZjc2NjM5NmQzZDgzN2ViNjg=;exp=1785528710\",\"host\":\"legends-os-beta.verce
+l.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGciOi
+JlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25hd
+HVyZSI6Ik1FVUNJQXpDYmZlOGpDYUo1U2dyR3FWckxqazYwQ3NLYmR4M2sxK0NuTHhDQkdrdkFpRUFr
+K08wMVhNN3N5V1labktDVXNqbW1aUEN0UDJoL2thUlpobmJGWDNDS3J3PSIsImRpZ2VzdCI6IlNIQTE
+ifQ==\",\"x-forwarded-for\":\"66.211.183.72\",\"x-forwarded-host\":\"legends-os
+-----
+MATCH LINE 456:
+,\"eiasToken\":\"nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6MMkIWnC5GBpgmdj6x9nY+seQ==\"}}}}
+"}]}
+  vercel_logs.json:5:{"id":"lq2rn-1785528410906-792bfc8f70fd","timestamp":17855
+28410906,"deploymentId":"dpl_HDU8jTRGby4xePd6ddT23YBTZTHW","projectId":"prj_x6e
+SQwKAc3n7Fc0PnaeTe8HgDnbH","level":"info","message":"[eBay MADN] received 
+notification: {\"headers\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"c
+onnection\":\"close\",\"content-length\":\"439\",\"content-type\":\"application
+/json\",\"forwarded\":\"for=66.211.183.72;host=legends-os-beta.vercel.app;proto
+=https;sig=0QmVhcmVyIDE3YjlmYzRmNzFmOGEwMWZiYTVlY2QyZjc0MDYzNzgwYzlmYWI4ZGVjM2E
+xNTYxZjc2NjM5NmQzZDgzN2ViNjg=;exp=1785528710\",\"host\":\"legends-os-beta.verce
+l.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGciOi
+JlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25hd
+HVyZSI6Ik1FVUNJQXpDYmZlOGpDYUo1U2dyR3FWckxqazYwQ3NLYmR4M2sxK0NuTHhDQkdrdkFpRUFr
+K08wMVhNN3N5V1labktDVXNqbW1aUEN0UDJoL2thUlpobmJGWDNDS3J3PSIsImRpZ2VzdCI6IlNIQTE
+ifQ==\",\"x-forwarded-for\":\"66.211.183.72\",\"x-forwarded-host\":\"legends-os
+-beta.vercel.app\",\"x-forwarded-port\":\"443\",\"x-forwarded-proto\":\"https\"
+,\"x-invocation-id\":\"sfo1::lq2rn-1785528410906-792bfc8f70fd\",\"x-matched-pat
+h\":\"/api/ebay/account-deletion\",\"x-real-ip\":\"66.211.183.72\",\"x-vercel-d
+eployment-url\":\"legends-ohn61g79x-legends17.vercel.app\",\"x-vercel-enable-re
+write-caching\":\"1\",\"x-vercel-forwarded-for\":\"66.211.183.72\",\"x-vercel-i
+d\":\"sfo1::lq2rn-1785528410906-792bfc8f70fd\",\"x-vercel-ip-as-number\":\"1164
+-----
+MATCH LINE 463:
+/json\",\"forwarded\":\"for=66.211.183.72;host=legends-os-beta.vercel.app;proto
+=https;sig=0QmVhcmVyIDE3YjlmYzRmNzFmOGEwMWZiYTVlY2QyZjc0MDYzNzgwYzlmYWI4ZGVjM2E
+xNTYxZjc2NjM5NmQzZDgzN2ViNjg=;exp=1785528710\",\"host\":\"legends-os-beta.verce
+l.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGciOi
+JlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25hd
+HVyZSI6Ik1FVUNJQXpDYmZlOGpDYUo1U2dyR3FWckxqazYwQ3NLYmR4M2sxK0NuTHhDQkdrdkFpRUFr
+K08wMVhNN3N5V1labktDVXNqbW1aUEN0UDJoL2thUlpobmJGWDNDS3J3PSIsImRpZ2VzdCI6IlNIQTE
+ifQ==\",\"x-forwarded-for\":\"66.211.183.72\",\"x-forwarded-host\":\"legends-os
+-beta.vercel.app\",\"x-forwarded-port\":\"443\",\"x-forwarded-proto\":\"https\"
+,\"x-invocation-id\":\"sfo1::lq2rn-1785528410906-792bfc8f70fd\",\"x-matched-pat
+h\":\"/api/ebay/account-deletion\",\"x-real-ip\":\"66.211.183.72\",\"x-vercel-d
+eployment-url\":\"legends-ohn61g79x-legends17.vercel.app\",\"x-vercel-enable-re
+write-caching\":\"1\",\"x-vercel-forwarded-for\":\"66.211.183.72\",\"x-vercel-i
+d\":\"sfo1::lq2rn-1785528410906-792bfc8f70fd\",\"x-vercel-ip-as-number\":\"1164
+3\",\"x-vercel-ip-continent\":\"NA\",\"x-vercel-ip-country\":\"US\",\"x-vercel-
+ip-latitude\":\"37.751\",\"x-vercel-ip-longitude\":\"-97.822\",\"x-vercel-ip-ti
+mezone\":\"America/Chicago\",\"x-vercel-ja4-digest\":\"t12d091100_08d6d9b33cd7_
+6d6c278f61f2\",\"x-vercel-oidc-token\":\"eyJ0eXAiOiJKV1QiLCJraWQiOiJtcmstNDMwMm
+VjMWI2NzBmNDhhOThhZDYxZGFkZTRhMjNiZTciLCJhbGciOiJSUzI1NiJ9.eyJzY29wZSI6Im93bmVy
+OmxlZ2VuZHMxNzpwcm9qZWN0OmxlZ2VuZHMtb3M6ZW52aXJvbm1lbnQ6cHJvZHVjdGlvbiIsImF1ZCI
+6Imh0dHBzOlwvXC92ZXJjZWwuY29tXC9sZWdlbmRzMTciLCJleHAiOjE3ODU1MzQ5MjgsInN1YiI6Im
+-----
+MATCH LINE 504:
+7tYd_DHvfXvAbEzl2wNldjmKevwqQ7GSfMcjCLKg\\\",\\\"x-vercel-ept\\\":\\\"1\\\",\\\
+"x-vercel-function-platform\\\":\\\"vercel\\\\/proxy+serverless\\\"}\",\"x-verc
+el-sc-host\":\"iad1.suspense-cache.vercel-infra.com\"},\"payload\":{\"metadata\
+":{\"topic\":\"MARKETPLACE_ACCOUNT_DELETION\",\"schemaVersion\":\"1.0\",\"depre
+cated\":false},\"notification\":{\"notificationId\":\"4c565d5f-9db8-4b0d-8887-8
+2db8202545b_34c9cc15-c8ac-4f75-a116-60bcf210804c\",\"eventDate\":\"2026-07-31T2
+0:06:50.831Z\",\"publishDate\":\"2026-07-31T20:06:50.839Z\",\"publishAttemptCou
+nt\":1,\"data\":{\"username\":\"wellsdbabbure0\",\"userId\":\"8fi6nkhfqdc\",\"e
+iasToken\":\"nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6MMloWoDJiHowSdj6x9nY+seQ==\"}}}}","s
+ource":"serverless","domain":"legends-os-beta.vercel.app","requestMethod":"POST
+","requestPath":"/api/ebay/account-deletion","responseStatusCode":200,"environm
+ent":"production","branch":"","cache":"MISS","cacheReason":"","pprState":"","tr
+aceId":"","logs":[{"level":"info","message":"[eBay MADN] received 
+notification: {\"headers\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"c
+onnection\":\"close\",\"content-length\":\"439\",\"content-type\":\"application
+/json\",\"forwarded\":\"for=66.211.183.72;host=legends-os-beta.vercel.app;proto
+=https;sig=0QmVhcmVyIDE3YjlmYzRmNzFmOGEwMWZiYTVlY2QyZjc0MDYzNzgwYzlmYWI4ZGVjM2E
+xNTYxZjc2NjM5NmQzZDgzN2ViNjg=;exp=1785528710\",\"host\":\"legends-os-beta.verce
+l.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGciOi
+JlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25hd
+HVyZSI6Ik1FVUNJQXpDYmZlOGpDYUo1U2dyR3FWckxqazYwQ3NLYmR4M2sxK0NuTHhDQkdrdkFpRUFr
+-----
+MATCH LINE 506:
+el-sc-host\":\"iad1.suspense-cache.vercel-infra.com\"},\"payload\":{\"metadata\
+":{\"topic\":\"MARKETPLACE_ACCOUNT_DELETION\",\"schemaVersion\":\"1.0\",\"depre
+cated\":false},\"notification\":{\"notificationId\":\"4c565d5f-9db8-4b0d-8887-8
+2db8202545b_34c9cc15-c8ac-4f75-a116-60bcf210804c\",\"eventDate\":\"2026-07-31T2
+0:06:50.831Z\",\"publishDate\":\"2026-07-31T20:06:50.839Z\",\"publishAttemptCou
+nt\":1,\"data\":{\"username\":\"wellsdbabbure0\",\"userId\":\"8fi6nkhfqdc\",\"e
+iasToken\":\"nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6MMloWoDJiHowSdj6x9nY+seQ==\"}}}}","s
+ource":"serverless","domain":"legends-os-beta.vercel.app","requestMethod":"POST
+","requestPath":"/api/ebay/account-deletion","responseStatusCode":200,"environm
+ent":"production","branch":"","cache":"MISS","cacheReason":"","pprState":"","tr
+aceId":"","logs":[{"level":"info","message":"[eBay MADN] received 
+notification: {\"headers\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"c
+onnection\":\"close\",\"content-length\":\"439\",\"content-type\":\"application
+/json\",\"forwarded\":\"for=66.211.183.72;host=legends-os-beta.vercel.app;proto
+=https;sig=0QmVhcmVyIDE3YjlmYzRmNzFmOGEwMWZiYTVlY2QyZjc0MDYzNzgwYzlmYWI4ZGVjM2E
+xNTYxZjc2NjM5NmQzZDgzN2ViNjg=;exp=1785528710\",\"host\":\"legends-os-beta.verce
+l.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGciOi
+JlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25hd
+HVyZSI6Ik1FVUNJQXpDYmZlOGpDYUo1U2dyR3FWckxqazYwQ3NLYmR4M2sxK0NuTHhDQkdrdkFpRUFr
+K08wMVhNN3N5V1labktDVXNqbW1aUEN0UDJoL2thUlpobmJGWDNDS3J3PSIsImRpZ2VzdCI6IlNIQTE
+ifQ==\",\"x-forwarded-for\":\"66.211.183.72\",\"x-forwarded-host\":\"legends-os
+-----
+MATCH LINE 512:
+iasToken\":\"nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6MMloWoDJiHowSdj6x9nY+seQ==\"}}}}","s
+ource":"serverless","domain":"legends-os-beta.vercel.app","requestMethod":"POST
+","requestPath":"/api/ebay/account-deletion","responseStatusCode":200,"environm
+ent":"production","branch":"","cache":"MISS","cacheReason":"","pprState":"","tr
+aceId":"","logs":[{"level":"info","message":"[eBay MADN] received 
+notification: {\"headers\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"c
+onnection\":\"close\",\"content-length\":\"439\",\"content-type\":\"application
+/json\",\"forwarded\":\"for=66.211.183.72;host=legends-os-beta.vercel.app;proto
+=https;sig=0QmVhcmVyIDE3YjlmYzRmNzFmOGEwMWZiYTVlY2QyZjc0MDYzNzgwYzlmYWI4ZGVjM2E
+xNTYxZjc2NjM5NmQzZDgzN2ViNjg=;exp=1785528710\",\"host\":\"legends-os-beta.verce
+l.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGciOi
+JlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25hd
+HVyZSI6Ik1FVUNJQXpDYmZlOGpDYUo1U2dyR3FWckxqazYwQ3NLYmR4M2sxK0NuTHhDQkdrdkFpRUFr
+K08wMVhNN3N5V1labktDVXNqbW1aUEN0UDJoL2thUlpobmJGWDNDS3J3PSIsImRpZ2VzdCI6IlNIQTE
+ifQ==\",\"x-forwarded-for\":\"66.211.183.72\",\"x-forwarded-host\":\"legends-os
+-beta.vercel.app\",\"x-forwarded-port\":\"443\",\"x-forwarded-proto\":\"https\"
+,\"x-invocation-id\":\"sfo1::lq2rn-1785528410906-792bfc8f70fd\",\"x-matched-pat
+h\":\"/api/ebay/account-deletion\",\"x-real-ip\":\"66.211.183.72\",\"x-vercel-d
+eployment-url\":\"legends-ohn61g79x-legends17.vercel.app\",\"x-vercel-enable-re
+write-caching\":\"1\",\"x-vercel-forwarded-for\":\"66.211.183.72\",\"x-vercel-i
+d\":\"sfo1::lq2rn-1785528410906-792bfc8f70fd\",\"x-vercel-ip-as-number\":\"1164
+-----
+MATCH LINE 519:
+/json\",\"forwarded\":\"for=66.211.183.72;host=legends-os-beta.vercel.app;proto
+=https;sig=0QmVhcmVyIDE3YjlmYzRmNzFmOGEwMWZiYTVlY2QyZjc0MDYzNzgwYzlmYWI4ZGVjM2E
+xNTYxZjc2NjM5NmQzZDgzN2ViNjg=;exp=1785528710\",\"host\":\"legends-os-beta.verce
+l.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGciOi
+JlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25hd
+HVyZSI6Ik1FVUNJQXpDYmZlOGpDYUo1U2dyR3FWckxqazYwQ3NLYmR4M2sxK0NuTHhDQkdrdkFpRUFr
+K08wMVhNN3N5V1labktDVXNqbW1aUEN0UDJoL2thUlpobmJGWDNDS3J3PSIsImRpZ2VzdCI6IlNIQTE
+ifQ==\",\"x-forwarded-for\":\"66.211.183.72\",\"x-forwarded-host\":\"legends-os
+-beta.vercel.app\",\"x-forwarded-port\":\"443\",\"x-forwarded-proto\":\"https\"
+,\"x-invocation-id\":\"sfo1::lq2rn-1785528410906-792bfc8f70fd\",\"x-matched-pat
+h\":\"/api/ebay/account-deletion\",\"x-real-ip\":\"66.211.183.72\",\"x-vercel-d
+eployment-url\":\"legends-ohn61g79x-legends17.vercel.app\",\"x-vercel-enable-re
+write-caching\":\"1\",\"x-vercel-forwarded-for\":\"66.211.183.72\",\"x-vercel-i
+d\":\"sfo1::lq2rn-1785528410906-792bfc8f70fd\",\"x-vercel-ip-as-number\":\"1164
+3\",\"x-vercel-ip-continent\":\"NA\",\"x-vercel-ip-country\":\"US\",\"x-vercel-
+ip-latitude\":\"37.751\",\"x-vercel-ip-longitude\":\"-97.822\",\"x-vercel-ip-ti
+mezone\":\"America/Chicago\",\"x-vercel-ja4-digest\":\"t12d091100_08d6d9b33cd7_
+6d6c278f61f2\",\"x-vercel-oidc-token\":\"eyJ0eXAiOiJKV1QiLCJraWQiOiJtcmstNDMwMm
+VjMWI2NzBmNDhhOThhZDYxZGFkZTRhMjNiZTciLCJhbGciOiJSUzI1NiJ9.eyJzY29wZSI6Im93bmVy
+OmxlZ2VuZHMxNzpwcm9qZWN0OmxlZ2VuZHMtb3M6ZW52aXJvbm1lbnQ6cHJvZHVjdGlvbiIsImF1ZCI
+6Imh0dHBzOlwvXC92ZXJjZWwuY29tXC9sZWdlbmRzMTciLCJleHAiOjE3ODU1MzQ5MjgsInN1YiI6Im
+-----
+MATCH LINE 561:
+"x-vercel-function-platform\\\":\\\"vercel\\\\/proxy+serverless\\\"}\",\"x-verc
+el-sc-host\":\"iad1.suspense-cache.vercel-infra.com\"},\"payload\":{\"metadata\
+":{\"topic\":\"MARKETPLACE_ACCOUNT_DELETION\",\"schemaVersion\":\"1.0\",\"depre
+cated\":false},\"notification\":{\"notificationId\":\"4c565d5f-9db8-4b0d-8887-8
+2db8202545b_34c9cc15-c8ac-4f75-a116-60bcf210804c\",\"eventDate\":\"2026-07-31T2
+0:06:50.831Z\",\"publishDate\":\"2026-07-31T20:06:50.839Z\",\"publishAttemptCou
+nt\":1,\"data\":{\"username\":\"wellsdbabbure0\",\"userId\":\"8fi6nkhfqdc\",\"e
+iasToken\":\"nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6MMloWoDJiHowSdj6x9nY+seQ==\"}}}}"}]}
+> vercel_logs.json:6:{"id":"5cxtw-1785528401880-cbddf7a83f6b","timestamp":17855
+28401880,"deploymentId":"dpl_HDU8jTRGby4xePd6ddT23YBTZTHW","projectId":"prj_x6e
+SQwKAc3n7Fc0PnaeTe8HgDnbH","level":"info","message":"[eBay MADN] received 
+notification: {\"headers\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"c
+onnection\":\"close\",\"content-length\":\"433\",\"content-type\":\"application
+/json\",\"forwarded\":\"for=216.113.184.105;host=legends-os-beta.vercel.app;pro
+to=https;sig=0QmVhcmVyIGVhMWMzZWM3MmU3YWUwYmJkYmE2MGY5YWZjNGEwMDQ2YTRjN2ZlZDA5N
+WE5MDMxOWNlNWE3MTZiYzFjODAxYzQ=;exp=1785528701\",\"host\":\"legends-os-beta.ver
+cel.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGci
+OiJlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25
+hdHVyZSI6Ik1FVUNJUUNpZjF6NGsrNDFlaWlwSXBCKytoNm1XR0ZxRlBzYU5rMFZzMGxiSFZSK1JnSW
+dleDhQSE5YSGFCaUw2ZGg2MDVQSnMzY2RWYS80MlNIODA3UU9yTm45SDNFPSIsImRpZ2VzdCI6IlNIQ
+TEifQ==\",\"x-forwarded-for\":\"216.113.184.105\",\"x-forwarded-host\":\"legend
+-----
+MATCH LINE 567:
+nt\":1,\"data\":{\"username\":\"wellsdbabbure0\",\"userId\":\"8fi6nkhfqdc\",\"e
+iasToken\":\"nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6MMloWoDJiHowSdj6x9nY+seQ==\"}}}}"}]}
+> vercel_logs.json:6:{"id":"5cxtw-1785528401880-cbddf7a83f6b","timestamp":17855
+28401880,"deploymentId":"dpl_HDU8jTRGby4xePd6ddT23YBTZTHW","projectId":"prj_x6e
+SQwKAc3n7Fc0PnaeTe8HgDnbH","level":"info","message":"[eBay MADN] received 
+notification: {\"headers\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"c
+onnection\":\"close\",\"content-length\":\"433\",\"content-type\":\"application
+/json\",\"forwarded\":\"for=216.113.184.105;host=legends-os-beta.vercel.app;pro
+to=https;sig=0QmVhcmVyIGVhMWMzZWM3MmU3YWUwYmJkYmE2MGY5YWZjNGEwMDQ2YTRjN2ZlZDA5N
+WE5MDMxOWNlNWE3MTZiYzFjODAxYzQ=;exp=1785528701\",\"host\":\"legends-os-beta.ver
+cel.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGci
+OiJlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25
+hdHVyZSI6Ik1FVUNJUUNpZjF6NGsrNDFlaWlwSXBCKytoNm1XR0ZxRlBzYU5rMFZzMGxiSFZSK1JnSW
+dleDhQSE5YSGFCaUw2ZGg2MDVQSnMzY2RWYS80MlNIODA3UU9yTm45SDNFPSIsImRpZ2VzdCI6IlNIQ
+TEifQ==\",\"x-forwarded-for\":\"216.113.184.105\",\"x-forwarded-host\":\"legend
+s-os-beta.vercel.app\",\"x-forwarded-port\":\"443\",\"x-forwarded-proto\":\"htt
+ps\",\"x-invocation-id\":\"cle1::5cxtw-1785528401880-cbddf7a83f6b\",\"x-matched
+-path\":\"/api/ebay/account-deletion\",\"x-real-ip\":\"216.113.184.105\",\"x-ve
+rcel-deployment-url\":\"legends-ohn61g79x-legends17.vercel.app\",\"x-vercel-ena
+ble-rewrite-caching\":\"1\",\"x-vercel-forwarded-for\":\"216.113.184.105\",\"x-
+vercel-id\":\"cle1::5cxtw-1785528401880-cbddf7a83f6b\",\"x-vercel-ip-as-number\
+-----
+MATCH LINE 574:
+/json\",\"forwarded\":\"for=216.113.184.105;host=legends-os-beta.vercel.app;pro
+to=https;sig=0QmVhcmVyIGVhMWMzZWM3MmU3YWUwYmJkYmE2MGY5YWZjNGEwMDQ2YTRjN2ZlZDA5N
+WE5MDMxOWNlNWE3MTZiYzFjODAxYzQ=;exp=1785528701\",\"host\":\"legends-os-beta.ver
+cel.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGci
+OiJlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25
+hdHVyZSI6Ik1FVUNJUUNpZjF6NGsrNDFlaWlwSXBCKytoNm1XR0ZxRlBzYU5rMFZzMGxiSFZSK1JnSW
+dleDhQSE5YSGFCaUw2ZGg2MDVQSnMzY2RWYS80MlNIODA3UU9yTm45SDNFPSIsImRpZ2VzdCI6IlNIQ
+TEifQ==\",\"x-forwarded-for\":\"216.113.184.105\",\"x-forwarded-host\":\"legend
+s-os-beta.vercel.app\",\"x-forwarded-port\":\"443\",\"x-forwarded-proto\":\"htt
+ps\",\"x-invocation-id\":\"cle1::5cxtw-1785528401880-cbddf7a83f6b\",\"x-matched
+-path\":\"/api/ebay/account-deletion\",\"x-real-ip\":\"216.113.184.105\",\"x-ve
+rcel-deployment-url\":\"legends-ohn61g79x-legends17.vercel.app\",\"x-vercel-ena
+ble-rewrite-caching\":\"1\",\"x-vercel-forwarded-for\":\"216.113.184.105\",\"x-
+vercel-id\":\"cle1::5cxtw-1785528401880-cbddf7a83f6b\",\"x-vercel-ip-as-number\
+":\"11643\",\"x-vercel-ip-continent\":\"NA\",\"x-vercel-ip-country\":\"US\",\"x
+-vercel-ip-latitude\":\"37.751\",\"x-vercel-ip-longitude\":\"-97.822\",\"x-verc
+el-ip-timezone\":\"America/Chicago\",\"x-vercel-ja4-digest\":\"t12d091100_08d6d
+9b33cd7_6d6c278f61f2\",\"x-vercel-oidc-token\":\"eyJ0eXAiOiJKV1QiLCJraWQiOiJtcm
+stNDMwMmVjMWI2NzBmNDhhOThhZDYxZGFkZTRhMjNiZTciLCJhbGciOiJSUzI1NiJ9.eyJuYmYiOjE3
+ODU1MjMzOTgsImlzcyI6Imh0dHBzOlwvXC9vaWRjLnZlcmNlbC5jb21cL2xlZ2VuZHMxNyIsInByb2p
+lY3QiOiJsZWdlbmRzLW9zIiwic3ViIjoib3duZXI6bGVnZW5kczE3OnByb2plY3Q6bGVnZW5kcy1vcz
+-----
+MATCH LINE 615:
+NmIifQ.5RL_bs-vIDTppm8Vhsk00rI9ecwwRugboKB2lHnPlaU\\\",\\\"x-vercel-ept\\\":\\\
+"1\\\",\\\"x-vercel-function-platform\\\":\\\"vercel\\\\/proxy+serverless\\\"}\
+",\"x-vercel-sc-host\":\"iad1.suspense-cache.vercel-infra.com\"},\"payload\":{\
+"metadata\":{\"topic\":\"MARKETPLACE_ACCOUNT_DELETION\",\"schemaVersion\":\"1.0
+\",\"deprecated\":false},\"notification\":{\"notificationId\":\"0b7fb350-b5ef-4
+29e-9965-f60ced328100_167b4429-1a27-4e0f-bb38-aaa0cd0927de\",\"eventDate\":\"20
+26-07-31T20:06:41.829Z\",\"publishDate\":\"2026-07-31T20:06:41.851Z\",\"publish
+AttemptCount\":1,\"data\":{\"username\":\"moses-54\",\"userId\":\"u4rzo-6srb2\"
+,\"eiasToken\":\"nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6MDl4aiDZOGqQqdj6x9nY+seQ==\"}}}}
+","source":"serverless","domain":"legends-os-beta.vercel.app","requestMethod":"
+POST","requestPath":"/api/ebay/account-deletion","responseStatusCode":200,"envi
+ronment":"production","branch":"","cache":"MISS","cacheReason":"","pprState":""
+,"traceId":"","logs":[{"level":"info","message":"[eBay MADN] received 
+notification: {\"headers\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"c
+onnection\":\"close\",\"content-length\":\"433\",\"content-type\":\"application
+/json\",\"forwarded\":\"for=216.113.184.105;host=legends-os-beta.vercel.app;pro
+to=https;sig=0QmVhcmVyIGVhMWMzZWM3MmU3YWUwYmJkYmE2MGY5YWZjNGEwMDQ2YTRjN2ZlZDA5N
+WE5MDMxOWNlNWE3MTZiYzFjODAxYzQ=;exp=1785528701\",\"host\":\"legends-os-beta.ver
+cel.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGci
+OiJlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25
+hdHVyZSI6Ik1FVUNJUUNpZjF6NGsrNDFlaWlwSXBCKytoNm1XR0ZxRlBzYU5rMFZzMGxiSFZSK1JnSW
+-----
+MATCH LINE 617:
+",\"x-vercel-sc-host\":\"iad1.suspense-cache.vercel-infra.com\"},\"payload\":{\
+"metadata\":{\"topic\":\"MARKETPLACE_ACCOUNT_DELETION\",\"schemaVersion\":\"1.0
+\",\"deprecated\":false},\"notification\":{\"notificationId\":\"0b7fb350-b5ef-4
+29e-9965-f60ced328100_167b4429-1a27-4e0f-bb38-aaa0cd0927de\",\"eventDate\":\"20
+26-07-31T20:06:41.829Z\",\"publishDate\":\"2026-07-31T20:06:41.851Z\",\"publish
+AttemptCount\":1,\"data\":{\"username\":\"moses-54\",\"userId\":\"u4rzo-6srb2\"
+,\"eiasToken\":\"nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6MDl4aiDZOGqQqdj6x9nY+seQ==\"}}}}
+","source":"serverless","domain":"legends-os-beta.vercel.app","requestMethod":"
+POST","requestPath":"/api/ebay/account-deletion","responseStatusCode":200,"envi
+ronment":"production","branch":"","cache":"MISS","cacheReason":"","pprState":""
+,"traceId":"","logs":[{"level":"info","message":"[eBay MADN] received 
+notification: {\"headers\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"c
+onnection\":\"close\",\"content-length\":\"433\",\"content-type\":\"application
+/json\",\"forwarded\":\"for=216.113.184.105;host=legends-os-beta.vercel.app;pro
+to=https;sig=0QmVhcmVyIGVhMWMzZWM3MmU3YWUwYmJkYmE2MGY5YWZjNGEwMDQ2YTRjN2ZlZDA5N
+WE5MDMxOWNlNWE3MTZiYzFjODAxYzQ=;exp=1785528701\",\"host\":\"legends-os-beta.ver
+cel.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGci
+OiJlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25
+hdHVyZSI6Ik1FVUNJUUNpZjF6NGsrNDFlaWlwSXBCKytoNm1XR0ZxRlBzYU5rMFZzMGxiSFZSK1JnSW
+dleDhQSE5YSGFCaUw2ZGg2MDVQSnMzY2RWYS80MlNIODA3UU9yTm45SDNFPSIsImRpZ2VzdCI6IlNIQ
+TEifQ==\",\"x-forwarded-for\":\"216.113.184.105\",\"x-forwarded-host\":\"legend
+-----
+MATCH LINE 623:
+,\"eiasToken\":\"nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6MDl4aiDZOGqQqdj6x9nY+seQ==\"}}}}
+","source":"serverless","domain":"legends-os-beta.vercel.app","requestMethod":"
+POST","requestPath":"/api/ebay/account-deletion","responseStatusCode":200,"envi
+ronment":"production","branch":"","cache":"MISS","cacheReason":"","pprState":""
+,"traceId":"","logs":[{"level":"info","message":"[eBay MADN] received 
+notification: {\"headers\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"c
+onnection\":\"close\",\"content-length\":\"433\",\"content-type\":\"application
+/json\",\"forwarded\":\"for=216.113.184.105;host=legends-os-beta.vercel.app;pro
+to=https;sig=0QmVhcmVyIGVhMWMzZWM3MmU3YWUwYmJkYmE2MGY5YWZjNGEwMDQ2YTRjN2ZlZDA5N
+WE5MDMxOWNlNWE3MTZiYzFjODAxYzQ=;exp=1785528701\",\"host\":\"legends-os-beta.ver
+cel.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGci
+OiJlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25
+hdHVyZSI6Ik1FVUNJUUNpZjF6NGsrNDFlaWlwSXBCKytoNm1XR0ZxRlBzYU5rMFZzMGxiSFZSK1JnSW
+dleDhQSE5YSGFCaUw2ZGg2MDVQSnMzY2RWYS80MlNIODA3UU9yTm45SDNFPSIsImRpZ2VzdCI6IlNIQ
+TEifQ==\",\"x-forwarded-for\":\"216.113.184.105\",\"x-forwarded-host\":\"legend
+s-os-beta.vercel.app\",\"x-forwarded-port\":\"443\",\"x-forwarded-proto\":\"htt
+ps\",\"x-invocation-id\":\"cle1::5cxtw-1785528401880-cbddf7a83f6b\",\"x-matched
+-path\":\"/api/ebay/account-deletion\",\"x-real-ip\":\"216.113.184.105\",\"x-ve
+rcel-deployment-url\":\"legends-ohn61g79x-legends17.vercel.app\",\"x-vercel-ena
+ble-rewrite-caching\":\"1\",\"x-vercel-forwarded-for\":\"216.113.184.105\",\"x-
+vercel-id\":\"cle1::5cxtw-1785528401880-cbddf7a83f6b\",\"x-vercel-ip-as-number\
+-----
+MATCH LINE 630:
+/json\",\"forwarded\":\"for=216.113.184.105;host=legends-os-beta.vercel.app;pro
+to=https;sig=0QmVhcmVyIGVhMWMzZWM3MmU3YWUwYmJkYmE2MGY5YWZjNGEwMDQ2YTRjN2ZlZDA5N
+WE5MDMxOWNlNWE3MTZiYzFjODAxYzQ=;exp=1785528701\",\"host\":\"legends-os-beta.ver
+cel.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGci
+OiJlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25
+hdHVyZSI6Ik1FVUNJUUNpZjF6NGsrNDFlaWlwSXBCKytoNm1XR0ZxRlBzYU5rMFZzMGxiSFZSK1JnSW
+dleDhQSE5YSGFCaUw2ZGg2MDVQSnMzY2RWYS80MlNIODA3UU9yTm45SDNFPSIsImRpZ2VzdCI6IlNIQ
+TEifQ==\",\"x-forwarded-for\":\"216.113.184.105\",\"x-forwarded-host\":\"legend
+s-os-beta.vercel.app\",\"x-forwarded-port\":\"443\",\"x-forwarded-proto\":\"htt
+ps\",\"x-invocation-id\":\"cle1::5cxtw-1785528401880-cbddf7a83f6b\",\"x-matched
+-path\":\"/api/ebay/account-deletion\",\"x-real-ip\":\"216.113.184.105\",\"x-ve
+rcel-deployment-url\":\"legends-ohn61g79x-legends17.vercel.app\",\"x-vercel-ena
+ble-rewrite-caching\":\"1\",\"x-vercel-forwarded-for\":\"216.113.184.105\",\"x-
+vercel-id\":\"cle1::5cxtw-1785528401880-cbddf7a83f6b\",\"x-vercel-ip-as-number\
+":\"11643\",\"x-vercel-ip-continent\":\"NA\",\"x-vercel-ip-country\":\"US\",\"x
+-vercel-ip-latitude\":\"37.751\",\"x-vercel-ip-longitude\":\"-97.822\",\"x-verc
+el-ip-timezone\":\"America/Chicago\",\"x-vercel-ja4-digest\":\"t12d091100_08d6d
+9b33cd7_6d6c278f61f2\",\"x-vercel-oidc-token\":\"eyJ0eXAiOiJKV1QiLCJraWQiOiJtcm
+stNDMwMmVjMWI2NzBmNDhhOThhZDYxZGFkZTRhMjNiZTciLCJhbGciOiJSUzI1NiJ9.eyJuYmYiOjE3
+ODU1MjMzOTgsImlzcyI6Imh0dHBzOlwvXC9vaWRjLnZlcmNlbC5jb21cL2xlZ2VuZHMxNyIsInByb2p
+lY3QiOiJsZWdlbmRzLW9zIiwic3ViIjoib3duZXI6bGVnZW5kczE3OnByb2plY3Q6bGVnZW5kcy1vcz
+-----
+MATCH LINE 673:
+",\"x-vercel-sc-host\":\"iad1.suspense-cache.vercel-infra.com\"},\"payload\":{\
+"metadata\":{\"topic\":\"MARKETPLACE_ACCOUNT_DELETION\",\"schemaVersion\":\"1.0
+\",\"deprecated\":false},\"notification\":{\"notificationId\":\"0b7fb350-b5ef-4
+29e-9965-f60ced328100_167b4429-1a27-4e0f-bb38-aaa0cd0927de\",\"eventDate\":\"20
+26-07-31T20:06:41.829Z\",\"publishDate\":\"2026-07-31T20:06:41.851Z\",\"publish
+AttemptCount\":1,\"data\":{\"username\":\"moses-54\",\"userId\":\"u4rzo-6srb2\"
+,\"eiasToken\":\"nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6MDl4aiDZOGqQqdj6x9nY+seQ==\"}}}}
+"}]}
+> vercel_logs.json:7:{"id":"7nv5p-1785528401053-edec9133f293","timestamp":17855
+28401053,"deploymentId":"dpl_HDU8jTRGby4xePd6ddT23YBTZTHW","projectId":"prj_x6e
+SQwKAc3n7Fc0PnaeTe8HgDnbH","level":"info","message":"[eBay MADN] received 
+notification: {\"headers\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"c
+onnection\":\"close\",\"content-length\":\"433\",\"content-type\":\"application
+/json\",\"forwarded\":\"for=216.113.184.101;host=legends-os-beta.vercel.app;pro
+to=https;sig=0QmVhcmVyIDlhOWE1YjY2Yzc0OTlmYmE4ZDM3ZjEyZjU4NDdiZTgwMTIwMDEzMjBjN
+WMyZTI2ZWNhNWU0ZTc2YWY4MDRkZjE=;exp=1785528701\",\"host\":\"legends-os-beta.ver
+cel.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGci
+OiJlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25
+hdHVyZSI6Ik1FUUNJRDh0ekxGV3VoSi9YYUFvV2dwT0xqblE5YzkyM2RhS3B3MDREMm81cEt3bUFpQX
+phRVp5WjNIU0RuM1dEaVkvWThOL3Vpa1AvbEJLTTBjTkI3MTU0TjdSWHc9PSIsImRpZ2VzdCI6IlNIQ
+TEifQ==\",\"x-forwarded-for\":\"216.113.184.101\",\"x-forwarded-host\":\"legend
+-----
+MATCH LINE 679:
+,\"eiasToken\":\"nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6MDl4aiDZOGqQqdj6x9nY+seQ==\"}}}}
+"}]}
+> vercel_logs.json:7:{"id":"7nv5p-1785528401053-edec9133f293","timestamp":17855
+28401053,"deploymentId":"dpl_HDU8jTRGby4xePd6ddT23YBTZTHW","projectId":"prj_x6e
+SQwKAc3n7Fc0PnaeTe8HgDnbH","level":"info","message":"[eBay MADN] received 
+notification: {\"headers\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"c
+onnection\":\"close\",\"content-length\":\"433\",\"content-type\":\"application
+/json\",\"forwarded\":\"for=216.113.184.101;host=legends-os-beta.vercel.app;pro
+to=https;sig=0QmVhcmVyIDlhOWE1YjY2Yzc0OTlmYmE4ZDM3ZjEyZjU4NDdiZTgwMTIwMDEzMjBjN
+WMyZTI2ZWNhNWU0ZTc2YWY4MDRkZjE=;exp=1785528701\",\"host\":\"legends-os-beta.ver
+cel.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGci
+OiJlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25
+hdHVyZSI6Ik1FUUNJRDh0ekxGV3VoSi9YYUFvV2dwT0xqblE5YzkyM2RhS3B3MDREMm81cEt3bUFpQX
+phRVp5WjNIU0RuM1dEaVkvWThOL3Vpa1AvbEJLTTBjTkI3MTU0TjdSWHc9PSIsImRpZ2VzdCI6IlNIQ
+TEifQ==\",\"x-forwarded-for\":\"216.113.184.101\",\"x-forwarded-host\":\"legend
+s-os-beta.vercel.app\",\"x-forwarded-port\":\"443\",\"x-forwarded-proto\":\"htt
+ps\",\"x-invocation-id\":\"cle1::7nv5p-1785528401053-edec9133f293\",\"x-matched
+-path\":\"/api/ebay/account-deletion\",\"x-real-ip\":\"216.113.184.101\",\"x-ve
+rcel-deployment-url\":\"legends-ohn61g79x-legends17.vercel.app\",\"x-vercel-ena
+ble-rewrite-caching\":\"1\",\"x-vercel-forwarded-for\":\"216.113.184.101\",\"x-
+vercel-id\":\"cle1::7nv5p-1785528401053-edec9133f293\",\"x-vercel-ip-as-number\
+-----
+MATCH LINE 686:
+/json\",\"forwarded\":\"for=216.113.184.101;host=legends-os-beta.vercel.app;pro
+to=https;sig=0QmVhcmVyIDlhOWE1YjY2Yzc0OTlmYmE4ZDM3ZjEyZjU4NDdiZTgwMTIwMDEzMjBjN
+WMyZTI2ZWNhNWU0ZTc2YWY4MDRkZjE=;exp=1785528701\",\"host\":\"legends-os-beta.ver
+cel.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGci
+OiJlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25
+hdHVyZSI6Ik1FUUNJRDh0ekxGV3VoSi9YYUFvV2dwT0xqblE5YzkyM2RhS3B3MDREMm81cEt3bUFpQX
+phRVp5WjNIU0RuM1dEaVkvWThOL3Vpa1AvbEJLTTBjTkI3MTU0TjdSWHc9PSIsImRpZ2VzdCI6IlNIQ
+TEifQ==\",\"x-forwarded-for\":\"216.113.184.101\",\"x-forwarded-host\":\"legend
+s-os-beta.vercel.app\",\"x-forwarded-port\":\"443\",\"x-forwarded-proto\":\"htt
+ps\",\"x-invocation-id\":\"cle1::7nv5p-1785528401053-edec9133f293\",\"x-matched
+-path\":\"/api/ebay/account-deletion\",\"x-real-ip\":\"216.113.184.101\",\"x-ve
+rcel-deployment-url\":\"legends-ohn61g79x-legends17.vercel.app\",\"x-vercel-ena
+ble-rewrite-caching\":\"1\",\"x-vercel-forwarded-for\":\"216.113.184.101\",\"x-
+vercel-id\":\"cle1::7nv5p-1785528401053-edec9133f293\",\"x-vercel-ip-as-number\
+":\"11643\",\"x-vercel-ip-continent\":\"NA\",\"x-vercel-ip-country\":\"US\",\"x
+-vercel-ip-latitude\":\"37.751\",\"x-vercel-ip-longitude\":\"-97.822\",\"x-verc
+el-ip-timezone\":\"America/Chicago\",\"x-vercel-ja4-digest\":\"t12d091100_08d6d
+9b33cd7_6d6c278f61f2\",\"x-vercel-oidc-token\":\"eyJ0eXAiOiJKV1QiLCJraWQiOiJtcm
+stNDMwMmVjMWI2NzBmNDhhOThhZDYxZGFkZTRhMjNiZTciLCJhbGciOiJSUzI1NiJ9.eyJuYmYiOjE3
+ODU1MjMzOTgsImlzcyI6Imh0dHBzOlwvXC9vaWRjLnZlcmNlbC5jb21cL2xlZ2VuZHMxNyIsInByb2p
+lY3QiOiJsZWdlbmRzLW9zIiwic3ViIjoib3duZXI6bGVnZW5kczE3OnByb2plY3Q6bGVnZW5kcy1vcz
+-----
+MATCH LINE 727:
+cHAifQ.6F46J8idLIOOMLz4nowpOA2oDqsJEufgZYm8ms8jPbU\\\",\\\"x-vercel-ept\\\":\\\
+"1\\\",\\\"x-vercel-function-platform\\\":\\\"vercel\\\\/proxy+serverless\\\"}\
+",\"x-vercel-sc-host\":\"iad1.suspense-cache.vercel-infra.com\"},\"payload\":{\
+"metadata\":{\"topic\":\"MARKETPLACE_ACCOUNT_DELETION\",\"schemaVersion\":\"1.0
+\",\"deprecated\":false},\"notification\":{\"notificationId\":\"e4d5079d-fb90-4
+24c-a1cc-35ce023db206_993d1be3-2ad2-4b0d-a7bc-d07c847682b1\",\"eventDate\":\"20
+26-07-31T20:06:40.807Z\",\"publishDate\":\"2026-07-31T20:06:40.822Z\",\"publish
+AttemptCount\":1,\"data\":{\"username\":\"gig-1494\",\"userId\":\"yjx-ruxctf-\"
+,\"eiasToken\":\"nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6MElIqpDpWBoA6dj6x9nY+seQ==\"}}}}
+","source":"serverless","domain":"legends-os-beta.vercel.app","requestMethod":"
+POST","requestPath":"/api/ebay/account-deletion","responseStatusCode":200,"envi
+ronment":"production","branch":"","cache":"MISS","cacheReason":"","pprState":""
+,"traceId":"","logs":[{"level":"info","message":"[eBay MADN] received 
+notification: {\"headers\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"c
+onnection\":\"close\",\"content-length\":\"433\",\"content-type\":\"application
+/json\",\"forwarded\":\"for=216.113.184.101;host=legends-os-beta.vercel.app;pro
+to=https;sig=0QmVhcmVyIDlhOWE1YjY2Yzc0OTlmYmE4ZDM3ZjEyZjU4NDdiZTgwMTIwMDEzMjBjN
+WMyZTI2ZWNhNWU0ZTc2YWY4MDRkZjE=;exp=1785528701\",\"host\":\"legends-os-beta.ver
+cel.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGci
+OiJlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25
+hdHVyZSI6Ik1FUUNJRDh0ekxGV3VoSi9YYUFvV2dwT0xqblE5YzkyM2RhS3B3MDREMm81cEt3bUFpQX
+-----
+MATCH LINE 729:
+",\"x-vercel-sc-host\":\"iad1.suspense-cache.vercel-infra.com\"},\"payload\":{\
+"metadata\":{\"topic\":\"MARKETPLACE_ACCOUNT_DELETION\",\"schemaVersion\":\"1.0
+\",\"deprecated\":false},\"notification\":{\"notificationId\":\"e4d5079d-fb90-4
+24c-a1cc-35ce023db206_993d1be3-2ad2-4b0d-a7bc-d07c847682b1\",\"eventDate\":\"20
+26-07-31T20:06:40.807Z\",\"publishDate\":\"2026-07-31T20:06:40.822Z\",\"publish
+AttemptCount\":1,\"data\":{\"username\":\"gig-1494\",\"userId\":\"yjx-ruxctf-\"
+,\"eiasToken\":\"nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6MElIqpDpWBoA6dj6x9nY+seQ==\"}}}}
+","source":"serverless","domain":"legends-os-beta.vercel.app","requestMethod":"
+POST","requestPath":"/api/ebay/account-deletion","responseStatusCode":200,"envi
+ronment":"production","branch":"","cache":"MISS","cacheReason":"","pprState":""
+,"traceId":"","logs":[{"level":"info","message":"[eBay MADN] received 
+notification: {\"headers\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"c
+onnection\":\"close\",\"content-length\":\"433\",\"content-type\":\"application
+/json\",\"forwarded\":\"for=216.113.184.101;host=legends-os-beta.vercel.app;pro
+to=https;sig=0QmVhcmVyIDlhOWE1YjY2Yzc0OTlmYmE4ZDM3ZjEyZjU4NDdiZTgwMTIwMDEzMjBjN
+WMyZTI2ZWNhNWU0ZTc2YWY4MDRkZjE=;exp=1785528701\",\"host\":\"legends-os-beta.ver
+cel.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGci
+OiJlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25
+hdHVyZSI6Ik1FUUNJRDh0ekxGV3VoSi9YYUFvV2dwT0xqblE5YzkyM2RhS3B3MDREMm81cEt3bUFpQX
+phRVp5WjNIU0RuM1dEaVkvWThOL3Vpa1AvbEJLTTBjTkI3MTU0TjdSWHc9PSIsImRpZ2VzdCI6IlNIQ
+TEifQ==\",\"x-forwarded-for\":\"216.113.184.101\",\"x-forwarded-host\":\"legend
+-----
+MATCH LINE 735:
+,\"eiasToken\":\"nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6MElIqpDpWBoA6dj6x9nY+seQ==\"}}}}
+","source":"serverless","domain":"legends-os-beta.vercel.app","requestMethod":"
+POST","requestPath":"/api/ebay/account-deletion","responseStatusCode":200,"envi
+ronment":"production","branch":"","cache":"MISS","cacheReason":"","pprState":""
+,"traceId":"","logs":[{"level":"info","message":"[eBay MADN] received 
+notification: {\"headers\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"c
+onnection\":\"close\",\"content-length\":\"433\",\"content-type\":\"application
+/json\",\"forwarded\":\"for=216.113.184.101;host=legends-os-beta.vercel.app;pro
+to=https;sig=0QmVhcmVyIDlhOWE1YjY2Yzc0OTlmYmE4ZDM3ZjEyZjU4NDdiZTgwMTIwMDEzMjBjN
+WMyZTI2ZWNhNWU0ZTc2YWY4MDRkZjE=;exp=1785528701\",\"host\":\"legends-os-beta.ver
+cel.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGci
+OiJlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25
+hdHVyZSI6Ik1FUUNJRDh0ekxGV3VoSi9YYUFvV2dwT0xqblE5YzkyM2RhS3B3MDREMm81cEt3bUFpQX
+phRVp5WjNIU0RuM1dEaVkvWThOL3Vpa1AvbEJLTTBjTkI3MTU0TjdSWHc9PSIsImRpZ2VzdCI6IlNIQ
+TEifQ==\",\"x-forwarded-for\":\"216.113.184.101\",\"x-forwarded-host\":\"legend
+s-os-beta.vercel.app\",\"x-forwarded-port\":\"443\",\"x-forwarded-proto\":\"htt
+ps\",\"x-invocation-id\":\"cle1::7nv5p-1785528401053-edec9133f293\",\"x-matched
+-path\":\"/api/ebay/account-deletion\",\"x-real-ip\":\"216.113.184.101\",\"x-ve
+rcel-deployment-url\":\"legends-ohn61g79x-legends17.vercel.app\",\"x-vercel-ena
+ble-rewrite-caching\":\"1\",\"x-vercel-forwarded-for\":\"216.113.184.101\",\"x-
+vercel-id\":\"cle1::7nv5p-1785528401053-edec9133f293\",\"x-vercel-ip-as-number\
+-----
+MATCH LINE 742:
+/json\",\"forwarded\":\"for=216.113.184.101;host=legends-os-beta.vercel.app;pro
+to=https;sig=0QmVhcmVyIDlhOWE1YjY2Yzc0OTlmYmE4ZDM3ZjEyZjU4NDdiZTgwMTIwMDEzMjBjN
+WMyZTI2ZWNhNWU0ZTc2YWY4MDRkZjE=;exp=1785528701\",\"host\":\"legends-os-beta.ver
+cel.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGci
+OiJlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25
+hdHVyZSI6Ik1FUUNJRDh0ekxGV3VoSi9YYUFvV2dwT0xqblE5YzkyM2RhS3B3MDREMm81cEt3bUFpQX
+phRVp5WjNIU0RuM1dEaVkvWThOL3Vpa1AvbEJLTTBjTkI3MTU0TjdSWHc9PSIsImRpZ2VzdCI6IlNIQ
+TEifQ==\",\"x-forwarded-for\":\"216.113.184.101\",\"x-forwarded-host\":\"legend
+s-os-beta.vercel.app\",\"x-forwarded-port\":\"443\",\"x-forwarded-proto\":\"htt
+ps\",\"x-invocation-id\":\"cle1::7nv5p-1785528401053-edec9133f293\",\"x-matched
+-path\":\"/api/ebay/account-deletion\",\"x-real-ip\":\"216.113.184.101\",\"x-ve
+rcel-deployment-url\":\"legends-ohn61g79x-legends17.vercel.app\",\"x-vercel-ena
+ble-rewrite-caching\":\"1\",\"x-vercel-forwarded-for\":\"216.113.184.101\",\"x-
+vercel-id\":\"cle1::7nv5p-1785528401053-edec9133f293\",\"x-vercel-ip-as-number\
+":\"11643\",\"x-vercel-ip-continent\":\"NA\",\"x-vercel-ip-country\":\"US\",\"x
+-vercel-ip-latitude\":\"37.751\",\"x-vercel-ip-longitude\":\"-97.822\",\"x-verc
+el-ip-timezone\":\"America/Chicago\",\"x-vercel-ja4-digest\":\"t12d091100_08d6d
+9b33cd7_6d6c278f61f2\",\"x-vercel-oidc-token\":\"eyJ0eXAiOiJKV1QiLCJraWQiOiJtcm
+stNDMwMmVjMWI2NzBmNDhhOThhZDYxZGFkZTRhMjNiZTciLCJhbGciOiJSUzI1NiJ9.eyJuYmYiOjE3
+ODU1MjMzOTgsImlzcyI6Imh0dHBzOlwvXC9vaWRjLnZlcmNlbC5jb21cL2xlZ2VuZHMxNyIsInByb2p
+lY3QiOiJsZWdlbmRzLW9zIiwic3ViIjoib3duZXI6bGVnZW5kczE3OnByb2plY3Q6bGVnZW5kcy1vcz
+-----
+MATCH LINE 785:
+",\"x-vercel-sc-host\":\"iad1.suspense-cache.vercel-infra.com\"},\"payload\":{\
+"metadata\":{\"topic\":\"MARKETPLACE_ACCOUNT_DELETION\",\"schemaVersion\":\"1.0
+\",\"deprecated\":false},\"notification\":{\"notificationId\":\"e4d5079d-fb90-4
+24c-a1cc-35ce023db206_993d1be3-2ad2-4b0d-a7bc-d07c847682b1\",\"eventDate\":\"20
+26-07-31T20:06:40.807Z\",\"publishDate\":\"2026-07-31T20:06:40.822Z\",\"publish
+AttemptCount\":1,\"data\":{\"username\":\"gig-1494\",\"userId\":\"yjx-ruxctf-\"
+,\"eiasToken\":\"nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6MElIqpDpWBoA6dj6x9nY+seQ==\"}}}}
+"}]}
+  vercel_logs.json:8:{"id":"xtfm8-1785528396812-1e6a9214b8ae","timestamp":17855
+28396812,"deploymentId":"dpl_HDU8jTRGby4xePd6ddT23YBTZTHW","projectId":"prj_x6e
+SQwKAc3n7Fc0PnaeTe8HgDnbH","level":"info","message":"[eBay MADN] received 
+notification: {\"headers\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"c
+onnection\":\"close\",\"content-length\":\"436\",\"content-type\":\"application
+/json\",\"forwarded\":\"for=216.113.184.104;host=legends-os-beta.vercel.app;pro
+to=https;sig=0QmVhcmVyIDZiYzhmYWRkMGFiNTExMjQyYzc0MDk0ZWE0NzMyOTE3NzhhYjBmNjRhZ
+TQzMTJkNzVlZjA3NWU1MDQzNTU4Nzc=;exp=1785528696\",\"host\":\"legends-os-beta.ver
+cel.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGci
+OiJlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25
+hdHVyZSI6Ik1FVUNJUUNzRHk4RFpScHVoUjFVTlBiaGorQVhOc1RrVDRLQmNxcVA4dWZKb2I5V013SW
+dGY09zVWRWUmxkdENhbmJkV0hPSGZkRWlIT01xMlgzSnNUa1JuaXQ1RmtjPSIsImRpZ2VzdCI6IlNIQ
+TEifQ==\",\"x-forwarded-for\":\"216.113.184.104\",\"x-forwarded-host\":\"legend
+-----
+MATCH LINE 791:
+,\"eiasToken\":\"nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6MElIqpDpWBoA6dj6x9nY+seQ==\"}}}}
+"}]}
+  vercel_logs.json:8:{"id":"xtfm8-1785528396812-1e6a9214b8ae","timestamp":17855
+28396812,"deploymentId":"dpl_HDU8jTRGby4xePd6ddT23YBTZTHW","projectId":"prj_x6e
+SQwKAc3n7Fc0PnaeTe8HgDnbH","level":"info","message":"[eBay MADN] received 
+notification: {\"headers\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"c
+onnection\":\"close\",\"content-length\":\"436\",\"content-type\":\"application
+/json\",\"forwarded\":\"for=216.113.184.104;host=legends-os-beta.vercel.app;pro
+to=https;sig=0QmVhcmVyIDZiYzhmYWRkMGFiNTExMjQyYzc0MDk0ZWE0NzMyOTE3NzhhYjBmNjRhZ
+TQzMTJkNzVlZjA3NWU1MDQzNTU4Nzc=;exp=1785528696\",\"host\":\"legends-os-beta.ver
+cel.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGci
+OiJlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25
+hdHVyZSI6Ik1FVUNJUUNzRHk4RFpScHVoUjFVTlBiaGorQVhOc1RrVDRLQmNxcVA4dWZKb2I5V013SW
+dGY09zVWRWUmxkdENhbmJkV0hPSGZkRWlIT01xMlgzSnNUa1JuaXQ1RmtjPSIsImRpZ2VzdCI6IlNIQ
+TEifQ==\",\"x-forwarded-for\":\"216.113.184.104\",\"x-forwarded-host\":\"legend
+s-os-beta.vercel.app\",\"x-forwarded-port\":\"443\",\"x-forwarded-proto\":\"htt
+ps\",\"x-invocation-id\":\"cle1::xtfm8-1785528396812-1e6a9214b8ae\",\"x-matched
+-path\":\"/api/ebay/account-deletion\",\"x-real-ip\":\"216.113.184.104\",\"x-ve
+rcel-deployment-url\":\"legends-ohn61g79x-legends17.vercel.app\",\"x-vercel-ena
+ble-rewrite-caching\":\"1\",\"x-vercel-forwarded-for\":\"216.113.184.104\",\"x-
+vercel-id\":\"cle1::xtfm8-1785528396812-1e6a9214b8ae\",\"x-vercel-ip-as-number\
+-----
+MATCH LINE 798:
+/json\",\"forwarded\":\"for=216.113.184.104;host=legends-os-beta.vercel.app;pro
+to=https;sig=0QmVhcmVyIDZiYzhmYWRkMGFiNTExMjQyYzc0MDk0ZWE0NzMyOTE3NzhhYjBmNjRhZ
+TQzMTJkNzVlZjA3NWU1MDQzNTU4Nzc=;exp=1785528696\",\"host\":\"legends-os-beta.ver
+cel.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGci
+OiJlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25
+hdHVyZSI6Ik1FVUNJUUNzRHk4RFpScHVoUjFVTlBiaGorQVhOc1RrVDRLQmNxcVA4dWZKb2I5V013SW
+dGY09zVWRWUmxkdENhbmJkV0hPSGZkRWlIT01xMlgzSnNUa1JuaXQ1RmtjPSIsImRpZ2VzdCI6IlNIQ
+TEifQ==\",\"x-forwarded-for\":\"216.113.184.104\",\"x-forwarded-host\":\"legend
+s-os-beta.vercel.app\",\"x-forwarded-port\":\"443\",\"x-forwarded-proto\":\"htt
+ps\",\"x-invocation-id\":\"cle1::xtfm8-1785528396812-1e6a9214b8ae\",\"x-matched
+-path\":\"/api/ebay/account-deletion\",\"x-real-ip\":\"216.113.184.104\",\"x-ve
+rcel-deployment-url\":\"legends-ohn61g79x-legends17.vercel.app\",\"x-vercel-ena
+ble-rewrite-caching\":\"1\",\"x-vercel-forwarded-for\":\"216.113.184.104\",\"x-
+vercel-id\":\"cle1::xtfm8-1785528396812-1e6a9214b8ae\",\"x-vercel-ip-as-number\
+":\"11643\",\"x-vercel-ip-continent\":\"NA\",\"x-vercel-ip-country\":\"US\",\"x
+-vercel-ip-latitude\":\"37.751\",\"x-vercel-ip-longitude\":\"-97.822\",\"x-verc
+el-ip-timezone\":\"America/Chicago\",\"x-vercel-ja4-digest\":\"t12d091100_08d6d
+9b33cd7_6d6c278f61f2\",\"x-vercel-oidc-token\":\"eyJ0eXAiOiJKV1QiLCJraWQiOiJtcm
+stNDMwMmVjMWI2NzBmNDhhOThhZDYxZGFkZTRhMjNiZTciLCJhbGciOiJSUzI1NiJ9.eyJuYmYiOjE3
+ODU1MjMzOTgsImlzcyI6Imh0dHBzOlwvXC9vaWRjLnZlcmNlbC5jb21cL2xlZ2VuZHMxNyIsInByb2p
+lY3QiOiJsZWdlbmRzLW9zIiwic3ViIjoib3duZXI6bGVnZW5kczE3OnByb2plY3Q6bGVnZW5kcy1vcz
+-----
+MATCH LINE 839:
+ZkZFQyM1lCVFpUSFciLCJyZXF1ZXN0SWQiOiJ4dGZtOC0xNzg1NTI4Mzk2ODEyLTFlNmE5MjE0YjhhZ
+SIsImVudiI6InByb2R1Y3Rpb24ifQ.sJ8d4sc6ADC9Jf8Cfvoxh9biY7KaV1fMKIHGEZZiglQ\\\"}\
+",\"x-vercel-sc-host\":\"iad1.suspense-cache.vercel-infra.com\"},\"payload\":{\
+"metadata\":{\"topic\":\"MARKETPLACE_ACCOUNT_DELETION\",\"schemaVersion\":\"1.0
+\",\"deprecated\":false},\"notification\":{\"notificationId\":\"d1d0f4c7-1a53-4
+188-9f07-c653c89525c3_ac97457f-5752-48bd-88a7-35f1f2f606b3\",\"eventDate\":\"20
+26-07-31T20:06:36.525Z\",\"publishDate\":\"2026-07-31T20:06:36.541Z\",\"publish
+AttemptCount\":1,\"data\":{\"username\":\"meloonie130\",\"userId\":\"dvlLltn_Rq
+O\",\"eiasToken\":\"nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6wJmYqmDZiBowydj6x9nY+seQ==\"}
+}}}","source":"serverless","domain":"legends-os-beta.vercel.app","requestMethod
+":"POST","requestPath":"/api/ebay/account-deletion","responseStatusCode":200,"e
+nvironment":"production","branch":"","cache":"MISS","cacheReason":"","pprState"
+:"","traceId":"","logs":[{"level":"info","message":"[eBay MADN] received 
+notification: {\"headers\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"c
+onnection\":\"close\",\"content-length\":\"436\",\"content-type\":\"application
+/json\",\"forwarded\":\"for=216.113.184.104;host=legends-os-beta.vercel.app;pro
+to=https;sig=0QmVhcmVyIDZiYzhmYWRkMGFiNTExMjQyYzc0MDk0ZWE0NzMyOTE3NzhhYjBmNjRhZ
+TQzMTJkNzVlZjA3NWU1MDQzNTU4Nzc=;exp=1785528696\",\"host\":\"legends-os-beta.ver
+cel.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGci
+OiJlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25
+hdHVyZSI6Ik1FVUNJUUNzRHk4RFpScHVoUjFVTlBiaGorQVhOc1RrVDRLQmNxcVA4dWZKb2I5V013SW
+-----
+MATCH LINE 841:
+",\"x-vercel-sc-host\":\"iad1.suspense-cache.vercel-infra.com\"},\"payload\":{\
+"metadata\":{\"topic\":\"MARKETPLACE_ACCOUNT_DELETION\",\"schemaVersion\":\"1.0
+\",\"deprecated\":false},\"notification\":{\"notificationId\":\"d1d0f4c7-1a53-4
+188-9f07-c653c89525c3_ac97457f-5752-48bd-88a7-35f1f2f606b3\",\"eventDate\":\"20
+26-07-31T20:06:36.525Z\",\"publishDate\":\"2026-07-31T20:06:36.541Z\",\"publish
+AttemptCount\":1,\"data\":{\"username\":\"meloonie130\",\"userId\":\"dvlLltn_Rq
+O\",\"eiasToken\":\"nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6wJmYqmDZiBowydj6x9nY+seQ==\"}
+}}}","source":"serverless","domain":"legends-os-beta.vercel.app","requestMethod
+":"POST","requestPath":"/api/ebay/account-deletion","responseStatusCode":200,"e
+nvironment":"production","branch":"","cache":"MISS","cacheReason":"","pprState"
+:"","traceId":"","logs":[{"level":"info","message":"[eBay MADN] received 
+notification: {\"headers\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"c
+onnection\":\"close\",\"content-length\":\"436\",\"content-type\":\"application
+/json\",\"forwarded\":\"for=216.113.184.104;host=legends-os-beta.vercel.app;pro
+to=https;sig=0QmVhcmVyIDZiYzhmYWRkMGFiNTExMjQyYzc0MDk0ZWE0NzMyOTE3NzhhYjBmNjRhZ
+TQzMTJkNzVlZjA3NWU1MDQzNTU4Nzc=;exp=1785528696\",\"host\":\"legends-os-beta.ver
+cel.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGci
+OiJlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25
+hdHVyZSI6Ik1FVUNJUUNzRHk4RFpScHVoUjFVTlBiaGorQVhOc1RrVDRLQmNxcVA4dWZKb2I5V013SW
+dGY09zVWRWUmxkdENhbmJkV0hPSGZkRWlIT01xMlgzSnNUa1JuaXQ1RmtjPSIsImRpZ2VzdCI6IlNIQ
+TEifQ==\",\"x-forwarded-for\":\"216.113.184.104\",\"x-forwarded-host\":\"legend
+-----
+MATCH LINE 847:
+O\",\"eiasToken\":\"nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6wJmYqmDZiBowydj6x9nY+seQ==\"}
+}}}","source":"serverless","domain":"legends-os-beta.vercel.app","requestMethod
+":"POST","requestPath":"/api/ebay/account-deletion","responseStatusCode":200,"e
+nvironment":"production","branch":"","cache":"MISS","cacheReason":"","pprState"
+:"","traceId":"","logs":[{"level":"info","message":"[eBay MADN] received 
+notification: {\"headers\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"c
+onnection\":\"close\",\"content-length\":\"436\",\"content-type\":\"application
+/json\",\"forwarded\":\"for=216.113.184.104;host=legends-os-beta.vercel.app;pro
+to=https;sig=0QmVhcmVyIDZiYzhmYWRkMGFiNTExMjQyYzc0MDk0ZWE0NzMyOTE3NzhhYjBmNjRhZ
+TQzMTJkNzVlZjA3NWU1MDQzNTU4Nzc=;exp=1785528696\",\"host\":\"legends-os-beta.ver
+cel.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGci
+OiJlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25
+hdHVyZSI6Ik1FVUNJUUNzRHk4RFpScHVoUjFVTlBiaGorQVhOc1RrVDRLQmNxcVA4dWZKb2I5V013SW
+dGY09zVWRWUmxkdENhbmJkV0hPSGZkRWlIT01xMlgzSnNUa1JuaXQ1RmtjPSIsImRpZ2VzdCI6IlNIQ
+TEifQ==\",\"x-forwarded-for\":\"216.113.184.104\",\"x-forwarded-host\":\"legend
+s-os-beta.vercel.app\",\"x-forwarded-port\":\"443\",\"x-forwarded-proto\":\"htt
+ps\",\"x-invocation-id\":\"cle1::xtfm8-1785528396812-1e6a9214b8ae\",\"x-matched
+-path\":\"/api/ebay/account-deletion\",\"x-real-ip\":\"216.113.184.104\",\"x-ve
+rcel-deployment-url\":\"legends-ohn61g79x-legends17.vercel.app\",\"x-vercel-ena
+ble-rewrite-caching\":\"1\",\"x-vercel-forwarded-for\":\"216.113.184.104\",\"x-
+vercel-id\":\"cle1::xtfm8-1785528396812-1e6a9214b8ae\",\"x-vercel-ip-as-number\
+-----
+MATCH LINE 854:
+/json\",\"forwarded\":\"for=216.113.184.104;host=legends-os-beta.vercel.app;pro
+to=https;sig=0QmVhcmVyIDZiYzhmYWRkMGFiNTExMjQyYzc0MDk0ZWE0NzMyOTE3NzhhYjBmNjRhZ
+TQzMTJkNzVlZjA3NWU1MDQzNTU4Nzc=;exp=1785528696\",\"host\":\"legends-os-beta.ver
+cel.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGci
+OiJlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25
+hdHVyZSI6Ik1FVUNJUUNzRHk4RFpScHVoUjFVTlBiaGorQVhOc1RrVDRLQmNxcVA4dWZKb2I5V013SW
+dGY09zVWRWUmxkdENhbmJkV0hPSGZkRWlIT01xMlgzSnNUa1JuaXQ1RmtjPSIsImRpZ2VzdCI6IlNIQ
+TEifQ==\",\"x-forwarded-for\":\"216.113.184.104\",\"x-forwarded-host\":\"legend
+s-os-beta.vercel.app\",\"x-forwarded-port\":\"443\",\"x-forwarded-proto\":\"htt
+ps\",\"x-invocation-id\":\"cle1::xtfm8-1785528396812-1e6a9214b8ae\",\"x-matched
+-path\":\"/api/ebay/account-deletion\",\"x-real-ip\":\"216.113.184.104\",\"x-ve
+rcel-deployment-url\":\"legends-ohn61g79x-legends17.vercel.app\",\"x-vercel-ena
+ble-rewrite-caching\":\"1\",\"x-vercel-forwarded-for\":\"216.113.184.104\",\"x-
+vercel-id\":\"cle1::xtfm8-1785528396812-1e6a9214b8ae\",\"x-vercel-ip-as-number\
+":\"11643\",\"x-vercel-ip-continent\":\"NA\",\"x-vercel-ip-country\":\"US\",\"x
+-vercel-ip-latitude\":\"37.751\",\"x-vercel-ip-longitude\":\"-97.822\",\"x-verc
+el-ip-timezone\":\"America/Chicago\",\"x-vercel-ja4-digest\":\"t12d091100_08d6d
+9b33cd7_6d6c278f61f2\",\"x-vercel-oidc-token\":\"eyJ0eXAiOiJKV1QiLCJraWQiOiJtcm
+stNDMwMmVjMWI2NzBmNDhhOThhZDYxZGFkZTRhMjNiZTciLCJhbGciOiJSUzI1NiJ9.eyJuYmYiOjE3
+ODU1MjMzOTgsImlzcyI6Imh0dHBzOlwvXC9vaWRjLnZlcmNlbC5jb21cL2xlZ2VuZHMxNyIsInByb2p
+lY3QiOiJsZWdlbmRzLW9zIiwic3ViIjoib3duZXI6bGVnZW5kczE3OnByb2plY3Q6bGVnZW5kcy1vcz
+-----
+MATCH LINE 897:
+",\"x-vercel-sc-host\":\"iad1.suspense-cache.vercel-infra.com\"},\"payload\":{\
+"metadata\":{\"topic\":\"MARKETPLACE_ACCOUNT_DELETION\",\"schemaVersion\":\"1.0
+\",\"deprecated\":false},\"notification\":{\"notificationId\":\"d1d0f4c7-1a53-4
+188-9f07-c653c89525c3_ac97457f-5752-48bd-88a7-35f1f2f606b3\",\"eventDate\":\"20
+26-07-31T20:06:36.525Z\",\"publishDate\":\"2026-07-31T20:06:36.541Z\",\"publish
+AttemptCount\":1,\"data\":{\"username\":\"meloonie130\",\"userId\":\"dvlLltn_Rq
+O\",\"eiasToken\":\"nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6wJmYqmDZiBowydj6x9nY+seQ==\"}
+}}}"}]}
+  vercel_logs.json:9:{"id":"8dbss-1785528394279-470d923300ae","timestamp":17855
+28394279,"deploymentId":"dpl_HDU8jTRGby4xePd6ddT23YBTZTHW","projectId":"prj_x6e
+SQwKAc3n7Fc0PnaeTe8HgDnbH","level":"info","message":"[eBay MADN] received 
+notification: {\"headers\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"c
+onnection\":\"close\",\"content-length\":\"434\",\"content-type\":\"application
+/json\",\"forwarded\":\"for=216.113.184.105;host=legends-os-beta.vercel.app;pro
+to=https;sig=0QmVhcmVyIDY0OWMwYTY3Zjc1NGE0NjczMGNkMmYxZGI1M2JiZTM1ZmY2ZTg0YTFkZ
+GJlM2Y3YWY5M2ZmOWEyNmUzZGM0MTE=;exp=1785528694\",\"host\":\"legends-os-beta.ver
+cel.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGci
+OiJlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25
+hdHVyZSI6Ik1FWUNJUUN1Q0FobHJobDdRR3N5bUVnR3p2dks2RzV2ZHJZVERhdGppYzlxeHZqR2RBSW
+hBTjEzRmljdjhVa3I0b0ZHT0dUanFZZ0ZHODVYdW84dldVVHhKOFZaZmpFRSIsImRpZ2VzdCI6IlNIQ
+TEifQ==\",\"x-forwarded-for\":\"216.113.184.105\",\"x-forwarded-host\":\"legend
+-----
+MATCH LINE 903:
+O\",\"eiasToken\":\"nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6wJmYqmDZiBowydj6x9nY+seQ==\"}
+}}}"}]}
+  vercel_logs.json:9:{"id":"8dbss-1785528394279-470d923300ae","timestamp":17855
+28394279,"deploymentId":"dpl_HDU8jTRGby4xePd6ddT23YBTZTHW","projectId":"prj_x6e
+SQwKAc3n7Fc0PnaeTe8HgDnbH","level":"info","message":"[eBay MADN] received 
+notification: {\"headers\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"c
+onnection\":\"close\",\"content-length\":\"434\",\"content-type\":\"application
+/json\",\"forwarded\":\"for=216.113.184.105;host=legends-os-beta.vercel.app;pro
+to=https;sig=0QmVhcmVyIDY0OWMwYTY3Zjc1NGE0NjczMGNkMmYxZGI1M2JiZTM1ZmY2ZTg0YTFkZ
+GJlM2Y3YWY5M2ZmOWEyNmUzZGM0MTE=;exp=1785528694\",\"host\":\"legends-os-beta.ver
+cel.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGci
+OiJlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25
+hdHVyZSI6Ik1FWUNJUUN1Q0FobHJobDdRR3N5bUVnR3p2dks2RzV2ZHJZVERhdGppYzlxeHZqR2RBSW
+hBTjEzRmljdjhVa3I0b0ZHT0dUanFZZ0ZHODVYdW84dldVVHhKOFZaZmpFRSIsImRpZ2VzdCI6IlNIQ
+TEifQ==\",\"x-forwarded-for\":\"216.113.184.105\",\"x-forwarded-host\":\"legend
+s-os-beta.vercel.app\",\"x-forwarded-port\":\"443\",\"x-forwarded-proto\":\"htt
+ps\",\"x-invocation-id\":\"cle1::8dbss-1785528394279-470d923300ae\",\"x-matched
+-path\":\"/api/ebay/account-deletion\",\"x-real-ip\":\"216.113.184.105\",\"x-ve
+rcel-deployment-url\":\"legends-ohn61g79x-legends17.vercel.app\",\"x-vercel-ena
+ble-rewrite-caching\":\"1\",\"x-vercel-forwarded-for\":\"216.113.184.105\",\"x-
+vercel-id\":\"cle1::8dbss-1785528394279-470d923300ae\",\"x-vercel-ip-as-number\
+-----
+MATCH LINE 910:
+/json\",\"forwarded\":\"for=216.113.184.105;host=legends-os-beta.vercel.app;pro
+to=https;sig=0QmVhcmVyIDY0OWMwYTY3Zjc1NGE0NjczMGNkMmYxZGI1M2JiZTM1ZmY2ZTg0YTFkZ
+GJlM2Y3YWY5M2ZmOWEyNmUzZGM0MTE=;exp=1785528694\",\"host\":\"legends-os-beta.ver
+cel.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGci
+OiJlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25
+hdHVyZSI6Ik1FWUNJUUN1Q0FobHJobDdRR3N5bUVnR3p2dks2RzV2ZHJZVERhdGppYzlxeHZqR2RBSW
+hBTjEzRmljdjhVa3I0b0ZHT0dUanFZZ0ZHODVYdW84dldVVHhKOFZaZmpFRSIsImRpZ2VzdCI6IlNIQ
+TEifQ==\",\"x-forwarded-for\":\"216.113.184.105\",\"x-forwarded-host\":\"legend
+s-os-beta.vercel.app\",\"x-forwarded-port\":\"443\",\"x-forwarded-proto\":\"htt
+ps\",\"x-invocation-id\":\"cle1::8dbss-1785528394279-470d923300ae\",\"x-matched
+-path\":\"/api/ebay/account-deletion\",\"x-real-ip\":\"216.113.184.105\",\"x-ve
+rcel-deployment-url\":\"legends-ohn61g79x-legends17.vercel.app\",\"x-vercel-ena
+ble-rewrite-caching\":\"1\",\"x-vercel-forwarded-for\":\"216.113.184.105\",\"x-
+vercel-id\":\"cle1::8dbss-1785528394279-470d923300ae\",\"x-vercel-ip-as-number\
+":\"11643\",\"x-vercel-ip-continent\":\"NA\",\"x-vercel-ip-country\":\"US\",\"x
+-vercel-ip-latitude\":\"37.751\",\"x-vercel-ip-longitude\":\"-97.822\",\"x-verc
+el-ip-timezone\":\"America/Chicago\",\"x-vercel-ja4-digest\":\"t12d091100_08d6d
+9b33cd7_6d6c278f61f2\",\"x-vercel-oidc-token\":\"eyJ0eXAiOiJKV1QiLCJraWQiOiJtcm
+stNDMwMmVjMWI2NzBmNDhhOThhZDYxZGFkZTRhMjNiZTciLCJhbGciOiJSUzI1NiJ9.eyJuYmYiOjE3
+ODU1MjMzOTgsImlzcyI6Imh0dHBzOlwvXC9vaWRjLnZlcmNlbC5jb21cL2xlZ2VuZHMxNyIsInByb2p
+lY3QiOiJsZWdlbmRzLW9zIiwic3ViIjoib3duZXI6bGVnZW5kczE3OnByb2plY3Q6bGVnZW5kcy1vcz
+-----
+MATCH LINE 951:
+GVnZW5kcy1vcy1iZXRhLnZlcmNlbC5hcHAifQ.o5UgTjOrUlL1n3_Zy2z6TBQV_E4dNNt42nZveCIIc
+8M\\\",\\\"x-vercel-function-platform\\\":\\\"vercel\\\\/proxy+serverless\\\"}\
+",\"x-vercel-sc-host\":\"iad1.suspense-cache.vercel-infra.com\"},\"payload\":{\
+"metadata\":{\"topic\":\"MARKETPLACE_ACCOUNT_DELETION\",\"schemaVersion\":\"1.0
+\",\"deprecated\":false},\"notification\":{\"notificationId\":\"0ae11088-9a72-4
+724-95a4-8daa5548abff_1df89c8a-37e4-427c-9fba-1e3dd3630b32\",\"eventDate\":\"20
+26-07-31T20:06:34.015Z\",\"publishDate\":\"2026-07-31T20:06:34.028Z\",\"publish
+AttemptCount\":1,\"data\":{\"username\":\"la-289019\",\"userId\":\"kdhkbm_hqf2\
+",\"eiasToken\":\"nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6MMloWoDZWDpw6dj6x9nY+seQ==\"}}}
+}","source":"serverless","domain":"legends-os-beta.vercel.app","requestMethod":
+"POST","requestPath":"/api/ebay/account-deletion","responseStatusCode":200,"env
+ironment":"production","branch":"","cache":"MISS","cacheReason":"","pprState":"
+","traceId":"","logs":[{"level":"info","message":"[eBay MADN] received 
+notification: {\"headers\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"c
+onnection\":\"close\",\"content-length\":\"434\",\"content-type\":\"application
+/json\",\"forwarded\":\"for=216.113.184.105;host=legends-os-beta.vercel.app;pro
+to=https;sig=0QmVhcmVyIDY0OWMwYTY3Zjc1NGE0NjczMGNkMmYxZGI1M2JiZTM1ZmY2ZTg0YTFkZ
+GJlM2Y3YWY5M2ZmOWEyNmUzZGM0MTE=;exp=1785528694\",\"host\":\"legends-os-beta.ver
+cel.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGci
+OiJlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25
+hdHVyZSI6Ik1FWUNJUUN1Q0FobHJobDdRR3N5bUVnR3p2dks2RzV2ZHJZVERhdGppYzlxeHZqR2RBSW
+-----
+MATCH LINE 953:
+",\"x-vercel-sc-host\":\"iad1.suspense-cache.vercel-infra.com\"},\"payload\":{\
+"metadata\":{\"topic\":\"MARKETPLACE_ACCOUNT_DELETION\",\"schemaVersion\":\"1.0
+\",\"deprecated\":false},\"notification\":{\"notificationId\":\"0ae11088-9a72-4
+724-95a4-8daa5548abff_1df89c8a-37e4-427c-9fba-1e3dd3630b32\",\"eventDate\":\"20
+26-07-31T20:06:34.015Z\",\"publishDate\":\"2026-07-31T20:06:34.028Z\",\"publish
+AttemptCount\":1,\"data\":{\"username\":\"la-289019\",\"userId\":\"kdhkbm_hqf2\
+",\"eiasToken\":\"nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6MMloWoDZWDpw6dj6x9nY+seQ==\"}}}
+}","source":"serverless","domain":"legends-os-beta.vercel.app","requestMethod":
+"POST","requestPath":"/api/ebay/account-deletion","responseStatusCode":200,"env
+ironment":"production","branch":"","cache":"MISS","cacheReason":"","pprState":"
+","traceId":"","logs":[{"level":"info","message":"[eBay MADN] received 
+notification: {\"headers\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"c
+onnection\":\"close\",\"content-length\":\"434\",\"content-type\":\"application
+/json\",\"forwarded\":\"for=216.113.184.105;host=legends-os-beta.vercel.app;pro
+to=https;sig=0QmVhcmVyIDY0OWMwYTY3Zjc1NGE0NjczMGNkMmYxZGI1M2JiZTM1ZmY2ZTg0YTFkZ
+GJlM2Y3YWY5M2ZmOWEyNmUzZGM0MTE=;exp=1785528694\",\"host\":\"legends-os-beta.ver
+cel.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGci
+OiJlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25
+hdHVyZSI6Ik1FWUNJUUN1Q0FobHJobDdRR3N5bUVnR3p2dks2RzV2ZHJZVERhdGppYzlxeHZqR2RBSW
+hBTjEzRmljdjhVa3I0b0ZHT0dUanFZZ0ZHODVYdW84dldVVHhKOFZaZmpFRSIsImRpZ2VzdCI6IlNIQ
+TEifQ==\",\"x-forwarded-for\":\"216.113.184.105\",\"x-forwarded-host\":\"legend
+-----
+MATCH LINE 959:
+",\"eiasToken\":\"nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6MMloWoDZWDpw6dj6x9nY+seQ==\"}}}
+}","source":"serverless","domain":"legends-os-beta.vercel.app","requestMethod":
+"POST","requestPath":"/api/ebay/account-deletion","responseStatusCode":200,"env
+ironment":"production","branch":"","cache":"MISS","cacheReason":"","pprState":"
+","traceId":"","logs":[{"level":"info","message":"[eBay MADN] received 
+notification: {\"headers\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"c
+onnection\":\"close\",\"content-length\":\"434\",\"content-type\":\"application
+/json\",\"forwarded\":\"for=216.113.184.105;host=legends-os-beta.vercel.app;pro
+to=https;sig=0QmVhcmVyIDY0OWMwYTY3Zjc1NGE0NjczMGNkMmYxZGI1M2JiZTM1ZmY2ZTg0YTFkZ
+GJlM2Y3YWY5M2ZmOWEyNmUzZGM0MTE=;exp=1785528694\",\"host\":\"legends-os-beta.ver
+cel.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGci
+OiJlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25
+hdHVyZSI6Ik1FWUNJUUN1Q0FobHJobDdRR3N5bUVnR3p2dks2RzV2ZHJZVERhdGppYzlxeHZqR2RBSW
+hBTjEzRmljdjhVa3I0b0ZHT0dUanFZZ0ZHODVYdW84dldVVHhKOFZaZmpFRSIsImRpZ2VzdCI6IlNIQ
+TEifQ==\",\"x-forwarded-for\":\"216.113.184.105\",\"x-forwarded-host\":\"legend
+s-os-beta.vercel.app\",\"x-forwarded-port\":\"443\",\"x-forwarded-proto\":\"htt
+ps\",\"x-invocation-id\":\"cle1::8dbss-1785528394279-470d923300ae\",\"x-matched
+-path\":\"/api/ebay/account-deletion\",\"x-real-ip\":\"216.113.184.105\",\"x-ve
+rcel-deployment-url\":\"legends-ohn61g79x-legends17.vercel.app\",\"x-vercel-ena
+ble-rewrite-caching\":\"1\",\"x-vercel-forwarded-for\":\"216.113.184.105\",\"x-
+vercel-id\":\"cle1::8dbss-1785528394279-470d923300ae\",\"x-vercel-ip-as-number\
+-----
+MATCH LINE 966:
+/json\",\"forwarded\":\"for=216.113.184.105;host=legends-os-beta.vercel.app;pro
+to=https;sig=0QmVhcmVyIDY0OWMwYTY3Zjc1NGE0NjczMGNkMmYxZGI1M2JiZTM1ZmY2ZTg0YTFkZ
+GJlM2Y3YWY5M2ZmOWEyNmUzZGM0MTE=;exp=1785528694\",\"host\":\"legends-os-beta.ver
+cel.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGci
+OiJlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25
+hdHVyZSI6Ik1FWUNJUUN1Q0FobHJobDdRR3N5bUVnR3p2dks2RzV2ZHJZVERhdGppYzlxeHZqR2RBSW
+hBTjEzRmljdjhVa3I0b0ZHT0dUanFZZ0ZHODVYdW84dldVVHhKOFZaZmpFRSIsImRpZ2VzdCI6IlNIQ
+TEifQ==\",\"x-forwarded-for\":\"216.113.184.105\",\"x-forwarded-host\":\"legend
+s-os-beta.vercel.app\",\"x-forwarded-port\":\"443\",\"x-forwarded-proto\":\"htt
+ps\",\"x-invocation-id\":\"cle1::8dbss-1785528394279-470d923300ae\",\"x-matched
+-path\":\"/api/ebay/account-deletion\",\"x-real-ip\":\"216.113.184.105\",\"x-ve
+rcel-deployment-url\":\"legends-ohn61g79x-legends17.vercel.app\",\"x-vercel-ena
+ble-rewrite-caching\":\"1\",\"x-vercel-forwarded-for\":\"216.113.184.105\",\"x-
+vercel-id\":\"cle1::8dbss-1785528394279-470d923300ae\",\"x-vercel-ip-as-number\
+":\"11643\",\"x-vercel-ip-continent\":\"NA\",\"x-vercel-ip-country\":\"US\",\"x
+-vercel-ip-latitude\":\"37.751\",\"x-vercel-ip-longitude\":\"-97.822\",\"x-verc
+el-ip-timezone\":\"America/Chicago\",\"x-vercel-ja4-digest\":\"t12d091100_08d6d
+9b33cd7_6d6c278f61f2\",\"x-vercel-oidc-token\":\"eyJ0eXAiOiJKV1QiLCJraWQiOiJtcm
+stNDMwMmVjMWI2NzBmNDhhOThhZDYxZGFkZTRhMjNiZTciLCJhbGciOiJSUzI1NiJ9.eyJuYmYiOjE3
+ODU1MjMzOTgsImlzcyI6Imh0dHBzOlwvXC9vaWRjLnZlcmNlbC5jb21cL2xlZ2VuZHMxNyIsInByb2p
+lY3QiOiJsZWdlbmRzLW9zIiwic3ViIjoib3duZXI6bGVnZW5kczE3OnByb2plY3Q6bGVnZW5kcy1vcz
+-----
+MATCH LINE 1009:
+",\"x-vercel-sc-host\":\"iad1.suspense-cache.vercel-infra.com\"},\"payload\":{\
+"metadata\":{\"topic\":\"MARKETPLACE_ACCOUNT_DELETION\",\"schemaVersion\":\"1.0
+\",\"deprecated\":false},\"notification\":{\"notificationId\":\"0ae11088-9a72-4
+724-95a4-8daa5548abff_1df89c8a-37e4-427c-9fba-1e3dd3630b32\",\"eventDate\":\"20
+26-07-31T20:06:34.015Z\",\"publishDate\":\"2026-07-31T20:06:34.028Z\",\"publish
+AttemptCount\":1,\"data\":{\"username\":\"la-289019\",\"userId\":\"kdhkbm_hqf2\
+",\"eiasToken\":\"nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6MMloWoDZWDpw6dj6x9nY+seQ==\"}}}
+}"}]}
+  vercel_logs.json:10:{"id":"9sqdw-1785528388225-fe29db1031bc","timestamp":1785
+528388225,"deploymentId":"dpl_HDU8jTRGby4xePd6ddT23YBTZTHW","projectId":"prj_x6
+eSQwKAc3n7Fc0PnaeTe8HgDnbH","level":"info","message":"[eBay MADN] received 
+notification: {\"headers\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"c
+onnection\":\"close\",\"content-length\":\"434\",\"content-type\":\"application
+/json\",\"forwarded\":\"for=66.211.183.70;host=legends-os-beta.vercel.app;proto
+=https;sig=0QmVhcmVyIGI4Yzg1ZTQ0YjJkN2EwODYwZTExNzg5NjBhN2QyZDJlNzQ4NTQ2NTAzYjE
+wZmVjMThlZTU4YWE5YjNiN2M4NGU=;exp=1785528688\",\"host\":\"legends-os-beta.verce
+l.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGciOi
+JlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25hd
+HVyZSI6Ik1FVUNJRVRuOGVsaDJsL0FMWmhDdVhWOTBNNklnVXJOSmZkd3Z3NXRGL01uREN1ZkFpRUFn
+Z2g4WnQwK0tsekt2MzRmQzU0UGRXRVR0b0FvbDZ3V3BjT0tTZlozZGVZPSIsImRpZ2VzdCI6IlNIQTE
+ifQ==\",\"x-forwarded-for\":\"66.211.183.70\",\"x-forwarded-host\":\"legends-os
+-----
+MATCH LINE 1015:
+",\"eiasToken\":\"nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6MMloWoDZWDpw6dj6x9nY+seQ==\"}}}
+}"}]}
+  vercel_logs.json:10:{"id":"9sqdw-1785528388225-fe29db1031bc","timestamp":1785
+528388225,"deploymentId":"dpl_HDU8jTRGby4xePd6ddT23YBTZTHW","projectId":"prj_x6
+eSQwKAc3n7Fc0PnaeTe8HgDnbH","level":"info","message":"[eBay MADN] received 
+notification: {\"headers\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"c
+onnection\":\"close\",\"content-length\":\"434\",\"content-type\":\"application
+/json\",\"forwarded\":\"for=66.211.183.70;host=legends-os-beta.vercel.app;proto
+=https;sig=0QmVhcmVyIGI4Yzg1ZTQ0YjJkN2EwODYwZTExNzg5NjBhN2QyZDJlNzQ4NTQ2NTAzYjE
+wZmVjMThlZTU4YWE5YjNiN2M4NGU=;exp=1785528688\",\"host\":\"legends-os-beta.verce
+l.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGciOi
+JlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25hd
+HVyZSI6Ik1FVUNJRVRuOGVsaDJsL0FMWmhDdVhWOTBNNklnVXJOSmZkd3Z3NXRGL01uREN1ZkFpRUFn
+Z2g4WnQwK0tsekt2MzRmQzU0UGRXRVR0b0FvbDZ3V3BjT0tTZlozZGVZPSIsImRpZ2VzdCI6IlNIQTE
+ifQ==\",\"x-forwarded-for\":\"66.211.183.70\",\"x-forwarded-host\":\"legends-os
+-beta.vercel.app\",\"x-forwarded-port\":\"443\",\"x-forwarded-proto\":\"https\"
+,\"x-invocation-id\":\"sfo1::9sqdw-1785528388225-fe29db1031bc\",\"x-matched-pat
+h\":\"/api/ebay/account-deletion\",\"x-real-ip\":\"66.211.183.70\",\"x-vercel-d
+eployment-url\":\"legends-ohn61g79x-legends17.vercel.app\",\"x-vercel-enable-re
+write-caching\":\"1\",\"x-vercel-forwarded-for\":\"66.211.183.70\",\"x-vercel-i
+d\":\"sfo1::9sqdw-1785528388225-fe29db1031bc\",\"x-vercel-ip-as-number\":\"1164
+-----
+MATCH LINE 1022:
+/json\",\"forwarded\":\"for=66.211.183.70;host=legends-os-beta.vercel.app;proto
+=https;sig=0QmVhcmVyIGI4Yzg1ZTQ0YjJkN2EwODYwZTExNzg5NjBhN2QyZDJlNzQ4NTQ2NTAzYjE
+wZmVjMThlZTU4YWE5YjNiN2M4NGU=;exp=1785528688\",\"host\":\"legends-os-beta.verce
+l.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGciOi
+JlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25hd
+HVyZSI6Ik1FVUNJRVRuOGVsaDJsL0FMWmhDdVhWOTBNNklnVXJOSmZkd3Z3NXRGL01uREN1ZkFpRUFn
+Z2g4WnQwK0tsekt2MzRmQzU0UGRXRVR0b0FvbDZ3V3BjT0tTZlozZGVZPSIsImRpZ2VzdCI6IlNIQTE
+ifQ==\",\"x-forwarded-for\":\"66.211.183.70\",\"x-forwarded-host\":\"legends-os
+-beta.vercel.app\",\"x-forwarded-port\":\"443\",\"x-forwarded-proto\":\"https\"
+,\"x-invocation-id\":\"sfo1::9sqdw-1785528388225-fe29db1031bc\",\"x-matched-pat
+h\":\"/api/ebay/account-deletion\",\"x-real-ip\":\"66.211.183.70\",\"x-vercel-d
+eployment-url\":\"legends-ohn61g79x-legends17.vercel.app\",\"x-vercel-enable-re
+write-caching\":\"1\",\"x-vercel-forwarded-for\":\"66.211.183.70\",\"x-vercel-i
+d\":\"sfo1::9sqdw-1785528388225-fe29db1031bc\",\"x-vercel-ip-as-number\":\"1164
+3\",\"x-vercel-ip-continent\":\"NA\",\"x-vercel-ip-country\":\"US\",\"x-vercel-
+ip-latitude\":\"37.751\",\"x-vercel-ip-longitude\":\"-97.822\",\"x-vercel-ip-ti
+mezone\":\"America/Chicago\",\"x-vercel-ja4-digest\":\"t12d091100_08d6d9b33cd7_
+6d6c278f61f2\",\"x-vercel-oidc-token\":\"eyJ0eXAiOiJKV1QiLCJraWQiOiJtcmstNDMwMm
+VjMWI2NzBmNDhhOThhZDYxZGFkZTRhMjNiZTciLCJhbGciOiJSUzI1NiJ9.eyJzY29wZSI6Im93bmVy
+OmxlZ2VuZHMxNzpwcm9qZWN0OmxlZ2VuZHMtb3M6ZW52aXJvbm1lbnQ6cHJvZHVjdGlvbiIsImF1ZCI
+6Imh0dHBzOlwvXC92ZXJjZWwuY29tXC9sZWdlbmRzMTciLCJleHAiOjE3ODU1MzQ5MjgsInN1YiI6Im
+-----
+MATCH LINE 1063:
+GDGo2rgW3DtA1El8WTOUIhSX0NThr3iSKX-Sc8S8\\\",\\\"x-vercel-function-platform\\\"
+:\\\"vercel\\\\/proxy+serverless\\\",\\\"x-vercel-ept\\\":\\\"1\\\"}\",\"x-verc
+el-sc-host\":\"iad1.suspense-cache.vercel-infra.com\"},\"payload\":{\"metadata\
+":{\"topic\":\"MARKETPLACE_ACCOUNT_DELETION\",\"schemaVersion\":\"1.0\",\"depre
+cated\":false},\"notification\":{\"notificationId\":\"c5a61605-1386-4191-b293-9
+57d7ae149c7_ddc3d635-a83a-4d1d-8168-98d2d854e0b3\",\"eventDate\":\"2026-07-31T2
+0:06:28.124Z\",\"publishDate\":\"2026-07-31T20:06:28.130Z\",\"publishAttemptCou
+nt\":1,\"data\":{\"username\":\"maryt7272\",\"userId\":\"cHnVNtGVQ3u\",\"eiasTo
+ken\":\"nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6AHloWjCpWFqAqdj6x9nY+seQ==\"}}}}","source
+":"serverless","domain":"legends-os-beta.vercel.app","requestMethod":"POST","re
+questPath":"/api/ebay/account-deletion","responseStatusCode":200,"environment":
+"production","branch":"","cache":"MISS","cacheReason":"","pprState":"","traceId
+":"","logs":[{"level":"info","message":"[eBay MADN] received notification: {\"h
+eaders\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"connection\":\"clos
+e\",\"content-length\":\"434\",\"content-type\":\"application/json\",\"forwarde
+d\":\"for=66.211.183.70;host=legends-os-beta.vercel.app;proto=https;sig=0QmVhcm
+VyIGI4Yzg1ZTQ0YjJkN2EwODYwZTExNzg5NjBhN2QyZDJlNzQ4NTQ2NTAzYjEwZmVjMThlZTU4YWE5Y
+jNiN2M4NGU=;exp=1785528688\",\"host\":\"legends-os-beta.vercel.app\",\"user-age
+nt\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGciOiJlY2RzYSIsImtpZCI6
+IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25hdHVyZSI6Ik1FVUNJRVR
+uOGVsaDJsL0FMWmhDdVhWOTBNNklnVXJOSmZkd3Z3NXRGL01uREN1ZkFpRUFnZ2g4WnQwK0tsekt2Mz
+-----
+MATCH LINE 1065:
+el-sc-host\":\"iad1.suspense-cache.vercel-infra.com\"},\"payload\":{\"metadata\
+":{\"topic\":\"MARKETPLACE_ACCOUNT_DELETION\",\"schemaVersion\":\"1.0\",\"depre
+cated\":false},\"notification\":{\"notificationId\":\"c5a61605-1386-4191-b293-9
+57d7ae149c7_ddc3d635-a83a-4d1d-8168-98d2d854e0b3\",\"eventDate\":\"2026-07-31T2
+0:06:28.124Z\",\"publishDate\":\"2026-07-31T20:06:28.130Z\",\"publishAttemptCou
+nt\":1,\"data\":{\"username\":\"maryt7272\",\"userId\":\"cHnVNtGVQ3u\",\"eiasTo
+ken\":\"nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6AHloWjCpWFqAqdj6x9nY+seQ==\"}}}}","source
+":"serverless","domain":"legends-os-beta.vercel.app","requestMethod":"POST","re
+questPath":"/api/ebay/account-deletion","responseStatusCode":200,"environment":
+"production","branch":"","cache":"MISS","cacheReason":"","pprState":"","traceId
+":"","logs":[{"level":"info","message":"[eBay MADN] received notification: {\"h
+eaders\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"connection\":\"clos
+e\",\"content-length\":\"434\",\"content-type\":\"application/json\",\"forwarde
+d\":\"for=66.211.183.70;host=legends-os-beta.vercel.app;proto=https;sig=0QmVhcm
+VyIGI4Yzg1ZTQ0YjJkN2EwODYwZTExNzg5NjBhN2QyZDJlNzQ4NTQ2NTAzYjEwZmVjMThlZTU4YWE5Y
+jNiN2M4NGU=;exp=1785528688\",\"host\":\"legends-os-beta.vercel.app\",\"user-age
+nt\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGciOiJlY2RzYSIsImtpZCI6
+IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25hdHVyZSI6Ik1FVUNJRVR
+uOGVsaDJsL0FMWmhDdVhWOTBNNklnVXJOSmZkd3Z3NXRGL01uREN1ZkFpRUFnZ2g4WnQwK0tsekt2Mz
+RmQzU0UGRXRVR0b0FvbDZ3V3BjT0tTZlozZGVZPSIsImRpZ2VzdCI6IlNIQTEifQ==\",\"x-forwar
+ded-for\":\"66.211.183.70\",\"x-forwarded-host\":\"legends-os-beta.vercel.app\"
+-----
+MATCH LINE 1071:
+ken\":\"nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6AHloWjCpWFqAqdj6x9nY+seQ==\"}}}}","source
+":"serverless","domain":"legends-os-beta.vercel.app","requestMethod":"POST","re
+questPath":"/api/ebay/account-deletion","responseStatusCode":200,"environment":
+"production","branch":"","cache":"MISS","cacheReason":"","pprState":"","traceId
+":"","logs":[{"level":"info","message":"[eBay MADN] received notification: {\"h
+eaders\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"connection\":\"clos
+e\",\"content-length\":\"434\",\"content-type\":\"application/json\",\"forwarde
+d\":\"for=66.211.183.70;host=legends-os-beta.vercel.app;proto=https;sig=0QmVhcm
+VyIGI4Yzg1ZTQ0YjJkN2EwODYwZTExNzg5NjBhN2QyZDJlNzQ4NTQ2NTAzYjEwZmVjMThlZTU4YWE5Y
+jNiN2M4NGU=;exp=1785528688\",\"host\":\"legends-os-beta.vercel.app\",\"user-age
+nt\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGciOiJlY2RzYSIsImtpZCI6
+IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25hdHVyZSI6Ik1FVUNJRVR
+uOGVsaDJsL0FMWmhDdVhWOTBNNklnVXJOSmZkd3Z3NXRGL01uREN1ZkFpRUFnZ2g4WnQwK0tsekt2Mz
+RmQzU0UGRXRVR0b0FvbDZ3V3BjT0tTZlozZGVZPSIsImRpZ2VzdCI6IlNIQTEifQ==\",\"x-forwar
+ded-for\":\"66.211.183.70\",\"x-forwarded-host\":\"legends-os-beta.vercel.app\"
+,\"x-forwarded-port\":\"443\",\"x-forwarded-proto\":\"https\",\"x-invocation-id
+\":\"sfo1::9sqdw-1785528388225-fe29db1031bc\",\"x-matched-path\":\"/api/ebay/ac
+count-deletion\",\"x-real-ip\":\"66.211.183.70\",\"x-vercel-deployment-url\":\"
+legends-ohn61g79x-legends17.vercel.app\",\"x-vercel-enable-rewrite-caching\":\"
+1\",\"x-vercel-forwarded-for\":\"66.211.183.70\",\"x-vercel-id\":\"sfo1::9sqdw-
+1785528388225-fe29db1031bc\",\"x-vercel-ip-as-number\":\"11643\",\"x-vercel-ip-
+-----
+MATCH LINE 1077:
+e\",\"content-length\":\"434\",\"content-type\":\"application/json\",\"forwarde
+d\":\"for=66.211.183.70;host=legends-os-beta.vercel.app;proto=https;sig=0QmVhcm
+VyIGI4Yzg1ZTQ0YjJkN2EwODYwZTExNzg5NjBhN2QyZDJlNzQ4NTQ2NTAzYjEwZmVjMThlZTU4YWE5Y
+jNiN2M4NGU=;exp=1785528688\",\"host\":\"legends-os-beta.vercel.app\",\"user-age
+nt\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGciOiJlY2RzYSIsImtpZCI6
+IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25hdHVyZSI6Ik1FVUNJRVR
+uOGVsaDJsL0FMWmhDdVhWOTBNNklnVXJOSmZkd3Z3NXRGL01uREN1ZkFpRUFnZ2g4WnQwK0tsekt2Mz
+RmQzU0UGRXRVR0b0FvbDZ3V3BjT0tTZlozZGVZPSIsImRpZ2VzdCI6IlNIQTEifQ==\",\"x-forwar
+ded-for\":\"66.211.183.70\",\"x-forwarded-host\":\"legends-os-beta.vercel.app\"
+,\"x-forwarded-port\":\"443\",\"x-forwarded-proto\":\"https\",\"x-invocation-id
+\":\"sfo1::9sqdw-1785528388225-fe29db1031bc\",\"x-matched-path\":\"/api/ebay/ac
+count-deletion\",\"x-real-ip\":\"66.211.183.70\",\"x-vercel-deployment-url\":\"
+legends-ohn61g79x-legends17.vercel.app\",\"x-vercel-enable-rewrite-caching\":\"
+1\",\"x-vercel-forwarded-for\":\"66.211.183.70\",\"x-vercel-id\":\"sfo1::9sqdw-
+1785528388225-fe29db1031bc\",\"x-vercel-ip-as-number\":\"11643\",\"x-vercel-ip-
+continent\":\"NA\",\"x-vercel-ip-country\":\"US\",\"x-vercel-ip-latitude\":\"37
+.751\",\"x-vercel-ip-longitude\":\"-97.822\",\"x-vercel-ip-timezone\":\"America
+/Chicago\",\"x-vercel-ja4-digest\":\"t12d091100_08d6d9b33cd7_6d6c278f61f2\",\"x
+-vercel-oidc-token\":\"eyJ0eXAiOiJKV1QiLCJraWQiOiJtcmstNDMwMmVjMWI2NzBmNDhhOThh
+ZDYxZGFkZTRhMjNiZTciLCJhbGciOiJSUzI1NiJ9.eyJzY29wZSI6Im93bmVyOmxlZ2VuZHMxNzpwcm
+9qZWN0OmxlZ2VuZHMtb3M6ZW52aXJvbm1lbnQ6cHJvZHVjdGlvbiIsImF1ZCI6Imh0dHBzOlwvXC92Z
+-----
+MATCH LINE 1120:
+oxy+serverless\\\",\\\"x-vercel-ept\\\":\\\"1\\\"}\",\"x-vercel-sc-host\":\"iad
+1.suspense-cache.vercel-infra.com\"},\"payload\":{\"metadata\":{\"topic\":\"MAR
+KETPLACE_ACCOUNT_DELETION\",\"schemaVersion\":\"1.0\",\"deprecated\":false},\"n
+otification\":{\"notificationId\":\"c5a61605-1386-4191-b293-957d7ae149c7_ddc3d6
+35-a83a-4d1d-8168-98d2d854e0b3\",\"eventDate\":\"2026-07-31T20:06:28.124Z\",\"p
+ublishDate\":\"2026-07-31T20:06:28.130Z\",\"publishAttemptCount\":1,\"data\":{\
+"username\":\"maryt7272\",\"userId\":\"cHnVNtGVQ3u\",\"eiasToken\":\"nY+sHZ2PrB
+mdj6wVnY+sEZ2PrA2dj6AHloWjCpWFqAqdj6x9nY+seQ==\"}}}}"}]}
+  vercel_logs.json:11:{"id":"vd6vn-1785528388209-0b2208db590d","timestamp":1785
+528388209,"deploymentId":"dpl_HDU8jTRGby4xePd6ddT23YBTZTHW","projectId":"prj_x6
+eSQwKAc3n7Fc0PnaeTe8HgDnbH","level":"info","message":"[eBay MADN] received 
+notification: {\"headers\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"c
+onnection\":\"close\",\"content-length\":\"444\",\"content-type\":\"application
+/json\",\"forwarded\":\"for=66.211.183.70;host=legends-os-beta.vercel.app;proto
+=https;sig=0QmVhcmVyIGI4Yzg1ZTQ0YjJkN2EwODYwZTExNzg5NjBhN2QyZDJlNzQ4NTQ2NTAzYjE
+wZmVjMThlZTU4YWE5YjNiN2M4NGU=;exp=1785528688\",\"host\":\"legends-os-beta.verce
+l.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGciOi
+JlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25hd
+HVyZSI6Ik1FUUNJRVFTZENwT0ZmdDRPUjViT2x3aTNEaTdsM3dUbWovbmN0M2J4NUpwcUgwcEFpQnFX
+V3cyYlVPRmVNWGpyaWtGRXZ6eGRBL3ViNzBzQ2JFZFBmbHRpZi9PQnc9PSIsImRpZ2VzdCI6IlNIQTE
+ifQ==\",\"x-forwarded-for\":\"66.211.183.70\",\"x-forwarded-host\":\"legends-os
+-----
+MATCH LINE 1126:
+"username\":\"maryt7272\",\"userId\":\"cHnVNtGVQ3u\",\"eiasToken\":\"nY+sHZ2PrB
+mdj6wVnY+sEZ2PrA2dj6AHloWjCpWFqAqdj6x9nY+seQ==\"}}}}"}]}
+  vercel_logs.json:11:{"id":"vd6vn-1785528388209-0b2208db590d","timestamp":1785
+528388209,"deploymentId":"dpl_HDU8jTRGby4xePd6ddT23YBTZTHW","projectId":"prj_x6
+eSQwKAc3n7Fc0PnaeTe8HgDnbH","level":"info","message":"[eBay MADN] received 
+notification: {\"headers\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"c
+onnection\":\"close\",\"content-length\":\"444\",\"content-type\":\"application
+/json\",\"forwarded\":\"for=66.211.183.70;host=legends-os-beta.vercel.app;proto
+=https;sig=0QmVhcmVyIGI4Yzg1ZTQ0YjJkN2EwODYwZTExNzg5NjBhN2QyZDJlNzQ4NTQ2NTAzYjE
+wZmVjMThlZTU4YWE5YjNiN2M4NGU=;exp=1785528688\",\"host\":\"legends-os-beta.verce
+l.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGciOi
+JlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25hd
+HVyZSI6Ik1FUUNJRVFTZENwT0ZmdDRPUjViT2x3aTNEaTdsM3dUbWovbmN0M2J4NUpwcUgwcEFpQnFX
+V3cyYlVPRmVNWGpyaWtGRXZ6eGRBL3ViNzBzQ2JFZFBmbHRpZi9PQnc9PSIsImRpZ2VzdCI6IlNIQTE
+ifQ==\",\"x-forwarded-for\":\"66.211.183.70\",\"x-forwarded-host\":\"legends-os
+-beta.vercel.app\",\"x-forwarded-port\":\"443\",\"x-forwarded-proto\":\"https\"
+,\"x-invocation-id\":\"sfo1::vd6vn-1785528388209-0b2208db590d\",\"x-matched-pat
+h\":\"/api/ebay/account-deletion\",\"x-real-ip\":\"66.211.183.70\",\"x-vercel-d
+eployment-url\":\"legends-ohn61g79x-legends17.vercel.app\",\"x-vercel-enable-re
+write-caching\":\"1\",\"x-vercel-forwarded-for\":\"66.211.183.70\",\"x-vercel-i
+d\":\"sfo1::vd6vn-1785528388209-0b2208db590d\",\"x-vercel-ip-as-number\":\"1164
+-----
+MATCH LINE 1133:
+/json\",\"forwarded\":\"for=66.211.183.70;host=legends-os-beta.vercel.app;proto
+=https;sig=0QmVhcmVyIGI4Yzg1ZTQ0YjJkN2EwODYwZTExNzg5NjBhN2QyZDJlNzQ4NTQ2NTAzYjE
+wZmVjMThlZTU4YWE5YjNiN2M4NGU=;exp=1785528688\",\"host\":\"legends-os-beta.verce
+l.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGciOi
+JlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25hd
+HVyZSI6Ik1FUUNJRVFTZENwT0ZmdDRPUjViT2x3aTNEaTdsM3dUbWovbmN0M2J4NUpwcUgwcEFpQnFX
+V3cyYlVPRmVNWGpyaWtGRXZ6eGRBL3ViNzBzQ2JFZFBmbHRpZi9PQnc9PSIsImRpZ2VzdCI6IlNIQTE
+ifQ==\",\"x-forwarded-for\":\"66.211.183.70\",\"x-forwarded-host\":\"legends-os
+-beta.vercel.app\",\"x-forwarded-port\":\"443\",\"x-forwarded-proto\":\"https\"
+,\"x-invocation-id\":\"sfo1::vd6vn-1785528388209-0b2208db590d\",\"x-matched-pat
+h\":\"/api/ebay/account-deletion\",\"x-real-ip\":\"66.211.183.70\",\"x-vercel-d
+eployment-url\":\"legends-ohn61g79x-legends17.vercel.app\",\"x-vercel-enable-re
+write-caching\":\"1\",\"x-vercel-forwarded-for\":\"66.211.183.70\",\"x-vercel-i
+d\":\"sfo1::vd6vn-1785528388209-0b2208db590d\",\"x-vercel-ip-as-number\":\"1164
+3\",\"x-vercel-ip-continent\":\"NA\",\"x-vercel-ip-country\":\"US\",\"x-vercel-
+ip-latitude\":\"37.751\",\"x-vercel-ip-longitude\":\"-97.822\",\"x-vercel-ip-ti
+mezone\":\"America/Chicago\",\"x-vercel-ja4-digest\":\"t12d091100_08d6d9b33cd7_
+6d6c278f61f2\",\"x-vercel-oidc-token\":\"eyJ0eXAiOiJKV1QiLCJraWQiOiJtcmstNDMwMm
+VjMWI2NzBmNDhhOThhZDYxZGFkZTRhMjNiZTciLCJhbGciOiJSUzI1NiJ9.eyJzY29wZSI6Im93bmVy
+OmxlZ2VuZHMxNzpwcm9qZWN0OmxlZ2VuZHMtb3M6ZW52aXJvbm1lbnQ6cHJvZHVjdGlvbiIsImF1ZCI
+6Imh0dHBzOlwvXC92ZXJjZWwuY29tXC9sZWdlbmRzMTciLCJleHAiOjE3ODU1MzQ5MjgsInN1YiI6Im
+-----
+MATCH LINE 1174:
+6InByal94NmVTUXdLQWMzbjdGYzBQbmFlVGU4SGdEbmJIIiwiYmxvY2siOmZhbHNlfQ.rT1eRGT7YOX
+N54BE_L17bXsXXuU1Mcmm6gOlOG8C6dM\\\",\\\"x-vercel-ept\\\":\\\"1\\\"}\",\"x-verc
+el-sc-host\":\"iad1.suspense-cache.vercel-infra.com\"},\"payload\":{\"metadata\
+":{\"topic\":\"MARKETPLACE_ACCOUNT_DELETION\",\"schemaVersion\":\"1.0\",\"depre
+cated\":false},\"notification\":{\"notificationId\":\"b3f11589-b6d8-435e-b407-b
+a14e4f048b6_fda4e0e8-8361-49ea-a6ac-e4502d053489\",\"eventDate\":\"2026-07-31T2
+0:06:28.122Z\",\"publishDate\":\"2026-07-31T20:06:28.131Z\",\"publishAttemptCou
+nt\":1,\"data\":{\"username\":\"victoriadrivetiffin\",\"userId\":\"kfflrbqfqwc\
+",\"eiasToken\":\"nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6MAk4unAJmBow2dj6x9nY+seQ==\"}}}
+}","source":"serverless","domain":"legends-os-beta.vercel.app","requestMethod":
+"POST","requestPath":"/api/ebay/account-deletion","responseStatusCode":200,"env
+ironment":"production","branch":"","cache":"MISS","cacheReason":"","pprState":"
+","traceId":"","logs":[{"level":"info","message":"[eBay MADN] received 
+notification: {\"headers\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"c
+onnection\":\"close\",\"content-length\":\"444\",\"content-type\":\"application
+/json\",\"forwarded\":\"for=66.211.183.70;host=legends-os-beta.vercel.app;proto
+=https;sig=0QmVhcmVyIGI4Yzg1ZTQ0YjJkN2EwODYwZTExNzg5NjBhN2QyZDJlNzQ4NTQ2NTAzYjE
+wZmVjMThlZTU4YWE5YjNiN2M4NGU=;exp=1785528688\",\"host\":\"legends-os-beta.verce
+l.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGciOi
+JlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25hd
+HVyZSI6Ik1FUUNJRVFTZENwT0ZmdDRPUjViT2x3aTNEaTdsM3dUbWovbmN0M2J4NUpwcUgwcEFpQnFX
+-----
+MATCH LINE 1176:
+el-sc-host\":\"iad1.suspense-cache.vercel-infra.com\"},\"payload\":{\"metadata\
+":{\"topic\":\"MARKETPLACE_ACCOUNT_DELETION\",\"schemaVersion\":\"1.0\",\"depre
+cated\":false},\"notification\":{\"notificationId\":\"b3f11589-b6d8-435e-b407-b
+a14e4f048b6_fda4e0e8-8361-49ea-a6ac-e4502d053489\",\"eventDate\":\"2026-07-31T2
+0:06:28.122Z\",\"publishDate\":\"2026-07-31T20:06:28.131Z\",\"publishAttemptCou
+nt\":1,\"data\":{\"username\":\"victoriadrivetiffin\",\"userId\":\"kfflrbqfqwc\
+",\"eiasToken\":\"nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6MAk4unAJmBow2dj6x9nY+seQ==\"}}}
+}","source":"serverless","domain":"legends-os-beta.vercel.app","requestMethod":
+"POST","requestPath":"/api/ebay/account-deletion","responseStatusCode":200,"env
+ironment":"production","branch":"","cache":"MISS","cacheReason":"","pprState":"
+","traceId":"","logs":[{"level":"info","message":"[eBay MADN] received 
+notification: {\"headers\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"c
+onnection\":\"close\",\"content-length\":\"444\",\"content-type\":\"application
+/json\",\"forwarded\":\"for=66.211.183.70;host=legends-os-beta.vercel.app;proto
+=https;sig=0QmVhcmVyIGI4Yzg1ZTQ0YjJkN2EwODYwZTExNzg5NjBhN2QyZDJlNzQ4NTQ2NTAzYjE
+wZmVjMThlZTU4YWE5YjNiN2M4NGU=;exp=1785528688\",\"host\":\"legends-os-beta.verce
+l.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGciOi
+JlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25hd
+HVyZSI6Ik1FUUNJRVFTZENwT0ZmdDRPUjViT2x3aTNEaTdsM3dUbWovbmN0M2J4NUpwcUgwcEFpQnFX
+V3cyYlVPRmVNWGpyaWtGRXZ6eGRBL3ViNzBzQ2JFZFBmbHRpZi9PQnc9PSIsImRpZ2VzdCI6IlNIQTE
+ifQ==\",\"x-forwarded-for\":\"66.211.183.70\",\"x-forwarded-host\":\"legends-os
+-----
+MATCH LINE 1182:
+",\"eiasToken\":\"nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6MAk4unAJmBow2dj6x9nY+seQ==\"}}}
+}","source":"serverless","domain":"legends-os-beta.vercel.app","requestMethod":
+"POST","requestPath":"/api/ebay/account-deletion","responseStatusCode":200,"env
+ironment":"production","branch":"","cache":"MISS","cacheReason":"","pprState":"
+","traceId":"","logs":[{"level":"info","message":"[eBay MADN] received 
+notification: {\"headers\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"c
+onnection\":\"close\",\"content-length\":\"444\",\"content-type\":\"application
+/json\",\"forwarded\":\"for=66.211.183.70;host=legends-os-beta.vercel.app;proto
+=https;sig=0QmVhcmVyIGI4Yzg1ZTQ0YjJkN2EwODYwZTExNzg5NjBhN2QyZDJlNzQ4NTQ2NTAzYjE
+wZmVjMThlZTU4YWE5YjNiN2M4NGU=;exp=1785528688\",\"host\":\"legends-os-beta.verce
+l.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGciOi
+JlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25hd
+HVyZSI6Ik1FUUNJRVFTZENwT0ZmdDRPUjViT2x3aTNEaTdsM3dUbWovbmN0M2J4NUpwcUgwcEFpQnFX
+V3cyYlVPRmVNWGpyaWtGRXZ6eGRBL3ViNzBzQ2JFZFBmbHRpZi9PQnc9PSIsImRpZ2VzdCI6IlNIQTE
+ifQ==\",\"x-forwarded-for\":\"66.211.183.70\",\"x-forwarded-host\":\"legends-os
+-beta.vercel.app\",\"x-forwarded-port\":\"443\",\"x-forwarded-proto\":\"https\"
+,\"x-invocation-id\":\"sfo1::vd6vn-1785528388209-0b2208db590d\",\"x-matched-pat
+h\":\"/api/ebay/account-deletion\",\"x-real-ip\":\"66.211.183.70\",\"x-vercel-d
+eployment-url\":\"legends-ohn61g79x-legends17.vercel.app\",\"x-vercel-enable-re
+write-caching\":\"1\",\"x-vercel-forwarded-for\":\"66.211.183.70\",\"x-vercel-i
+d\":\"sfo1::vd6vn-1785528388209-0b2208db590d\",\"x-vercel-ip-as-number\":\"1164
+-----
+MATCH LINE 1189:
+/json\",\"forwarded\":\"for=66.211.183.70;host=legends-os-beta.vercel.app;proto
+=https;sig=0QmVhcmVyIGI4Yzg1ZTQ0YjJkN2EwODYwZTExNzg5NjBhN2QyZDJlNzQ4NTQ2NTAzYjE
+wZmVjMThlZTU4YWE5YjNiN2M4NGU=;exp=1785528688\",\"host\":\"legends-os-beta.verce
+l.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGciOi
+JlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25hd
+HVyZSI6Ik1FUUNJRVFTZENwT0ZmdDRPUjViT2x3aTNEaTdsM3dUbWovbmN0M2J4NUpwcUgwcEFpQnFX
+V3cyYlVPRmVNWGpyaWtGRXZ6eGRBL3ViNzBzQ2JFZFBmbHRpZi9PQnc9PSIsImRpZ2VzdCI6IlNIQTE
+ifQ==\",\"x-forwarded-for\":\"66.211.183.70\",\"x-forwarded-host\":\"legends-os
+-beta.vercel.app\",\"x-forwarded-port\":\"443\",\"x-forwarded-proto\":\"https\"
+,\"x-invocation-id\":\"sfo1::vd6vn-1785528388209-0b2208db590d\",\"x-matched-pat
+h\":\"/api/ebay/account-deletion\",\"x-real-ip\":\"66.211.183.70\",\"x-vercel-d
+eployment-url\":\"legends-ohn61g79x-legends17.vercel.app\",\"x-vercel-enable-re
+write-caching\":\"1\",\"x-vercel-forwarded-for\":\"66.211.183.70\",\"x-vercel-i
+d\":\"sfo1::vd6vn-1785528388209-0b2208db590d\",\"x-vercel-ip-as-number\":\"1164
+3\",\"x-vercel-ip-continent\":\"NA\",\"x-vercel-ip-country\":\"US\",\"x-vercel-
+ip-latitude\":\"37.751\",\"x-vercel-ip-longitude\":\"-97.822\",\"x-vercel-ip-ti
+mezone\":\"America/Chicago\",\"x-vercel-ja4-digest\":\"t12d091100_08d6d9b33cd7_
+6d6c278f61f2\",\"x-vercel-oidc-token\":\"eyJ0eXAiOiJKV1QiLCJraWQiOiJtcmstNDMwMm
+VjMWI2NzBmNDhhOThhZDYxZGFkZTRhMjNiZTciLCJhbGciOiJSUzI1NiJ9.eyJzY29wZSI6Im93bmVy
+OmxlZ2VuZHMxNzpwcm9qZWN0OmxlZ2VuZHMtb3M6ZW52aXJvbm1lbnQ6cHJvZHVjdGlvbiIsImF1ZCI
+6Imh0dHBzOlwvXC92ZXJjZWwuY29tXC9sZWdlbmRzMTciLCJleHAiOjE3ODU1MzQ5MjgsInN1YiI6Im
+-----
+MATCH LINE 1232:
+el-sc-host\":\"iad1.suspense-cache.vercel-infra.com\"},\"payload\":{\"metadata\
+":{\"topic\":\"MARKETPLACE_ACCOUNT_DELETION\",\"schemaVersion\":\"1.0\",\"depre
+cated\":false},\"notification\":{\"notificationId\":\"b3f11589-b6d8-435e-b407-b
+a14e4f048b6_fda4e0e8-8361-49ea-a6ac-e4502d053489\",\"eventDate\":\"2026-07-31T2
+0:06:28.122Z\",\"publishDate\":\"2026-07-31T20:06:28.131Z\",\"publishAttemptCou
+nt\":1,\"data\":{\"username\":\"victoriadrivetiffin\",\"userId\":\"kfflrbqfqwc\
+",\"eiasToken\":\"nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6MAk4unAJmBow2dj6x9nY+seQ==\"}}}
+}"}]}
+  vercel_logs.json:12:{"id":"z6kb2-1785528384731-034d816c3c94","timestamp":1785
+528384731,"deploymentId":"dpl_HDU8jTRGby4xePd6ddT23YBTZTHW","projectId":"prj_x6
+eSQwKAc3n7Fc0PnaeTe8HgDnbH","level":"info","message":"[eBay MADN] received 
+notification: {\"headers\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"c
+onnection\":\"close\",\"content-length\":\"432\",\"content-type\":\"application
+/json\",\"forwarded\":\"for=66.211.183.74;host=legends-os-beta.vercel.app;proto
+=https;sig=0QmVhcmVyIGI1OWJiOTQyMGY2MjZiMThlMDgxOGY1OGZiZjg0NDI0OGZjYjdlOGNhNmN
+kNDk5MGIwYTgzYzZhNTRiOWQ0MDc=;exp=1785528684\",\"host\":\"legends-os-beta.verce
+l.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGciOi
+JlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25hd
+HVyZSI6Ik1FUUNJQXIwS2hpVHlFbmgxeUJkU2VWemowTmo3VE5IZ3lHR3N4V3pQQnNXemRuL0FpQVdh
+QjNOTm8zOVhnMy9oQmRocW1RR0g1UXhWZTlvemtmNnJoWUIwWlk1Rmc9PSIsImRpZ2VzdCI6IlNIQTE
+ifQ==\",\"x-forwarded-for\":\"66.211.183.74\",\"x-forwarded-host\":\"legends-os
+-----
+MATCH LINE 1238:
+",\"eiasToken\":\"nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6MAk4unAJmBow2dj6x9nY+seQ==\"}}}
+}"}]}
+  vercel_logs.json:12:{"id":"z6kb2-1785528384731-034d816c3c94","timestamp":1785
+528384731,"deploymentId":"dpl_HDU8jTRGby4xePd6ddT23YBTZTHW","projectId":"prj_x6
+eSQwKAc3n7Fc0PnaeTe8HgDnbH","level":"info","message":"[eBay MADN] received 
+notification: {\"headers\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"c
+onnection\":\"close\",\"content-length\":\"432\",\"content-type\":\"application
+/json\",\"forwarded\":\"for=66.211.183.74;host=legends-os-beta.vercel.app;proto
+=https;sig=0QmVhcmVyIGI1OWJiOTQyMGY2MjZiMThlMDgxOGY1OGZiZjg0NDI0OGZjYjdlOGNhNmN
+kNDk5MGIwYTgzYzZhNTRiOWQ0MDc=;exp=1785528684\",\"host\":\"legends-os-beta.verce
+l.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGciOi
+JlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25hd
+HVyZSI6Ik1FUUNJQXIwS2hpVHlFbmgxeUJkU2VWemowTmo3VE5IZ3lHR3N4V3pQQnNXemRuL0FpQVdh
+QjNOTm8zOVhnMy9oQmRocW1RR0g1UXhWZTlvemtmNnJoWUIwWlk1Rmc9PSIsImRpZ2VzdCI6IlNIQTE
+ifQ==\",\"x-forwarded-for\":\"66.211.183.74\",\"x-forwarded-host\":\"legends-os
+-beta.vercel.app\",\"x-forwarded-port\":\"443\",\"x-forwarded-proto\":\"https\"
+,\"x-invocation-id\":\"sfo1::z6kb2-1785528384731-034d816c3c94\",\"x-matched-pat
+h\":\"/api/ebay/account-deletion\",\"x-real-ip\":\"66.211.183.74\",\"x-vercel-d
+eployment-url\":\"legends-ohn61g79x-legends17.vercel.app\",\"x-vercel-enable-re
+write-caching\":\"1\",\"x-vercel-forwarded-for\":\"66.211.183.74\",\"x-vercel-i
+d\":\"sfo1::z6kb2-1785528384731-034d816c3c94\",\"x-vercel-ip-as-number\":\"1164
+-----
+MATCH LINE 1245:
+/json\",\"forwarded\":\"for=66.211.183.74;host=legends-os-beta.vercel.app;proto
+=https;sig=0QmVhcmVyIGI1OWJiOTQyMGY2MjZiMThlMDgxOGY1OGZiZjg0NDI0OGZjYjdlOGNhNmN
+kNDk5MGIwYTgzYzZhNTRiOWQ0MDc=;exp=1785528684\",\"host\":\"legends-os-beta.verce
+l.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGciOi
+JlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25hd
+HVyZSI6Ik1FUUNJQXIwS2hpVHlFbmgxeUJkU2VWemowTmo3VE5IZ3lHR3N4V3pQQnNXemRuL0FpQVdh
+QjNOTm8zOVhnMy9oQmRocW1RR0g1UXhWZTlvemtmNnJoWUIwWlk1Rmc9PSIsImRpZ2VzdCI6IlNIQTE
+ifQ==\",\"x-forwarded-for\":\"66.211.183.74\",\"x-forwarded-host\":\"legends-os
+-beta.vercel.app\",\"x-forwarded-port\":\"443\",\"x-forwarded-proto\":\"https\"
+,\"x-invocation-id\":\"sfo1::z6kb2-1785528384731-034d816c3c94\",\"x-matched-pat
+h\":\"/api/ebay/account-deletion\",\"x-real-ip\":\"66.211.183.74\",\"x-vercel-d
+eployment-url\":\"legends-ohn61g79x-legends17.vercel.app\",\"x-vercel-enable-re
+write-caching\":\"1\",\"x-vercel-forwarded-for\":\"66.211.183.74\",\"x-vercel-i
+d\":\"sfo1::z6kb2-1785528384731-034d816c3c94\",\"x-vercel-ip-as-number\":\"1164
+3\",\"x-vercel-ip-continent\":\"NA\",\"x-vercel-ip-country\":\"US\",\"x-vercel-
+ip-latitude\":\"37.751\",\"x-vercel-ip-longitude\":\"-97.822\",\"x-vercel-ip-ti
+mezone\":\"America/Chicago\",\"x-vercel-ja4-digest\":\"t12d091100_08d6d9b33cd7_
+6d6c278f61f2\",\"x-vercel-oidc-token\":\"eyJ0eXAiOiJKV1QiLCJraWQiOiJtcmstNDMwMm
+VjMWI2NzBmNDhhOThhZDYxZGFkZTRhMjNiZTciLCJhbGciOiJSUzI1NiJ9.eyJzY29wZSI6Im93bmVy
+OmxlZ2VuZHMxNzpwcm9qZWN0OmxlZ2VuZHMtb3M6ZW52aXJvbm1lbnQ6cHJvZHVjdGlvbiIsImF1ZCI
+6Imh0dHBzOlwvXC92ZXJjZWwuY29tXC9sZWdlbmRzMTciLCJleHAiOjE3ODU1MzQ5MjgsInN1YiI6Im
+-----
+MATCH LINE 1286:
+JJbPNz5wQUkZN_PI-fvN3G-j6xGdphZxtYLNocRw\\\",\\\"x-vercel-function-platform\\\"
+:\\\"vercel\\\\/proxy+serverless\\\",\\\"x-vercel-ept\\\":\\\"1\\\"}\",\"x-verc
+el-sc-host\":\"iad1.suspense-cache.vercel-infra.com\"},\"payload\":{\"metadata\
+":{\"topic\":\"MARKETPLACE_ACCOUNT_DELETION\",\"schemaVersion\":\"1.0\",\"depre
+cated\":false},\"notification\":{\"notificationId\":\"f22ce977-221a-464d-9ff0-c
+4e23866c6e8_d980f2fe-33eb-4420-a737-b2987bd67ef7\",\"eventDate\":\"2026-07-31T2
+0:06:24.610Z\",\"publishDate\":\"2026-07-31T20:06:24.619Z\",\"publishAttemptCou
+nt\":1,\"data\":{\"username\":\"lom2329\",\"userId\":\"0v0dd-9jrhq\",\"eiasToke
+n\":\"nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6MMloCmAZWFow6dj6x9nY+seQ==\"}}}}","source":
+"serverless","domain":"legends-os-beta.vercel.app","requestMethod":"POST","requ
+estPath":"/api/ebay/account-deletion","responseStatusCode":200,"environment":"p
+roduction","branch":"","cache":"MISS","cacheReason":"","pprState":"","traceId":
+"","logs":[{"level":"info","message":"[eBay MADN] received notification: {\"hea
+ders\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"connection\":\"close\
+",\"content-length\":\"432\",\"content-type\":\"application/json\",\"forwarded\
+":\"for=66.211.183.74;host=legends-os-beta.vercel.app;proto=https;sig=0QmVhcmVy
+IGI1OWJiOTQyMGY2MjZiMThlMDgxOGY1OGZiZjg0NDI0OGZjYjdlOGNhNmNkNDk5MGIwYTgzYzZhNTR
+iOWQ0MDc=;exp=1785528684\",\"host\":\"legends-os-beta.vercel.app\",\"user-agent
+\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGciOiJlY2RzYSIsImtpZCI6Ij
+NjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25hdHVyZSI6Ik1FUUNJQXIwS
+2hpVHlFbmgxeUJkU2VWemowTmo3VE5IZ3lHR3N4V3pQQnNXemRuL0FpQVdhQjNOTm8zOVhnMy9oQmRo
+-----
+MATCH LINE 1288:
+el-sc-host\":\"iad1.suspense-cache.vercel-infra.com\"},\"payload\":{\"metadata\
+":{\"topic\":\"MARKETPLACE_ACCOUNT_DELETION\",\"schemaVersion\":\"1.0\",\"depre
+cated\":false},\"notification\":{\"notificationId\":\"f22ce977-221a-464d-9ff0-c
+4e23866c6e8_d980f2fe-33eb-4420-a737-b2987bd67ef7\",\"eventDate\":\"2026-07-31T2
+0:06:24.610Z\",\"publishDate\":\"2026-07-31T20:06:24.619Z\",\"publishAttemptCou
+nt\":1,\"data\":{\"username\":\"lom2329\",\"userId\":\"0v0dd-9jrhq\",\"eiasToke
+n\":\"nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6MMloCmAZWFow6dj6x9nY+seQ==\"}}}}","source":
+"serverless","domain":"legends-os-beta.vercel.app","requestMethod":"POST","requ
+estPath":"/api/ebay/account-deletion","responseStatusCode":200,"environment":"p
+roduction","branch":"","cache":"MISS","cacheReason":"","pprState":"","traceId":
+"","logs":[{"level":"info","message":"[eBay MADN] received notification: {\"hea
+ders\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"connection\":\"close\
+",\"content-length\":\"432\",\"content-type\":\"application/json\",\"forwarded\
+":\"for=66.211.183.74;host=legends-os-beta.vercel.app;proto=https;sig=0QmVhcmVy
+IGI1OWJiOTQyMGY2MjZiMThlMDgxOGY1OGZiZjg0NDI0OGZjYjdlOGNhNmNkNDk5MGIwYTgzYzZhNTR
+iOWQ0MDc=;exp=1785528684\",\"host\":\"legends-os-beta.vercel.app\",\"user-agent
+\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGciOiJlY2RzYSIsImtpZCI6Ij
+NjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25hdHVyZSI6Ik1FUUNJQXIwS
+2hpVHlFbmgxeUJkU2VWemowTmo3VE5IZ3lHR3N4V3pQQnNXemRuL0FpQVdhQjNOTm8zOVhnMy9oQmRo
+cW1RR0g1UXhWZTlvemtmNnJoWUIwWlk1Rmc9PSIsImRpZ2VzdCI6IlNIQTEifQ==\",\"x-forwarde
+d-for\":\"66.211.183.74\",\"x-forwarded-host\":\"legends-os-beta.vercel.app\",\
+-----
+MATCH LINE 1294:
+n\":\"nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6MMloCmAZWFow6dj6x9nY+seQ==\"}}}}","source":
+"serverless","domain":"legends-os-beta.vercel.app","requestMethod":"POST","requ
+estPath":"/api/ebay/account-deletion","responseStatusCode":200,"environment":"p
+roduction","branch":"","cache":"MISS","cacheReason":"","pprState":"","traceId":
+"","logs":[{"level":"info","message":"[eBay MADN] received notification: {\"hea
+ders\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"connection\":\"close\
+",\"content-length\":\"432\",\"content-type\":\"application/json\",\"forwarded\
+":\"for=66.211.183.74;host=legends-os-beta.vercel.app;proto=https;sig=0QmVhcmVy
+IGI1OWJiOTQyMGY2MjZiMThlMDgxOGY1OGZiZjg0NDI0OGZjYjdlOGNhNmNkNDk5MGIwYTgzYzZhNTR
+iOWQ0MDc=;exp=1785528684\",\"host\":\"legends-os-beta.vercel.app\",\"user-agent
+\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGciOiJlY2RzYSIsImtpZCI6Ij
+NjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25hdHVyZSI6Ik1FUUNJQXIwS
+2hpVHlFbmgxeUJkU2VWemowTmo3VE5IZ3lHR3N4V3pQQnNXemRuL0FpQVdhQjNOTm8zOVhnMy9oQmRo
+cW1RR0g1UXhWZTlvemtmNnJoWUIwWlk1Rmc9PSIsImRpZ2VzdCI6IlNIQTEifQ==\",\"x-forwarde
+d-for\":\"66.211.183.74\",\"x-forwarded-host\":\"legends-os-beta.vercel.app\",\
+"x-forwarded-port\":\"443\",\"x-forwarded-proto\":\"https\",\"x-invocation-id\"
+:\"sfo1::z6kb2-1785528384731-034d816c3c94\",\"x-matched-path\":\"/api/ebay/acco
+unt-deletion\",\"x-real-ip\":\"66.211.183.74\",\"x-vercel-deployment-url\":\"le
+gends-ohn61g79x-legends17.vercel.app\",\"x-vercel-enable-rewrite-caching\":\"1\
+",\"x-vercel-forwarded-for\":\"66.211.183.74\",\"x-vercel-id\":\"sfo1::z6kb2-17
+85528384731-034d816c3c94\",\"x-vercel-ip-as-number\":\"11643\",\"x-vercel-ip-co
+-----
+MATCH LINE 1300:
+",\"content-length\":\"432\",\"content-type\":\"application/json\",\"forwarded\
+":\"for=66.211.183.74;host=legends-os-beta.vercel.app;proto=https;sig=0QmVhcmVy
+IGI1OWJiOTQyMGY2MjZiMThlMDgxOGY1OGZiZjg0NDI0OGZjYjdlOGNhNmNkNDk5MGIwYTgzYzZhNTR
+iOWQ0MDc=;exp=1785528684\",\"host\":\"legends-os-beta.vercel.app\",\"user-agent
+\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGciOiJlY2RzYSIsImtpZCI6Ij
+NjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25hdHVyZSI6Ik1FUUNJQXIwS
+2hpVHlFbmgxeUJkU2VWemowTmo3VE5IZ3lHR3N4V3pQQnNXemRuL0FpQVdhQjNOTm8zOVhnMy9oQmRo
+cW1RR0g1UXhWZTlvemtmNnJoWUIwWlk1Rmc9PSIsImRpZ2VzdCI6IlNIQTEifQ==\",\"x-forwarde
+d-for\":\"66.211.183.74\",\"x-forwarded-host\":\"legends-os-beta.vercel.app\",\
+"x-forwarded-port\":\"443\",\"x-forwarded-proto\":\"https\",\"x-invocation-id\"
+:\"sfo1::z6kb2-1785528384731-034d816c3c94\",\"x-matched-path\":\"/api/ebay/acco
+unt-deletion\",\"x-real-ip\":\"66.211.183.74\",\"x-vercel-deployment-url\":\"le
+gends-ohn61g79x-legends17.vercel.app\",\"x-vercel-enable-rewrite-caching\":\"1\
+",\"x-vercel-forwarded-for\":\"66.211.183.74\",\"x-vercel-id\":\"sfo1::z6kb2-17
+85528384731-034d816c3c94\",\"x-vercel-ip-as-number\":\"11643\",\"x-vercel-ip-co
+ntinent\":\"NA\",\"x-vercel-ip-country\":\"US\",\"x-vercel-ip-latitude\":\"37.7
+51\",\"x-vercel-ip-longitude\":\"-97.822\",\"x-vercel-ip-timezone\":\"America/C
+hicago\",\"x-vercel-ja4-digest\":\"t12d091100_08d6d9b33cd7_6d6c278f61f2\",\"x-v
+ercel-oidc-token\":\"eyJ0eXAiOiJKV1QiLCJraWQiOiJtcmstNDMwMmVjMWI2NzBmNDhhOThhZD
+YxZGFkZTRhMjNiZTciLCJhbGciOiJSUzI1NiJ9.eyJzY29wZSI6Im93bmVyOmxlZ2VuZHMxNzpwcm9q
+ZWN0OmxlZ2VuZHMtb3M6ZW52aXJvbm1lbnQ6cHJvZHVjdGlvbiIsImF1ZCI6Imh0dHBzOlwvXC92ZXJ
+-----
+MATCH LINE 1389:
+esponseStatusCode":200,"environment":"production","branch":"","cache":"MISS","c
+acheReason":"","pprState":"","traceId":"","logs":[]}
+  vercel_logs.json:17:{"id":"bbt2f-1785528349825-d4db6fde9834","timestamp":1785
+528349825,"deploymentId":"dpl_HDU8jTRGby4xePd6ddT23YBTZTHW","projectId":"prj_x6
+eSQwKAc3n7Fc0PnaeTe8HgDnbH","level":"info","message":"","source":"serverless","
+domain":"legends-os-beta.vercel.app","requestMethod":"GET","requestPath":"/","r
+esponseStatusCode":200,"environment":"production","branch":"","cache":"MISS","c
+acheReason":"","pprState":"","traceId":"","logs":[]}
+  vercel_logs.json:18:{"id":"sh4k7-1785528311360-a9307e17e166","timestamp":1785
+528311360,"deploymentId":"dpl_HDU8jTRGby4xePd6ddT23YBTZTHW","projectId":"prj_x6
+eSQwKAc3n7Fc0PnaeTe8HgDnbH","level":"info","message":"[eBay MADN] received 
+notification: {\"headers\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"c
+onnection\":\"close\",\"content-length\":\"440\",\"content-type\":\"application
+/json\",\"forwarded\":\"for=216.113.184.104;host=legends-os-beta.vercel.app;pro
+to=https;sig=0QmVhcmVyIDJlMDYxZTEzNDZiNzE2NmMxZDEwYzgyMmFjYmVjY2Q1Zjc1Yjc0YjY5M
+zQ5ODYyZDU2NTExODNjN2JhZDhlODA=;exp=1785528611\",\"host\":\"legends-os-beta.ver
+cel.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGci
+OiJlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25
+hdHVyZSI6Ik1FVUNJRk9sd05yMXlGSVc3RFRiNE1mbmFycVBwS0JlTVhZTWFKKzlGRVAybmxrZ0FpRU
+F3R3hxVGRkZ29WZDd6Y0RTY2k3NUR2Zm5uTjVQSXI3QjdISkZoRzVzeExRPSIsImRpZ2VzdCI6IlNIQ
+TEifQ==\",\"x-forwarded-for\":\"216.113.184.104\",\"x-forwarded-host\":\"legend
+-----
+MATCH LINE 1395:
+esponseStatusCode":200,"environment":"production","branch":"","cache":"MISS","c
+acheReason":"","pprState":"","traceId":"","logs":[]}
+  vercel_logs.json:18:{"id":"sh4k7-1785528311360-a9307e17e166","timestamp":1785
+528311360,"deploymentId":"dpl_HDU8jTRGby4xePd6ddT23YBTZTHW","projectId":"prj_x6
+eSQwKAc3n7Fc0PnaeTe8HgDnbH","level":"info","message":"[eBay MADN] received 
+notification: {\"headers\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"c
+onnection\":\"close\",\"content-length\":\"440\",\"content-type\":\"application
+/json\",\"forwarded\":\"for=216.113.184.104;host=legends-os-beta.vercel.app;pro
+to=https;sig=0QmVhcmVyIDJlMDYxZTEzNDZiNzE2NmMxZDEwYzgyMmFjYmVjY2Q1Zjc1Yjc0YjY5M
+zQ5ODYyZDU2NTExODNjN2JhZDhlODA=;exp=1785528611\",\"host\":\"legends-os-beta.ver
+cel.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGci
+OiJlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25
+hdHVyZSI6Ik1FVUNJRk9sd05yMXlGSVc3RFRiNE1mbmFycVBwS0JlTVhZTWFKKzlGRVAybmxrZ0FpRU
+F3R3hxVGRkZ29WZDd6Y0RTY2k3NUR2Zm5uTjVQSXI3QjdISkZoRzVzeExRPSIsImRpZ2VzdCI6IlNIQ
+TEifQ==\",\"x-forwarded-for\":\"216.113.184.104\",\"x-forwarded-host\":\"legend
+s-os-beta.vercel.app\",\"x-forwarded-port\":\"443\",\"x-forwarded-proto\":\"htt
+ps\",\"x-invocation-id\":\"cle1::sh4k7-1785528311360-a9307e17e166\",\"x-matched
+-path\":\"/api/ebay/account-deletion\",\"x-real-ip\":\"216.113.184.104\",\"x-ve
+rcel-deployment-url\":\"legends-ohn61g79x-legends17.vercel.app\",\"x-vercel-ena
+ble-rewrite-caching\":\"1\",\"x-vercel-forwarded-for\":\"216.113.184.104\",\"x-
+vercel-id\":\"cle1::sh4k7-1785528311360-a9307e17e166\",\"x-vercel-ip-as-number\
+-----
+MATCH LINE 1402:
+/json\",\"forwarded\":\"for=216.113.184.104;host=legends-os-beta.vercel.app;pro
+to=https;sig=0QmVhcmVyIDJlMDYxZTEzNDZiNzE2NmMxZDEwYzgyMmFjYmVjY2Q1Zjc1Yjc0YjY5M
+zQ5ODYyZDU2NTExODNjN2JhZDhlODA=;exp=1785528611\",\"host\":\"legends-os-beta.ver
+cel.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGci
+OiJlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25
+hdHVyZSI6Ik1FVUNJRk9sd05yMXlGSVc3RFRiNE1mbmFycVBwS0JlTVhZTWFKKzlGRVAybmxrZ0FpRU
+F3R3hxVGRkZ29WZDd6Y0RTY2k3NUR2Zm5uTjVQSXI3QjdISkZoRzVzeExRPSIsImRpZ2VzdCI6IlNIQ
+TEifQ==\",\"x-forwarded-for\":\"216.113.184.104\",\"x-forwarded-host\":\"legend
+s-os-beta.vercel.app\",\"x-forwarded-port\":\"443\",\"x-forwarded-proto\":\"htt
+ps\",\"x-invocation-id\":\"cle1::sh4k7-1785528311360-a9307e17e166\",\"x-matched
+-path\":\"/api/ebay/account-deletion\",\"x-real-ip\":\"216.113.184.104\",\"x-ve
+rcel-deployment-url\":\"legends-ohn61g79x-legends17.vercel.app\",\"x-vercel-ena
+ble-rewrite-caching\":\"1\",\"x-vercel-forwarded-for\":\"216.113.184.104\",\"x-
+vercel-id\":\"cle1::sh4k7-1785528311360-a9307e17e166\",\"x-vercel-ip-as-number\
+":\"11643\",\"x-vercel-ip-continent\":\"NA\",\"x-vercel-ip-country\":\"US\",\"x
+-vercel-ip-latitude\":\"37.751\",\"x-vercel-ip-longitude\":\"-97.822\",\"x-verc
+el-ip-timezone\":\"America/Chicago\",\"x-vercel-ja4-digest\":\"t12d091100_08d6d
+9b33cd7_6d6c278f61f2\",\"x-vercel-oidc-token\":\"eyJ0eXAiOiJKV1QiLCJraWQiOiJtcm
+stNDMwMmVjMWI2NzBmNDhhOThhZDYxZGFkZTRhMjNiZTciLCJhbGciOiJSUzI1NiJ9.eyJuYmYiOjE3
+ODU1MjMzOTgsImlzcyI6Imh0dHBzOlwvXC9vaWRjLnZlcmNlbC5jb21cL2xlZ2VuZHMxNyIsInByb2p
+lY3QiOiJsZWdlbmRzLW9zIiwic3ViIjoib3duZXI6bGVnZW5kczE3OnByb2plY3Q6bGVnZW5kcy1vcz
+-----
+MATCH LINE 1443:
+GdEbmJIIiwiZGVwbG95bWVudElkIjoiZHBsX0hEVThqVFJHYnk0eGVQZDZkZFQyM1lCVFpUSFcifQ.d
+2l4Q7uEGNMRF72VEKwyWPfUjhCIDpgM4I9bG0F-cOo\\\",\\\"x-vercel-ept\\\":\\\"1\\\"}\
+",\"x-vercel-sc-host\":\"iad1.suspense-cache.vercel-infra.com\"},\"payload\":{\
+"metadata\":{\"topic\":\"MARKETPLACE_ACCOUNT_DELETION\",\"schemaVersion\":\"1.0
+\",\"deprecated\":false},\"notification\":{\"notificationId\":\"84c9d0fe-b444-4
+871-a06e-85b95e472dc0_4719cd49-0774-497f-9f87-90bc8831b0e9\",\"eventDate\":\"20
+26-07-31T20:05:11.071Z\",\"publishDate\":\"2026-07-31T20:05:11.112Z\",\"publish
+AttemptCount\":1,\"data\":{\"username\":\"kristesantiag_0\",\"userId\":\"1l5NtN
+T1Qyq\",\"eiasToken\":\"nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6ABl4CpC5CKogidj6x9nY+seQ=
+=\"}}}}","source":"serverless","domain":"legends-os-beta.vercel.app","requestMe
+thod":"POST","requestPath":"/api/ebay/account-deletion","responseStatusCode":20
+0,"environment":"production","branch":"","cache":"MISS","cacheReason":"","pprSt
+ate":"","traceId":"","logs":[{"level":"info","message":"[eBay MADN] received 
+notification: {\"headers\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"c
+onnection\":\"close\",\"content-length\":\"440\",\"content-type\":\"application
+/json\",\"forwarded\":\"for=216.113.184.104;host=legends-os-beta.vercel.app;pro
+to=https;sig=0QmVhcmVyIDJlMDYxZTEzNDZiNzE2NmMxZDEwYzgyMmFjYmVjY2Q1Zjc1Yjc0YjY5M
+zQ5ODYyZDU2NTExODNjN2JhZDhlODA=;exp=1785528611\",\"host\":\"legends-os-beta.ver
+cel.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGci
+OiJlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25
+hdHVyZSI6Ik1FVUNJRk9sd05yMXlGSVc3RFRiNE1mbmFycVBwS0JlTVhZTWFKKzlGRVAybmxrZ0FpRU
+-----
+MATCH LINE 1445:
+",\"x-vercel-sc-host\":\"iad1.suspense-cache.vercel-infra.com\"},\"payload\":{\
+"metadata\":{\"topic\":\"MARKETPLACE_ACCOUNT_DELETION\",\"schemaVersion\":\"1.0
+\",\"deprecated\":false},\"notification\":{\"notificationId\":\"84c9d0fe-b444-4
+871-a06e-85b95e472dc0_4719cd49-0774-497f-9f87-90bc8831b0e9\",\"eventDate\":\"20
+26-07-31T20:05:11.071Z\",\"publishDate\":\"2026-07-31T20:05:11.112Z\",\"publish
+AttemptCount\":1,\"data\":{\"username\":\"kristesantiag_0\",\"userId\":\"1l5NtN
+T1Qyq\",\"eiasToken\":\"nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6ABl4CpC5CKogidj6x9nY+seQ=
+=\"}}}}","source":"serverless","domain":"legends-os-beta.vercel.app","requestMe
+thod":"POST","requestPath":"/api/ebay/account-deletion","responseStatusCode":20
+0,"environment":"production","branch":"","cache":"MISS","cacheReason":"","pprSt
+ate":"","traceId":"","logs":[{"level":"info","message":"[eBay MADN] received 
+notification: {\"headers\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"c
+onnection\":\"close\",\"content-length\":\"440\",\"content-type\":\"application
+/json\",\"forwarded\":\"for=216.113.184.104;host=legends-os-beta.vercel.app;pro
+to=https;sig=0QmVhcmVyIDJlMDYxZTEzNDZiNzE2NmMxZDEwYzgyMmFjYmVjY2Q1Zjc1Yjc0YjY5M
+zQ5ODYyZDU2NTExODNjN2JhZDhlODA=;exp=1785528611\",\"host\":\"legends-os-beta.ver
+cel.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGci
+OiJlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25
+hdHVyZSI6Ik1FVUNJRk9sd05yMXlGSVc3RFRiNE1mbmFycVBwS0JlTVhZTWFKKzlGRVAybmxrZ0FpRU
+F3R3hxVGRkZ29WZDd6Y0RTY2k3NUR2Zm5uTjVQSXI3QjdISkZoRzVzeExRPSIsImRpZ2VzdCI6IlNIQ
+TEifQ==\",\"x-forwarded-for\":\"216.113.184.104\",\"x-forwarded-host\":\"legend
+-----
+MATCH LINE 1451:
+T1Qyq\",\"eiasToken\":\"nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6ABl4CpC5CKogidj6x9nY+seQ=
+=\"}}}}","source":"serverless","domain":"legends-os-beta.vercel.app","requestMe
+thod":"POST","requestPath":"/api/ebay/account-deletion","responseStatusCode":20
+0,"environment":"production","branch":"","cache":"MISS","cacheReason":"","pprSt
+ate":"","traceId":"","logs":[{"level":"info","message":"[eBay MADN] received 
+notification: {\"headers\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"c
+onnection\":\"close\",\"content-length\":\"440\",\"content-type\":\"application
+/json\",\"forwarded\":\"for=216.113.184.104;host=legends-os-beta.vercel.app;pro
+to=https;sig=0QmVhcmVyIDJlMDYxZTEzNDZiNzE2NmMxZDEwYzgyMmFjYmVjY2Q1Zjc1Yjc0YjY5M
+zQ5ODYyZDU2NTExODNjN2JhZDhlODA=;exp=1785528611\",\"host\":\"legends-os-beta.ver
+cel.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGci
+OiJlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25
+hdHVyZSI6Ik1FVUNJRk9sd05yMXlGSVc3RFRiNE1mbmFycVBwS0JlTVhZTWFKKzlGRVAybmxrZ0FpRU
+F3R3hxVGRkZ29WZDd6Y0RTY2k3NUR2Zm5uTjVQSXI3QjdISkZoRzVzeExRPSIsImRpZ2VzdCI6IlNIQ
+TEifQ==\",\"x-forwarded-for\":\"216.113.184.104\",\"x-forwarded-host\":\"legend
+s-os-beta.vercel.app\",\"x-forwarded-port\":\"443\",\"x-forwarded-proto\":\"htt
+ps\",\"x-invocation-id\":\"cle1::sh4k7-1785528311360-a9307e17e166\",\"x-matched
+-path\":\"/api/ebay/account-deletion\",\"x-real-ip\":\"216.113.184.104\",\"x-ve
+rcel-deployment-url\":\"legends-ohn61g79x-legends17.vercel.app\",\"x-vercel-ena
+ble-rewrite-caching\":\"1\",\"x-vercel-forwarded-for\":\"216.113.184.104\",\"x-
+vercel-id\":\"cle1::sh4k7-1785528311360-a9307e17e166\",\"x-vercel-ip-as-number\
+-----
+MATCH LINE 1458:
+/json\",\"forwarded\":\"for=216.113.184.104;host=legends-os-beta.vercel.app;pro
+to=https;sig=0QmVhcmVyIDJlMDYxZTEzNDZiNzE2NmMxZDEwYzgyMmFjYmVjY2Q1Zjc1Yjc0YjY5M
+zQ5ODYyZDU2NTExODNjN2JhZDhlODA=;exp=1785528611\",\"host\":\"legends-os-beta.ver
+cel.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGci
+OiJlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25
+hdHVyZSI6Ik1FVUNJRk9sd05yMXlGSVc3RFRiNE1mbmFycVBwS0JlTVhZTWFKKzlGRVAybmxrZ0FpRU
+F3R3hxVGRkZ29WZDd6Y0RTY2k3NUR2Zm5uTjVQSXI3QjdISkZoRzVzeExRPSIsImRpZ2VzdCI6IlNIQ
+TEifQ==\",\"x-forwarded-for\":\"216.113.184.104\",\"x-forwarded-host\":\"legend
+s-os-beta.vercel.app\",\"x-forwarded-port\":\"443\",\"x-forwarded-proto\":\"htt
+ps\",\"x-invocation-id\":\"cle1::sh4k7-1785528311360-a9307e17e166\",\"x-matched
+-path\":\"/api/ebay/account-deletion\",\"x-real-ip\":\"216.113.184.104\",\"x-ve
+rcel-deployment-url\":\"legends-ohn61g79x-legends17.vercel.app\",\"x-vercel-ena
+ble-rewrite-caching\":\"1\",\"x-vercel-forwarded-for\":\"216.113.184.104\",\"x-
+vercel-id\":\"cle1::sh4k7-1785528311360-a9307e17e166\",\"x-vercel-ip-as-number\
+":\"11643\",\"x-vercel-ip-continent\":\"NA\",\"x-vercel-ip-country\":\"US\",\"x
+-vercel-ip-latitude\":\"37.751\",\"x-vercel-ip-longitude\":\"-97.822\",\"x-verc
+el-ip-timezone\":\"America/Chicago\",\"x-vercel-ja4-digest\":\"t12d091100_08d6d
+9b33cd7_6d6c278f61f2\",\"x-vercel-oidc-token\":\"eyJ0eXAiOiJKV1QiLCJraWQiOiJtcm
+stNDMwMmVjMWI2NzBmNDhhOThhZDYxZGFkZTRhMjNiZTciLCJhbGciOiJSUzI1NiJ9.eyJuYmYiOjE3
+ODU1MjMzOTgsImlzcyI6Imh0dHBzOlwvXC9vaWRjLnZlcmNlbC5jb21cL2xlZ2VuZHMxNyIsInByb2p
+lY3QiOiJsZWdlbmRzLW9zIiwic3ViIjoib3duZXI6bGVnZW5kczE3OnByb2plY3Q6bGVnZW5kcy1vcz
+-----
+MATCH LINE 1501:
+",\"x-vercel-sc-host\":\"iad1.suspense-cache.vercel-infra.com\"},\"payload\":{\
+"metadata\":{\"topic\":\"MARKETPLACE_ACCOUNT_DELETION\",\"schemaVersion\":\"1.0
+\",\"deprecated\":false},\"notification\":{\"notificationId\":\"84c9d0fe-b444-4
+871-a06e-85b95e472dc0_4719cd49-0774-497f-9f87-90bc8831b0e9\",\"eventDate\":\"20
+26-07-31T20:05:11.071Z\",\"publishDate\":\"2026-07-31T20:05:11.112Z\",\"publish
+AttemptCount\":1,\"data\":{\"username\":\"kristesantiag_0\",\"userId\":\"1l5NtN
+T1Qyq\",\"eiasToken\":\"nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6ABl4CpC5CKogidj6x9nY+seQ=
+=\"}}}}"}]}
+  vercel_logs.json:19:{"id":"ktt9h-1785528298114-6f6bba7119ac","timestamp":1785
+528298114,"deploymentId":"dpl_HDU8jTRGby4xePd6ddT23YBTZTHW","projectId":"prj_x6
+eSQwKAc3n7Fc0PnaeTe8HgDnbH","level":"info","message":"[eBay MADN] received 
+notification: {\"headers\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"c
+onnection\":\"close\",\"content-length\":\"433\",\"content-type\":\"application
+/json\",\"forwarded\":\"for=66.211.183.73;host=legends-os-beta.vercel.app;proto
+=https;sig=0QmVhcmVyIDdiNWE1NWI3YmRjMDhmMjY1NjU3OGIyODUwMWI3Yzg1MWY3ZDE5ODg4NWY
+yMGI2Yjc1ZTMxYzMyZTE0YzA0MTY=;exp=1785528598\",\"host\":\"legends-os-beta.verce
+l.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGciOi
+JlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25hd
+HVyZSI6Ik1FVUNJUURoR081M3l4UGpCUFNkVTdHYWVldkRlczJOTXJYUGNRL3djRzlpcjJQSUlRSWdM
+ZlZSOFYvVnpwS1lmemhZQ2g0QlVMUnpGV3Nnd0t4TXVVcHRMcmo5cVBvPSIsImRpZ2VzdCI6IlNIQTE
+ifQ==\",\"x-forwarded-for\":\"66.211.183.73\",\"x-forwarded-host\":\"legends-os
+-----
+MATCH LINE 1507:
+T1Qyq\",\"eiasToken\":\"nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6ABl4CpC5CKogidj6x9nY+seQ=
+=\"}}}}"}]}
+  vercel_logs.json:19:{"id":"ktt9h-1785528298114-6f6bba7119ac","timestamp":1785
+528298114,"deploymentId":"dpl_HDU8jTRGby4xePd6ddT23YBTZTHW","projectId":"prj_x6
+eSQwKAc3n7Fc0PnaeTe8HgDnbH","level":"info","message":"[eBay MADN] received 
+notification: {\"headers\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"c
+onnection\":\"close\",\"content-length\":\"433\",\"content-type\":\"application
+/json\",\"forwarded\":\"for=66.211.183.73;host=legends-os-beta.vercel.app;proto
+=https;sig=0QmVhcmVyIDdiNWE1NWI3YmRjMDhmMjY1NjU3OGIyODUwMWI3Yzg1MWY3ZDE5ODg4NWY
+yMGI2Yjc1ZTMxYzMyZTE0YzA0MTY=;exp=1785528598\",\"host\":\"legends-os-beta.verce
+l.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGciOi
+JlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25hd
+HVyZSI6Ik1FVUNJUURoR081M3l4UGpCUFNkVTdHYWVldkRlczJOTXJYUGNRL3djRzlpcjJQSUlRSWdM
+ZlZSOFYvVnpwS1lmemhZQ2g0QlVMUnpGV3Nnd0t4TXVVcHRMcmo5cVBvPSIsImRpZ2VzdCI6IlNIQTE
+ifQ==\",\"x-forwarded-for\":\"66.211.183.73\",\"x-forwarded-host\":\"legends-os
+-beta.vercel.app\",\"x-forwarded-port\":\"443\",\"x-forwarded-proto\":\"https\"
+,\"x-invocation-id\":\"sfo1::ktt9h-1785528298114-6f6bba7119ac\",\"x-matched-pat
+h\":\"/api/ebay/account-deletion\",\"x-real-ip\":\"66.211.183.73\",\"x-vercel-d
+eployment-url\":\"legends-ohn61g79x-legends17.vercel.app\",\"x-vercel-enable-re
+write-caching\":\"1\",\"x-vercel-forwarded-for\":\"66.211.183.73\",\"x-vercel-i
+d\":\"sfo1::ktt9h-1785528298114-6f6bba7119ac\",\"x-vercel-ip-as-number\":\"1164
+-----
+MATCH LINE 1514:
+/json\",\"forwarded\":\"for=66.211.183.73;host=legends-os-beta.vercel.app;proto
+=https;sig=0QmVhcmVyIDdiNWE1NWI3YmRjMDhmMjY1NjU3OGIyODUwMWI3Yzg1MWY3ZDE5ODg4NWY
+yMGI2Yjc1ZTMxYzMyZTE0YzA0MTY=;exp=1785528598\",\"host\":\"legends-os-beta.verce
+l.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGciOi
+JlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25hd
+HVyZSI6Ik1FVUNJUURoR081M3l4UGpCUFNkVTdHYWVldkRlczJOTXJYUGNRL3djRzlpcjJQSUlRSWdM
+ZlZSOFYvVnpwS1lmemhZQ2g0QlVMUnpGV3Nnd0t4TXVVcHRMcmo5cVBvPSIsImRpZ2VzdCI6IlNIQTE
+ifQ==\",\"x-forwarded-for\":\"66.211.183.73\",\"x-forwarded-host\":\"legends-os
+-beta.vercel.app\",\"x-forwarded-port\":\"443\",\"x-forwarded-proto\":\"https\"
+,\"x-invocation-id\":\"sfo1::ktt9h-1785528298114-6f6bba7119ac\",\"x-matched-pat
+h\":\"/api/ebay/account-deletion\",\"x-real-ip\":\"66.211.183.73\",\"x-vercel-d
+eployment-url\":\"legends-ohn61g79x-legends17.vercel.app\",\"x-vercel-enable-re
+write-caching\":\"1\",\"x-vercel-forwarded-for\":\"66.211.183.73\",\"x-vercel-i
+d\":\"sfo1::ktt9h-1785528298114-6f6bba7119ac\",\"x-vercel-ip-as-number\":\"1164
+3\",\"x-vercel-ip-continent\":\"NA\",\"x-vercel-ip-country\":\"US\",\"x-vercel-
+ip-latitude\":\"37.751\",\"x-vercel-ip-longitude\":\"-97.822\",\"x-vercel-ip-ti
+mezone\":\"America/Chicago\",\"x-vercel-ja4-digest\":\"t12d091100_08d6d9b33cd7_
+6d6c278f61f2\",\"x-vercel-oidc-token\":\"eyJ0eXAiOiJKV1QiLCJraWQiOiJtcmstNDMwMm
+VjMWI2NzBmNDhhOThhZDYxZGFkZTRhMjNiZTciLCJhbGciOiJSUzI1NiJ9.eyJzY29wZSI6Im93bmVy
+OmxlZ2VuZHMxNzpwcm9qZWN0OmxlZ2VuZHMtb3M6ZW52aXJvbm1lbnQ6cHJvZHVjdGlvbiIsImF1ZCI
+6Imh0dHBzOlwvXC92ZXJjZWwuY29tXC9sZWdlbmRzMTciLCJleHAiOjE3ODU1MzQ5MjgsInN1YiI6Im
+-----
+MATCH LINE 1555:
+ImlzcyI6InNlcnZlcmxlc3MiLCJ1bmxpbWl0ZWQiOmZhbHNlLCJpYXQiOjE3ODU1MjgyOTgsImVudiI
+6InByb2R1Y3Rpb24ifQ.MqGUnJ0e3dwLhbWFivVkdUHpHq5UGuofu647_ji3EZI\\\"}\",\"x-verc
+el-sc-host\":\"iad1.suspense-cache.vercel-infra.com\"},\"payload\":{\"metadata\
+":{\"topic\":\"MARKETPLACE_ACCOUNT_DELETION\",\"schemaVersion\":\"1.0\",\"depre
+cated\":false},\"notification\":{\"notificationId\":\"ae8d05e9-0d42-49bb-9bb5-c
+d9e0b3276b5_932c8d73-cb3a-4e39-9d66-d6a41150586a\",\"eventDate\":\"2026-07-31T2
+0:04:58.020Z\",\"publishDate\":\"2026-07-31T20:04:58.028Z\",\"publishAttemptCou
+nt\":1,\"data\":{\"username\":\"micl8486\",\"userId\":\"m1kgsbhrrpk\",\"eiasTok
+en\":\"nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6MCk4SjCJKHogmdj6x9nY+seQ==\"}}}}","source"
+:"serverless","domain":"legends-os-beta.vercel.app","requestMethod":"POST","req
+uestPath":"/api/ebay/account-deletion","responseStatusCode":200,"environment":"
+production","branch":"","cache":"MISS","cacheReason":"","pprState":"","traceId"
+:"","logs":[{"level":"info","message":"[eBay MADN] received notification: {\"he
+aders\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"connection\":\"close
+\",\"content-length\":\"433\",\"content-type\":\"application/json\",\"forwarded
+\":\"for=66.211.183.73;host=legends-os-beta.vercel.app;proto=https;sig=0QmVhcmV
+yIDdiNWE1NWI3YmRjMDhmMjY1NjU3OGIyODUwMWI3Yzg1MWY3ZDE5ODg4NWYyMGI2Yjc1ZTMxYzMyZT
+E0YzA0MTY=;exp=1785528598\",\"host\":\"legends-os-beta.vercel.app\",\"user-agen
+t\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGciOiJlY2RzYSIsImtpZCI6I
+jNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25hdHVyZSI6Ik1FVUNJUURo
+R081M3l4UGpCUFNkVTdHYWVldkRlczJOTXJYUGNRL3djRzlpcjJQSUlRSWdMZlZSOFYvVnpwS1lmemh
+-----
+MATCH LINE 1557:
+el-sc-host\":\"iad1.suspense-cache.vercel-infra.com\"},\"payload\":{\"metadata\
+":{\"topic\":\"MARKETPLACE_ACCOUNT_DELETION\",\"schemaVersion\":\"1.0\",\"depre
+cated\":false},\"notification\":{\"notificationId\":\"ae8d05e9-0d42-49bb-9bb5-c
+d9e0b3276b5_932c8d73-cb3a-4e39-9d66-d6a41150586a\",\"eventDate\":\"2026-07-31T2
+0:04:58.020Z\",\"publishDate\":\"2026-07-31T20:04:58.028Z\",\"publishAttemptCou
+nt\":1,\"data\":{\"username\":\"micl8486\",\"userId\":\"m1kgsbhrrpk\",\"eiasTok
+en\":\"nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6MCk4SjCJKHogmdj6x9nY+seQ==\"}}}}","source"
+:"serverless","domain":"legends-os-beta.vercel.app","requestMethod":"POST","req
+uestPath":"/api/ebay/account-deletion","responseStatusCode":200,"environment":"
+production","branch":"","cache":"MISS","cacheReason":"","pprState":"","traceId"
+:"","logs":[{"level":"info","message":"[eBay MADN] received notification: {\"he
+aders\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"connection\":\"close
+\",\"content-length\":\"433\",\"content-type\":\"application/json\",\"forwarded
+\":\"for=66.211.183.73;host=legends-os-beta.vercel.app;proto=https;sig=0QmVhcmV
+yIDdiNWE1NWI3YmRjMDhmMjY1NjU3OGIyODUwMWI3Yzg1MWY3ZDE5ODg4NWYyMGI2Yjc1ZTMxYzMyZT
+E0YzA0MTY=;exp=1785528598\",\"host\":\"legends-os-beta.vercel.app\",\"user-agen
+t\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGciOiJlY2RzYSIsImtpZCI6I
+jNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25hdHVyZSI6Ik1FVUNJUURo
+R081M3l4UGpCUFNkVTdHYWVldkRlczJOTXJYUGNRL3djRzlpcjJQSUlRSWdMZlZSOFYvVnpwS1lmemh
+ZQ2g0QlVMUnpGV3Nnd0t4TXVVcHRMcmo5cVBvPSIsImRpZ2VzdCI6IlNIQTEifQ==\",\"x-forward
+ed-for\":\"66.211.183.73\",\"x-forwarded-host\":\"legends-os-beta.vercel.app\",
+-----
+MATCH LINE 1563:
+en\":\"nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6MCk4SjCJKHogmdj6x9nY+seQ==\"}}}}","source"
+:"serverless","domain":"legends-os-beta.vercel.app","requestMethod":"POST","req
+uestPath":"/api/ebay/account-deletion","responseStatusCode":200,"environment":"
+production","branch":"","cache":"MISS","cacheReason":"","pprState":"","traceId"
+:"","logs":[{"level":"info","message":"[eBay MADN] received notification: {\"he
+aders\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"connection\":\"close
+\",\"content-length\":\"433\",\"content-type\":\"application/json\",\"forwarded
+\":\"for=66.211.183.73;host=legends-os-beta.vercel.app;proto=https;sig=0QmVhcmV
+yIDdiNWE1NWI3YmRjMDhmMjY1NjU3OGIyODUwMWI3Yzg1MWY3ZDE5ODg4NWYyMGI2Yjc1ZTMxYzMyZT
+E0YzA0MTY=;exp=1785528598\",\"host\":\"legends-os-beta.vercel.app\",\"user-agen
+t\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGciOiJlY2RzYSIsImtpZCI6I
+jNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25hdHVyZSI6Ik1FVUNJUURo
+R081M3l4UGpCUFNkVTdHYWVldkRlczJOTXJYUGNRL3djRzlpcjJQSUlRSWdMZlZSOFYvVnpwS1lmemh
+ZQ2g0QlVMUnpGV3Nnd0t4TXVVcHRMcmo5cVBvPSIsImRpZ2VzdCI6IlNIQTEifQ==\",\"x-forward
+ed-for\":\"66.211.183.73\",\"x-forwarded-host\":\"legends-os-beta.vercel.app\",
+\"x-forwarded-port\":\"443\",\"x-forwarded-proto\":\"https\",\"x-invocation-id\
+":\"sfo1::ktt9h-1785528298114-6f6bba7119ac\",\"x-matched-path\":\"/api/ebay/acc
+ount-deletion\",\"x-real-ip\":\"66.211.183.73\",\"x-vercel-deployment-url\":\"l
+egends-ohn61g79x-legends17.vercel.app\",\"x-vercel-enable-rewrite-caching\":\"1
+\",\"x-vercel-forwarded-for\":\"66.211.183.73\",\"x-vercel-id\":\"sfo1::ktt9h-1
+785528298114-6f6bba7119ac\",\"x-vercel-ip-as-number\":\"11643\",\"x-vercel-ip-c
+-----
+MATCH LINE 1569:
+\",\"content-length\":\"433\",\"content-type\":\"application/json\",\"forwarded
+\":\"for=66.211.183.73;host=legends-os-beta.vercel.app;proto=https;sig=0QmVhcmV
+yIDdiNWE1NWI3YmRjMDhmMjY1NjU3OGIyODUwMWI3Yzg1MWY3ZDE5ODg4NWYyMGI2Yjc1ZTMxYzMyZT
+E0YzA0MTY=;exp=1785528598\",\"host\":\"legends-os-beta.vercel.app\",\"user-agen
+t\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGciOiJlY2RzYSIsImtpZCI6I
+jNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25hdHVyZSI6Ik1FVUNJUURo
+R081M3l4UGpCUFNkVTdHYWVldkRlczJOTXJYUGNRL3djRzlpcjJQSUlRSWdMZlZSOFYvVnpwS1lmemh
+ZQ2g0QlVMUnpGV3Nnd0t4TXVVcHRMcmo5cVBvPSIsImRpZ2VzdCI6IlNIQTEifQ==\",\"x-forward
+ed-for\":\"66.211.183.73\",\"x-forwarded-host\":\"legends-os-beta.vercel.app\",
+\"x-forwarded-port\":\"443\",\"x-forwarded-proto\":\"https\",\"x-invocation-id\
+":\"sfo1::ktt9h-1785528298114-6f6bba7119ac\",\"x-matched-path\":\"/api/ebay/acc
+ount-deletion\",\"x-real-ip\":\"66.211.183.73\",\"x-vercel-deployment-url\":\"l
+egends-ohn61g79x-legends17.vercel.app\",\"x-vercel-enable-rewrite-caching\":\"1
+\",\"x-vercel-forwarded-for\":\"66.211.183.73\",\"x-vercel-id\":\"sfo1::ktt9h-1
+785528298114-6f6bba7119ac\",\"x-vercel-ip-as-number\":\"11643\",\"x-vercel-ip-c
+ontinent\":\"NA\",\"x-vercel-ip-country\":\"US\",\"x-vercel-ip-latitude\":\"37.
+751\",\"x-vercel-ip-longitude\":\"-97.822\",\"x-vercel-ip-timezone\":\"America/
+Chicago\",\"x-vercel-ja4-digest\":\"t12d091100_08d6d9b33cd7_6d6c278f61f2\",\"x-
+vercel-oidc-token\":\"eyJ0eXAiOiJKV1QiLCJraWQiOiJtcmstNDMwMmVjMWI2NzBmNDhhOThhZ
+DYxZGFkZTRhMjNiZTciLCJhbGciOiJSUzI1NiJ9.eyJzY29wZSI6Im93bmVyOmxlZ2VuZHMxNzpwcm9
+qZWN0OmxlZ2VuZHMtb3M6ZW52aXJvbm1lbnQ6cHJvZHVjdGlvbiIsImF1ZCI6Imh0dHBzOlwvXC92ZX
+-----
+MATCH LINE 1612:
+.MqGUnJ0e3dwLhbWFivVkdUHpHq5UGuofu647_ji3EZI\\\"}\",\"x-vercel-sc-host\":\"iad1
+.suspense-cache.vercel-infra.com\"},\"payload\":{\"metadata\":{\"topic\":\"MARK
+ETPLACE_ACCOUNT_DELETION\",\"schemaVersion\":\"1.0\",\"deprecated\":false},\"no
+tification\":{\"notificationId\":\"ae8d05e9-0d42-49bb-9bb5-cd9e0b3276b5_932c8d7
+3-cb3a-4e39-9d66-d6a41150586a\",\"eventDate\":\"2026-07-31T20:04:58.020Z\",\"pu
+blishDate\":\"2026-07-31T20:04:58.028Z\",\"publishAttemptCount\":1,\"data\":{\"
+username\":\"micl8486\",\"userId\":\"m1kgsbhrrpk\",\"eiasToken\":\"nY+sHZ2PrBmd
+j6wVnY+sEZ2PrA2dj6MCk4SjCJKHogmdj6x9nY+seQ==\"}}}}"}]}
+> vercel_logs.json:30:{"id":"vjjd4-1785528113629-20b932604a86","timestamp":1785
+528113629,"deploymentId":"dpl_HDU8jTRGby4xePd6ddT23YBTZTHW","projectId":"prj_x6
+eSQwKAc3n7Fc0PnaeTe8HgDnbH","level":"info","message":"[eBay MADN] received 
+notification: {\"headers\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"c
+onnection\":\"close\",\"content-length\":\"438\",\"content-type\":\"application
+/json\",\"forwarded\":\"for=66.211.183.71;host=legends-os-beta.vercel.app;proto
+=https;sig=0QmVhcmVyIGRjNDVhOTJmNjE5YTQzMTAxZDI1MDBiZGM5ZWQ0MzMxODI3ZDMxYjcxZjY
+wMDJmYmQ3ZGJhZTgxZTI0NTZmNzM=;exp=1785528413\",\"host\":\"legends-os-beta.verce
+l.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGciOi
+JlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25hd
+HVyZSI6Ik1FVUNJUUNGV25SNFIyWitpVENVUXBiZ0xxY2U2V0ZvT1RlZEppMjdZd0pHcExnK0Z3SWdB
+MUZWaStXYTRnc3laK29UTXlyT1BpVXJMUmQ5T0M2Q1NMQWJiWkFseTNvPSIsImRpZ2VzdCI6IlNIQTE
+ifQ==\",\"x-forwarded-for\":\"66.211.183.71\",\"x-forwarded-host\":\"legends-os
+-----
+MATCH LINE 1618:
+username\":\"micl8486\",\"userId\":\"m1kgsbhrrpk\",\"eiasToken\":\"nY+sHZ2PrBmd
+j6wVnY+sEZ2PrA2dj6MCk4SjCJKHogmdj6x9nY+seQ==\"}}}}"}]}
+> vercel_logs.json:30:{"id":"vjjd4-1785528113629-20b932604a86","timestamp":1785
+528113629,"deploymentId":"dpl_HDU8jTRGby4xePd6ddT23YBTZTHW","projectId":"prj_x6
+eSQwKAc3n7Fc0PnaeTe8HgDnbH","level":"info","message":"[eBay MADN] received 
+notification: {\"headers\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"c
+onnection\":\"close\",\"content-length\":\"438\",\"content-type\":\"application
+/json\",\"forwarded\":\"for=66.211.183.71;host=legends-os-beta.vercel.app;proto
+=https;sig=0QmVhcmVyIGRjNDVhOTJmNjE5YTQzMTAxZDI1MDBiZGM5ZWQ0MzMxODI3ZDMxYjcxZjY
+wMDJmYmQ3ZGJhZTgxZTI0NTZmNzM=;exp=1785528413\",\"host\":\"legends-os-beta.verce
+l.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGciOi
+JlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25hd
+HVyZSI6Ik1FVUNJUUNGV25SNFIyWitpVENVUXBiZ0xxY2U2V0ZvT1RlZEppMjdZd0pHcExnK0Z3SWdB
+MUZWaStXYTRnc3laK29UTXlyT1BpVXJMUmQ5T0M2Q1NMQWJiWkFseTNvPSIsImRpZ2VzdCI6IlNIQTE
+ifQ==\",\"x-forwarded-for\":\"66.211.183.71\",\"x-forwarded-host\":\"legends-os
+-beta.vercel.app\",\"x-forwarded-port\":\"443\",\"x-forwarded-proto\":\"https\"
+,\"x-invocation-id\":\"sfo1::vjjd4-1785528113629-20b932604a86\",\"x-matched-pat
+h\":\"/api/ebay/account-deletion\",\"x-real-ip\":\"66.211.183.71\",\"x-vercel-d
+eployment-url\":\"legends-ohn61g79x-legends17.vercel.app\",\"x-vercel-enable-re
+write-caching\":\"1\",\"x-vercel-forwarded-for\":\"66.211.183.71\",\"x-vercel-i
+d\":\"sfo1::vjjd4-1785528113629-20b932604a86\",\"x-vercel-ip-as-number\":\"1164
+-----
+MATCH LINE 1625:
+/json\",\"forwarded\":\"for=66.211.183.71;host=legends-os-beta.vercel.app;proto
+=https;sig=0QmVhcmVyIGRjNDVhOTJmNjE5YTQzMTAxZDI1MDBiZGM5ZWQ0MzMxODI3ZDMxYjcxZjY
+wMDJmYmQ3ZGJhZTgxZTI0NTZmNzM=;exp=1785528413\",\"host\":\"legends-os-beta.verce
+l.app\",\"user-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGciOi
+JlY2RzYSIsImtpZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25hd
+HVyZSI6Ik1FVUNJUUNGV25SNFIyWitpVENVUXBiZ0xxY2U2V0ZvT1RlZEppMjdZd0pHcExnK0Z3SWdB
+MUZWaStXYTRnc3laK29UTXlyT1BpVXJMUmQ5T0M2Q1NMQWJiWkFseTNvPSIsImRpZ2VzdCI6IlNIQTE
+ifQ==\",\"x-forwarded-for\":\"66.211.183.71\",\"x-forwarded-host\":\"legends-os
+-beta.vercel.app\",\"x-forwarded-port\":\"443\",\"x-forwarded-proto\":\"https\"
+,\"x-invocation-id\":\"sfo1::vjjd4-1785528113629-20b932604a86\",\"x-matched-pat
+h\":\"/api/ebay/account-deletion\",\"x-real-ip\":\"66.211.183.71\",\"x-vercel-d
+eployment-url\":\"legends-ohn61g79x-legends17.vercel.app\",\"x-vercel-enable-re
+write-caching\":\"1\",\"x-vercel-forwarded-for\":\"66.211.183.71\",\"x-vercel-i
+d\":\"sfo1::vjjd4-1785528113629-20b932604a86\",\"x-vercel-ip-as-number\":\"1164
+3\",\"x-vercel-ip-continent\":\"NA\",\"x-vercel-ip-country\":\"US\",\"x-vercel-
+ip-latitude\":\"37.751\",\"x-vercel-ip-longitude\":\"-97.822\",\"x-vercel-ip-ti
+mezone\":\"America/Chicago\",\"x-vercel-ja4-digest\":\"t12d091100_08d6d9b33cd7_
+6d6c278f61f2\",\"x-vercel-oidc-token\":\"eyJ0eXAiOiJKV1QiLCJraWQiOiJtcmstNDMwMm
+VjMWI2NzBmNDhhOThhZDYxZGFkZTRhMjNiZTciLCJhbGciOiJSUzI1NiJ9.eyJzY29wZSI6Im93bmVy
+OmxlZ2VuZHMxNzpwcm9qZWN0OmxlZ2VuZHMtb3M6ZW52aXJvbm1lbnQ6cHJvZHVjdGlvbiIsImF1ZCI
+6Imh0dHBzOlwvXC92ZXJjZWwuY29tXC9sZWdlbmRzMTciLCJleHAiOjE3ODU1MzQ5MjgsInN1YiI6Im
+-----
+MATCH LINE 1666:
+k420CcXhGaX1KOek_Y0vypJch2TvLKG3wGIWQ-3w\\\",\\\"x-vercel-function-platform\\\"
+:\\\"vercel\\\\/proxy+serverless\\\",\\\"x-vercel-ept\\\":\\\"1\\\"}\",\"x-verc
+el-sc-host\":\"iad1.suspense-cache.vercel-infra.com\"},\"payload\":{\"metadata\
+":{\"topic\":\"MARKETPLACE_ACCOUNT_DELETION\",\"schemaVersion\":\"1.0\",\"depre
+cated\":false},\"notification\":{\"notificationId\":\"416c3bc4-5e66-4fb9-b25d-d
+b22522e5bb0_9129020b-4788-43e5-aae0-679fc989f384\",\"eventDate\":\"2026-07-31T2
+0:01:53.533Z\",\"publishDate\":\"2026-07-31T20:01:53.540Z\",\"publishAttemptCou
+nt\":1,\"data\":{\"username\":\"actionman5971\",\"userId\":\"-C_ZihApQ8O\",\"ei
+asToken\":\"nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6wGkIumAZGEoAidj6x9nY+seQ==\"}}}}","so
+urce":"serverless","domain":"legends-os-beta.vercel.app","requestMethod":"POST"
+,"requestPath":"/api/ebay/account-deletion","responseStatusCode":200,"environme
+nt":"production","branch":"","cache":"MISS","cacheReason":"","pprState":"","tra
+ceId":"","logs":[{"level":"info","message":"[eBay MADN] received notification: 
+{\"headers\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"connection\":\"
+close\",\"content-length\":\"438\",\"content-type\":\"application/json\",\"forw
+arded\":\"for=66.211.183.71;host=legends-os-beta.vercel.app;proto=https;sig=0Qm
+VhcmVyIGRjNDVhOTJmNjE5YTQzMTAxZDI1MDBiZGM5ZWQ0MzMxODI3ZDMxYjcxZjYwMDJmYmQ3ZGJhZ
+TgxZTI0NTZmNzM=;exp=1785528413\",\"host\":\"legends-os-beta.vercel.app\",\"user
+-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGciOiJlY2RzYSIsImtp
+ZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25hdHVyZSI6Ik1FVUN
+JUUNGV25SNFIyWitpVENVUXBiZ0xxY2U2V0ZvT1RlZEppMjdZd0pHcExnK0Z3SWdBMUZWaStXYTRnc3
+-----
+MATCH LINE 1668:
+el-sc-host\":\"iad1.suspense-cache.vercel-infra.com\"},\"payload\":{\"metadata\
+":{\"topic\":\"MARKETPLACE_ACCOUNT_DELETION\",\"schemaVersion\":\"1.0\",\"depre
+cated\":false},\"notification\":{\"notificationId\":\"416c3bc4-5e66-4fb9-b25d-d
+b22522e5bb0_9129020b-4788-43e5-aae0-679fc989f384\",\"eventDate\":\"2026-07-31T2
+0:01:53.533Z\",\"publishDate\":\"2026-07-31T20:01:53.540Z\",\"publishAttemptCou
+nt\":1,\"data\":{\"username\":\"actionman5971\",\"userId\":\"-C_ZihApQ8O\",\"ei
+asToken\":\"nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6wGkIumAZGEoAidj6x9nY+seQ==\"}}}}","so
+urce":"serverless","domain":"legends-os-beta.vercel.app","requestMethod":"POST"
+,"requestPath":"/api/ebay/account-deletion","responseStatusCode":200,"environme
+nt":"production","branch":"","cache":"MISS","cacheReason":"","pprState":"","tra
+ceId":"","logs":[{"level":"info","message":"[eBay MADN] received notification: 
+{\"headers\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"connection\":\"
+close\",\"content-length\":\"438\",\"content-type\":\"application/json\",\"forw
+arded\":\"for=66.211.183.71;host=legends-os-beta.vercel.app;proto=https;sig=0Qm
+VhcmVyIGRjNDVhOTJmNjE5YTQzMTAxZDI1MDBiZGM5ZWQ0MzMxODI3ZDMxYjcxZjYwMDJmYmQ3ZGJhZ
+TgxZTI0NTZmNzM=;exp=1785528413\",\"host\":\"legends-os-beta.vercel.app\",\"user
+-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGciOiJlY2RzYSIsImtp
+ZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25hdHVyZSI6Ik1FVUN
+JUUNGV25SNFIyWitpVENVUXBiZ0xxY2U2V0ZvT1RlZEppMjdZd0pHcExnK0Z3SWdBMUZWaStXYTRnc3
+laK29UTXlyT1BpVXJMUmQ5T0M2Q1NMQWJiWkFseTNvPSIsImRpZ2VzdCI6IlNIQTEifQ==\",\"x-fo
+rwarded-for\":\"66.211.183.71\",\"x-forwarded-host\":\"legends-os-beta.vercel.a
+-----
+MATCH LINE 1674:
+asToken\":\"nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6wGkIumAZGEoAidj6x9nY+seQ==\"}}}}","so
+urce":"serverless","domain":"legends-os-beta.vercel.app","requestMethod":"POST"
+,"requestPath":"/api/ebay/account-deletion","responseStatusCode":200,"environme
+nt":"production","branch":"","cache":"MISS","cacheReason":"","pprState":"","tra
+ceId":"","logs":[{"level":"info","message":"[eBay MADN] received notification: 
+{\"headers\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip\",\"connection\":\"
+close\",\"content-length\":\"438\",\"content-type\":\"application/json\",\"forw
+arded\":\"for=66.211.183.71;host=legends-os-beta.vercel.app;proto=https;sig=0Qm
+VhcmVyIGRjNDVhOTJmNjE5YTQzMTAxZDI1MDBiZGM5ZWQ0MzMxODI3ZDMxYjcxZjYwMDJmYmQ3ZGJhZ
+TgxZTI0NTZmNzM=;exp=1785528413\",\"host\":\"legends-os-beta.vercel.app\",\"user
+-agent\":\"ReactorNetty/1.3.5\",\"x-ebay-signature\":\"eyJhbGciOiJlY2RzYSIsImtp
+ZCI6IjNjZjg4MGU3LTQxYTUtNDQzNy04OWE0LWQzODY3N2VmMmI5NiIsInNpZ25hdHVyZSI6Ik1FVUN
+JUUNGV25SNFIyWitpVENVUXBiZ0xxY2U2V0ZvT1RlZEppMjdZd0pHcExnK0Z3SWdBMUZWaStXYTRnc3
+laK29UTXlyT1BpVXJMUmQ5T0M2Q1NMQWJiWkFseTNvPSIsImRpZ2VzdCI6IlNIQTEifQ==\",\"x-fo
+rwarded-for\":\"66.211.183.71\",\"x-forwarded-host\":\"legends-os-beta.vercel.a
+pp\",\"x-forwarded-port\":\"443\",\"x-forwarded-proto\":\"https\",\"x-invocatio
+n-id\":\"sfo1::vjjd4-1785528113629-20b932604a86\",\"x-matched-path\":\"/api/eba
+y/account-deletion\",\"x-real-ip\":\"66.211.183.71\",\"x-vercel-deployment-url\
+":\"legends-ohn61g79x-legends17.vercel.app\",\"x-vercel-enable-rewrite-caching\
+":\"1\",\"x-vercel-forwarded-for\":\"66.211.183.71\",\"x-vercel-id\":\"sfo1::vj
+jd4-1785528113629-20b932604a86\",\"x-vercel-ip-as-number\":\"11643\",\"x-vercel
+-----
