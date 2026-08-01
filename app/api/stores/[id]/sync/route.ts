@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+﻿import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import {
   getValidAccessToken,
@@ -48,16 +48,18 @@ async function importItems(params: {
       ? new Date(item.ListingDetails.EndTime)
       : null;
 
+    const ebayItemId = String(item.ItemID);
+
     const listing = await prisma.listing.upsert({
       where: {
         storeId_ebayItemId: {
           storeId,
-          ebayItemId: item.ItemID,
+          ebayItemId,
         },
       },
       create: {
         storeId,
-        ebayItemId: item.ItemID,
+        ebayItemId,
         title: item.Title,
         description: item.Description,
         categoryId: item.PrimaryCategory?.CategoryID,
@@ -232,3 +234,4 @@ export async function POST(
     return NextResponse.json({ error: message, imported }, { status: 500 });
   }
 }
+
