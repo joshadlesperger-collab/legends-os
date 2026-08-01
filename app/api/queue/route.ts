@@ -28,15 +28,17 @@ export async function GET(req: NextRequest) {
   });
 
   const grouped = {
+    raise: [] as typeof recommendations,
     lower: [] as typeof recommendations,
-    relist: [] as typeof recommendations,
-    leave: [] as typeof recommendations,
+    hold: [] as typeof recommendations,
+    insufficient: [] as typeof recommendations,
   };
 
   for (const rec of recommendations) {
     if (rec.type === "lower-price") grouped.lower.push(rec);
-    else if (rec.type === "end-relist") grouped.relist.push(rec);
-    else if (rec.type === "leave-alone") grouped.leave.push(rec);
+    else if (rec.type === "raise-price") grouped.raise.push(rec);
+    else if (rec.type === "hold") grouped.hold.push(rec);
+    else if (rec.type === "insufficient-data") grouped.insufficient.push(rec);
   }
 
   return NextResponse.json({

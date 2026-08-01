@@ -80,9 +80,9 @@ async function main() {
     data: {
       listingId: listing.id,
       storeId: store.id,
-      type: "leave-alone",
-      reason: "Healthy views-to-watcher ratio.",
-      expectedProfitImpact: -2.0,
+      type: "hold",
+      reason: "Healthy views-to-watcher ratio indicates this listing should remain priced as-is.",
+      expectedProfitImpact: 0.0,
       confidence: 71,
     },
   });

@@ -1,8 +1,20 @@
-export type RecommendationType = "lower-price" | "end-relist" | "leave-alone";
+export type RecommendationType = "raise-price" | "lower-price" | "hold" | "insufficient-data";
+
+export type ListingSnapshotRecord = {
+  capturedAt: Date | string;
+  currentPrice: unknown;
+  quantitySold: number;
+  views: number;
+  watchers: number;
+  listingStatus?: string;
+};
 
 export type ListingRecord = {
   id: string;
   storeId: string;
+  title?: string | null;
+  listingFormat?: string | null;
+  categoryId?: string | null;
   currentPrice: unknown;
   views: number | null;
   watchers: number | null;
@@ -11,6 +23,14 @@ export type ListingRecord = {
   startTime: Date | string | null;
   createdAt: Date | string;
   store: { accountId: string };
+  snapshots?: ListingSnapshotRecord[];
+};
+
+export type CompStats = {
+  compCount: number;
+  compMedianPrice: number;
+  compLowerPrice: number;
+  compUpperPrice: number;
 };
 
 export type ScoreResult = {
@@ -20,13 +40,47 @@ export type ScoreResult = {
   opportunityFactors: Record<string, number>;
 };
 
+export type RecommendationBreakdown = {
+  score: number;
+  rawScore: number;
+  factors: {
+    ageRisk: number;
+    viewsShield: number;
+    watchersShield: number;
+    salesGapRisk: number;
+    priceRisk: number;
+    formatRisk: number;
+    quantityRisk: number;
+    titleRisk: number;
+    engagementShield: number;
+    baseRisk: number;
+  };
+  thresholds: {
+    leaveAloneMax: number;
+    lowerPriceMax: number;
+  };
+};
+
 export type RecommendationResult = {
   type: RecommendationType;
   suggestedPrice: number | null;
   reason: string;
   expectedProfitImpact: number;
   confidence: number;
+  breakdown?: RecommendationBreakdown;
 };
+
+const RECOMMENDATION_SCORE_LEAVE_ALONE_MAX = 39;
+const RECOMMENDATION_SCORE_LOWER_PRICE_MAX = 69;
+
+const AGE_WEIGHT = 20;
+const SALES_WEIGHT = 22;
+const PRICE_WEIGHT = 8;
+const FORMAT_WEIGHT = 8;
+const QUANTITY_WEIGHT = 4;
+const TITLE_WEIGHT = 2;
+const ENGAGEMENT_VIEWS_WEIGHT = 28;
+const ENGAGEMENT_WATCHERS_WEIGHT = 40;
 
 function clamp(value: number, min: number, max: number) {
   return Math.max(min, Math.min(max, value));
@@ -41,11 +95,118 @@ function numeric(value: unknown) {
   return 0;
 }
 
+function normalize(value: number, min: number, max: number) {
+  if (max <= min) return 0;
+  return clamp((value - min) / (max - min), 0, 1);
+}
+
+function titleHealthScore(title?: string | null) {
+  if (!title) return 0.5;
+  const normalized = title.toLowerCase();
+  const positiveKeywords = [
+    "graded",
+    "factory sealed",
+    "psa",
+    "bgs",
+    "gem mint",
+    "mint",
+    "uncut",
+    "low pop",
+    "rare",
+    "short print",
+    "promo",
+    "first edition",
+  ];
+  const negativeKeywords = [
+    "lot",
+    "bundle",
+    "bulk",
+    "cards",
+    "collection",
+    "mixed",
+    "random",
+    "assortment",
+    "ungraded",
+  ];
+
+  let score = 0.5;
+  if (title.split(/\s+/).length < 5) score -= 0.15;
+  if (positiveKeywords.some((keyword) => normalized.includes(keyword))) score += 0.2;
+  if (negativeKeywords.some((keyword) => normalized.includes(keyword))) score -= 0.25;
+  return clamp(score, 0, 1);
+}
+
 export function daysSince(value: Date | string | null | undefined) {
   if (!value) return 0;
   const timestamp = typeof value === "string" ? new Date(value).getTime() : value.getTime();
   if (!Number.isFinite(timestamp)) return 0;
   return Math.max(0, Math.floor((Date.now() - timestamp) / (1000 * 60 * 60 * 24)));
+}
+
+function buildComparableKey(listing: ListingRecord) {
+  if (!listing.categoryId) return "";
+  return `${listing.categoryId}:${listing.listingFormat ?? "unknown"}`;
+}
+
+function median(values: number[]) {
+  if (values.length === 0) return 0;
+  const sorted = [...values].sort((a, b) => a - b);
+  const mid = Math.floor((sorted.length - 1) / 2);
+  return sorted.length % 2 === 1
+    ? sorted[mid]
+    : (sorted[mid] + sorted[mid + 1]) / 2;
+}
+
+function computeComparableStats(listing: ListingRecord, pool: ListingRecord[]): CompStats | null {
+  const key = buildComparableKey(listing);
+  if (!key) return null;
+
+  const comparablePrices = pool
+    .filter((other) => other.id !== listing.id && buildComparableKey(other) === key)
+    .map((item) => numeric(item.currentPrice))
+    .filter((price) => price > 0);
+
+  if (comparablePrices.length < 3) {
+    return null;
+  }
+
+  const compMedianPrice = median(comparablePrices);
+  return {
+    compCount: comparablePrices.length,
+    compMedianPrice,
+    compLowerPrice: Math.min(...comparablePrices),
+    compUpperPrice: Math.max(...comparablePrices),
+  };
+}
+
+function computeRecentSnapshotMetrics(listing: ListingRecord) {
+  const snapshots = (listing.snapshots ?? [])
+    .map((snapshot) => ({
+      capturedAt: typeof snapshot.capturedAt === "string" ? new Date(snapshot.capturedAt).getTime() : snapshot.capturedAt.getTime(),
+      quantitySold: Number(snapshot.quantitySold ?? 0),
+      views: Number(snapshot.views ?? 0),
+      watchers: Number(snapshot.watchers ?? 0),
+    }))
+    .filter((snapshot) => Number.isFinite(snapshot.capturedAt))
+    .sort((a, b) => b.capturedAt - a.capturedAt);
+
+  if (snapshots.length < 2) {
+    return { days: 0, quantitySoldDelta: 0, viewsPerDay: 0, watcherDelta: 0 };
+  }
+
+  const latest = snapshots[0];
+  const oldest = snapshots[snapshots.length - 1];
+  const days = Math.max(1, Math.floor((latest.capturedAt - oldest.capturedAt) / (1000 * 60 * 60 * 24)));
+  const quantitySoldDelta = Math.max(0, latest.quantitySold - oldest.quantitySold);
+  const viewsDelta = Math.max(0, latest.views - oldest.views);
+  const watcherDelta = Math.max(0, latest.watchers - oldest.watchers);
+
+  return {
+    days,
+    quantitySoldDelta,
+    viewsPerDay: viewsDelta / days,
+    watcherDelta,
+  };
 }
 
 export function buildScores(listing: ListingRecord): ScoreResult {
@@ -87,62 +248,198 @@ export function buildScores(listing: ListingRecord): ScoreResult {
   return { healthScore, opportunityScore, healthFactors, opportunityFactors };
 }
 
-export function buildRecommendation(listing: ListingRecord): RecommendationResult | null {
+function computeRecommendationScore(listing: ListingRecord): RecommendationBreakdown {
   const age = daysSince(listing.startTime ?? listing.createdAt);
   const views = numeric(listing.views);
   const watchers = numeric(listing.watchers);
   const quantitySold = numeric(listing.quantitySold);
   const quantity = listing.quantity;
   const price = numeric(listing.currentPrice);
-  const sellRatio = quantitySold > 0 ? quantitySold / Math.max(1, quantity + quantitySold) : 0;
 
-  const lowerPriceCandidate =
-    quantitySold === 0 && age >= 7 && (views >= 20 || watchers >= 8) && price >= 5;
-  const relistCandidate =
-    quantitySold === 0 && age >= 14 && (watchers >= 3 || views >= 15);
-  const leaveCandidate = quantitySold > 0 && age <= 30 && sellRatio >= 0.25;
+  const ageFactor = normalize(age, 7, 35);
+  const viewsPerDay = age > 0 ? views / age : views;
+  const viewsFactor = clamp(1 - normalize(viewsPerDay, 2, 30), 0, 1);
+  const watchersFactor = clamp(1 - normalize(watchers, 0, 20), 0, 1);
+  const salesGapFactor = quantitySold > 0 ? 0 : normalize(age, 0, 35);
+  const priceFactor = clamp((price - 10) / 190, 0, 1);
+  const formatFactor = listing.listingFormat === "Auction" ? 0.2 : listing.listingFormat === "FixedPrice" ? 1 : 0.6;
+  const quantityFactor = normalize(quantity, 1, 10);
+  const titleFactor = titleHealthScore(listing.title);
 
-  if (lowerPriceCandidate) {
-    const suggestedPrice = Number(Math.max(price * 0.92, price - 5).toFixed(2));
-    const expectedProfitImpact = Number(
-      Math.max(1, (views * 0.08 + watchers * 0.5 + age * 0.25) / 4).toFixed(2)
-    );
-    const confidence = clamp(40 + watchers * 4 + (views >= 20 ? 10 : 0) + Math.min(age, 20), 0, 95);
+  const ageContribution = ageFactor * AGE_WEIGHT;
+  const salesContribution = salesGapFactor * SALES_WEIGHT;
+  const priceContribution = priceFactor * PRICE_WEIGHT;
+  const formatContribution = formatFactor * FORMAT_WEIGHT;
+  const quantityContribution = quantityFactor * QUANTITY_WEIGHT;
+  const titleContribution = titleFactor * TITLE_WEIGHT;
 
+  const viewsShield = (1 - viewsFactor) * ENGAGEMENT_VIEWS_WEIGHT;
+  const watchersShield = (1 - watchersFactor) * ENGAGEMENT_WATCHERS_WEIGHT;
+  const engagementShield = viewsShield + watchersShield;
+
+  const baseRisk =
+    ageContribution +
+    salesContribution +
+    priceContribution +
+    formatContribution +
+    quantityContribution +
+    titleContribution;
+
+  const rawScore = baseRisk - engagementShield;
+  const score = clamp(rawScore, 0, 100);
+
+  return {
+    score,
+    rawScore,
+    factors: {
+      ageRisk: Number(ageContribution.toFixed(2)),
+      viewsShield: Number(viewsShield.toFixed(2)),
+      watchersShield: Number(watchersShield.toFixed(2)),
+      salesGapRisk: Number(salesContribution.toFixed(2)),
+      priceRisk: Number(priceContribution.toFixed(2)),
+      formatRisk: Number(formatContribution.toFixed(2)),
+      quantityRisk: Number(quantityContribution.toFixed(2)),
+      titleRisk: Number(titleContribution.toFixed(2)),
+      engagementShield: Number(engagementShield.toFixed(2)),
+      baseRisk: Number(baseRisk.toFixed(2)),
+    },
+    thresholds: {
+      leaveAloneMax: RECOMMENDATION_SCORE_LEAVE_ALONE_MAX,
+      lowerPriceMax: RECOMMENDATION_SCORE_LOWER_PRICE_MAX,
+    },
+  };
+}
+
+function formatSuggestedPrice(price: number, score: number) {
+  const baseDrop = 0.05;
+  const additional = Math.min(0.12, (score - 40) / 200);
+  const dropRate = clamp(baseDrop + additional, 0.05, 0.20);
+  const suggested = Math.max(1, Number((price * (1 - dropRate)).toFixed(2)));
+  return suggested;
+}
+
+function buildConfidence(
+  type: RecommendationType,
+  score: number,
+  listing: ListingRecord,
+  compStats: CompStats | null
+) {
+  const views = numeric(listing.views);
+  const watchers = numeric(listing.watchers);
+  const quantitySold = numeric(listing.quantitySold);
+  const age = daysSince(listing.startTime ?? listing.createdAt);
+
+  let confidence = score * 0.6;
+  if (compStats) {
+    confidence += 20;
+    confidence += Math.min(10, compStats.compCount * 2);
+  }
+  confidence += Math.min(10, views / 10);
+  confidence += Math.min(10, watchers * 2);
+  confidence += quantitySold > 0 ? 5 : 0;
+  confidence += age >= 14 ? 0 : 5;
+
+  if (type === "insufficient-data") {
+    confidence = 20 + (compStats ? 15 : 0) + Math.min(10, views / 15);
+  }
+
+  if (type === "hold") {
+    confidence = Math.min(90, confidence + 5);
+  }
+
+  return Math.round(clamp(confidence, 10, 95));
+}
+
+export function buildRecommendation(listing: ListingRecord, pool: ListingRecord[] = []): RecommendationResult | null {
+  const breakdown = computeRecommendationScore(listing);
+  const score = breakdown.score;
+  const price = numeric(listing.currentPrice);
+  const age = daysSince(listing.startTime ?? listing.createdAt);
+  const views = numeric(listing.views);
+  const watchers = numeric(listing.watchers);
+  const quantitySold = numeric(listing.quantitySold);
+  const viewsPerDay = age > 0 ? views / age : views;
+  const strongEngagement = viewsPerDay >= 1.5 || watchers > 3;
+  const weakEngagement = viewsPerDay < 0.75 && watchers <= 2;
+  const snapshotMetrics = computeRecentSnapshotMetrics(listing);
+  const velocity = snapshotMetrics.days > 0 ? snapshotMetrics.quantitySoldDelta / snapshotMetrics.days : 0;
+  const compStats = computeComparableStats(listing, pool);
+  const priceGap = compStats?.compMedianPrice ? price / compStats.compMedianPrice : 1;
+  const priceAboveMedian = compStats ? price > compStats.compMedianPrice * 1.05 : false;
+  const priceBelowMedian = compStats ? price < compStats.compMedianPrice * 0.95 : false;
+  const priceFarAboveMedian = compStats ? price > compStats.compMedianPrice * 1.10 : false;
+  const priceFarBelowMedian = compStats ? price < compStats.compMedianPrice * 0.90 : false;
+
+  const type: RecommendationType = (() => {
+    if (!compStats) {
+      if (quantitySold > 0 || strongEngagement || velocity >= 0.2) {
+        return "hold";
+      }
+      return "insufficient-data";
+    }
+
+    if (priceFarBelowMedian && strongEngagement) {
+      return "raise-price";
+    }
+
+    if (priceFarAboveMedian && weakEngagement) {
+      return "lower-price";
+    }
+
+    if (priceAboveMedian && velocity < 0.25) {
+      return "lower-price";
+    }
+
+    if (priceBelowMedian && strongEngagement) {
+      return "raise-price";
+    }
+
+    return "hold";
+  })();
+
+  if (type === "hold") {
     return {
-      type: "lower-price",
+      type,
+      suggestedPrice: null,
+      reason: compStats
+        ? `This listing sits within our internal comparable range; keep it priced to stay competitive.`
+        : `No strong internal pricing comparables were available, so hold price until more data is collected.`,
+      expectedProfitImpact: 0,
+      confidence: buildConfidence(type, score, listing, compStats),
+      breakdown,
+    };
+  }
+
+  if (type === "insufficient-data") {
+    return {
+      type,
+      suggestedPrice: null,
+      reason: `Insufficient internal comp or engagement data exists to make a confident pricing recommendation. Wait for more listing performance history or active comparables.`,
+      expectedProfitImpact: 0,
+      confidence: buildConfidence(type, score, listing, compStats),
+      breakdown,
+    };
+  }
+
+  if (type === "raise-price") {
+    const suggestedPrice = Math.max(1, Number((price * Math.min(1.08, 1 + (0.03 + Math.min(priceGap - 1, 0.08)))).toFixed(2)));
+    return {
+      type,
       suggestedPrice,
-      reason: `High interest with no sales over ${age} day${age === 1 ? "" : "s"}; lower price slightly to boost conversion.`,
-      expectedProfitImpact,
-      confidence,
+      reason: `This listing is priced below internal comparable median with solid engagement; consider raising price slightly while preserving conversion.`,
+      expectedProfitImpact: Number(Math.max(1, (score * 0.06 + velocity * 4 + viewsPerDay * 0.2) / 4).toFixed(2)),
+      confidence: buildConfidence(type, score, listing, compStats),
+      breakdown,
     };
   }
 
-  if (relistCandidate) {
-    const expectedProfitImpact = Number(Math.max(1, (watchers * 0.7 + age * 0.35) / 3).toFixed(2));
-    const confidence = clamp(35 + watchers * 3 + Math.min(age, 20), 0, 90);
-
-    return {
-      type: "end-relist",
-      suggestedPrice: null,
-      reason: `Stale listing with ongoing interest but no sales; end and relist to refresh visibility.`,
-      expectedProfitImpact,
-      confidence,
-    };
-  }
-
-  if (leaveCandidate) {
-    const expectedProfitImpact = 0;
-    const confidence = clamp(40 + quantitySold * 6 + watchers * 3, 0, 90);
-
-    return {
-      type: "leave-alone",
-      suggestedPrice: null,
-      reason: `Listing has recent sales and healthy interest; keep it active as-is.`,
-      expectedProfitImpact,
-      confidence,
-    };
-  }
-
-  return null;
+  const suggestedPrice = formatSuggestedPrice(price, score);
+  return {
+    type,
+    suggestedPrice,
+    reason: `This listing is priced above internal comparable range and has weaker engagement; lower price to improve conversion.`,
+    expectedProfitImpact: Number(Math.max(1, (score * 0.08 + velocity * 2 + viewsPerDay * 0.1) / 4).toFixed(2)),
+    confidence: buildConfidence(type, score, listing, compStats),
+    breakdown,
+  };
 }

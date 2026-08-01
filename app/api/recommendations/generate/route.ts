@@ -1,7 +1,96 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
-import { buildRecommendation, buildScores, ListingRecord, RecommendationResult } from "@/lib/recommendations";
+import { buildRecommendation, buildScores, daysSince, ListingRecord, RecommendationResult, ScoreResult } from "@/lib/recommendations";
+import { randomUUID } from "crypto";
+
+const SCORE_CHANGE_THRESHOLD = 3;
+const FACTOR_CHANGE_THRESHOLD = 5;
+
+function normalizeFactorRecord(value: unknown): Record<string, number> {
+  if (value === null || value === undefined || Array.isArray(value) || typeof value !== "object") {
+    return {};
+  }
+
+  const record: Record<string, number> = {};
+  for (const [key, rawValue] of Object.entries(value)) {
+    if (typeof rawValue === "number" && Number.isFinite(rawValue)) {
+      record[key] = rawValue;
+      continue;
+    }
+
+    if (typeof rawValue === "string") {
+      const parsed = Number(rawValue);
+      if (!Number.isNaN(parsed) && Number.isFinite(parsed)) {
+        record[key] = parsed;
+      }
+      continue;
+    }
+
+    if (typeof rawValue === "boolean") {
+      record[key] = rawValue ? 1 : 0;
+    }
+  }
+
+  return record;
+}
+
+function normalizeDecimalValue(value: Prisma.Decimal | number | null | undefined): string | null {
+  if (value === null || value === undefined) {
+    return null;
+  }
+
+  if (typeof value === "number") {
+    return String(value);
+  }
+
+  if (typeof value === "object" && value !== null && typeof (value as { toString?: unknown }).toString === "function") {
+    return String((value as { toString: () => string }).toString());
+  }
+
+  return null;
+}
+
+function hasMeaningfulScoreChange(
+  existing: { healthScore: number; opportunityScore: number; healthFactors: Record<string, number>; opportunityFactors: Record<string, number> } | undefined,
+  next: ScoreResult
+) {
+  if (!existing) return true;
+  if (Math.abs(existing.healthScore - next.healthScore) >= SCORE_CHANGE_THRESHOLD) return true;
+  if (Math.abs(existing.opportunityScore - next.opportunityScore) >= SCORE_CHANGE_THRESHOLD) return true;
+
+  const factorKeys = [
+    ...Object.keys(existing.healthFactors),
+    ...Object.keys(next.healthFactors),
+    ...Object.keys(existing.opportunityFactors),
+    ...Object.keys(next.opportunityFactors),
+  ].filter((value, index, array) => array.indexOf(value) === index);
+
+  for (const key of factorKeys) {
+    const existingHealth = existing.healthFactors[key] ?? 0;
+    const nextHealth = next.healthFactors[key] ?? 0;
+    if (Math.abs(existingHealth - nextHealth) >= FACTOR_CHANGE_THRESHOLD) return true;
+
+    const existingOpp = existing.opportunityFactors[key] ?? 0;
+    const nextOpp = next.opportunityFactors[key] ?? 0;
+    if (Math.abs(existingOpp - nextOpp) >= FACTOR_CHANGE_THRESHOLD) return true;
+  }
+
+  return false;
+}
+
+function recommendationIsIdentical(
+  existing: { type: string; suggestedPrice: Prisma.Decimal | null; reason: string; expectedProfitImpact: Prisma.Decimal | number | null; confidence: number | null },
+  next: RecommendationResult
+) {
+  return (
+    existing.type === next.type &&
+    normalizeDecimalValue(existing.suggestedPrice) === normalizeDecimalValue(next.suggestedPrice) &&
+    existing.reason === next.reason &&
+    normalizeDecimalValue(existing.expectedProfitImpact) === normalizeDecimalValue(next.expectedProfitImpact) &&
+    existing.confidence === next.confidence
+  );
+}
 
 export async function POST(request: NextRequest) {
   const body = await request.json().catch(() => ({}));
@@ -12,122 +101,249 @@ export async function POST(request: NextRequest) {
       ...(storeId ? { storeId } : {}),
       listingStatus: "active",
     },
-    include: { store: { select: { accountId: true } } },
+    include: {
+      store: { select: { accountId: true } },
+      snapshots: { orderBy: { capturedAt: "desc" }, take: 2 },
+    },
   });
 
   if (listings.length === 0) {
     return NextResponse.json({ generated: 0, skipped: 0 });
   }
 
-  const storeIds = Array.from(new Set(listings.map((listing) => listing.storeId)));
-  const scoreRuns = await prisma.$transaction(
-    storeIds.map((id) => prisma.scoreRun.create({ data: { storeId: id, status: "completed" } }))
-  );
-
-  const scoreRunByStore = new Map(scoreRuns.map((scoreRun) => [scoreRun.storeId, scoreRun.id]));
   const listingIds = listings.map((listing) => listing.id);
-
   const existingPending = await prisma.recommendation.findMany({
     where: { listingId: { in: listingIds }, status: "pending" },
   });
-  const existingByListing = new Map<string, (typeof existingPending[number])[]>(
-    existingPending.map((recommendation) => [recommendation.listingId, [] as (typeof existingPending[number])[]])
-  );
+  const existingQueueRows = await prisma.actionQueue.findMany({
+    where: { recommendationId: { in: existingPending.map((recommendation) => recommendation.id) } },
+  });
+  const existingScores = await prisma.listingScore.findMany({
+    where: { listingId: { in: listingIds } },
+    orderBy: [{ listingId: "asc" }, { calculatedAt: "desc" }],
+  });
+
+  const existingByListing = new Map<string, typeof existingPending[number][]>();
   for (const recommendation of existingPending) {
-    const list = existingByListing.get(recommendation.listingId);
-    if (list) list.push(recommendation);
+    const list = existingByListing.get(recommendation.listingId) ?? [];
+    list.push(recommendation);
+    existingByListing.set(recommendation.listingId, list);
   }
 
-  const createdRecommendations: Array<{
+  const queueByRecommendationId = new Map<string, typeof existingQueueRows[number]>();
+  for (const row of existingQueueRows) {
+    queueByRecommendationId.set(row.recommendationId, row);
+  }
+
+  const latestScoreByListing = new Map<string, typeof existingScores[number]>();
+  for (const score of existingScores) {
+    if (!latestScoreByListing.has(score.listingId)) {
+      latestScoreByListing.set(score.listingId, score);
+    }
+  }
+
+  const storeIds = Array.from(new Set(listings.map((listing) => listing.storeId)));
+  const listingsByStore = new Map<string, typeof listings>();
+  for (const listing of listings) {
+    const storePool = listingsByStore.get(listing.storeId) ?? [];
+    storePool.push(listing);
+    listingsByStore.set(listing.storeId, storePool);
+  }
+
+  const scoreCreates: Array<{
+    listingId: string;
+    storeId: string;
+    healthScore: number;
+    opportunityScore: number;
+    healthFactors: Record<string, number>;
+    opportunityFactors: Record<string, number>;
+  }> = [];
+  const recommendationCreates: Array<{
     id: string;
     listingId: string;
     storeId: string;
-    accountId: string;
-    expectedProfitImpact: number;
+    type: string;
+    suggestedPrice: string | null;
+    reason: string;
+    expectedProfitImpact: string;
+    confidence: number;
+    status: string;
   }> = [];
+  const recommendationUpdates: Array<{
+    id: string;
+    data: {
+      type: string;
+      suggestedPrice: Prisma.Decimal | null;
+      reason: string;
+      expectedProfitImpact: Prisma.Decimal;
+      confidence: number;
+    };
+  }> = [];
+  const queueCreates: Array<{
+    recommendationId: string;
+    accountId: string;
+    storeId: string;
+    rank: number;
+    status: string;
+  }> = [];
+  const missingQueueRows: Array<{
+    recommendationId: string;
+    accountId: string;
+    storeId: string;
+    rank: number;
+    status: string;
+  }> = [];
+
   let skippedCount = 0;
+  let nextRank = Math.max(0, ...existingQueueRows.map((row) => row.rank)) + 1;
+  const changedScoreStoreIds = new Set<string>();
 
   for (const listing of listings) {
-    const scoreRunId = scoreRunByStore.get(listing.storeId);
-    if (!scoreRunId) continue;
-
+    const existingScore = latestScoreByListing.get(listing.id);
+    const normalizedExistingScore = existingScore
+      ? {
+          healthScore: existingScore.healthScore,
+          opportunityScore: existingScore.opportunityScore,
+          healthFactors: normalizeFactorRecord(existingScore.healthFactors),
+          opportunityFactors: normalizeFactorRecord(existingScore.opportunityFactors),
+        }
+      : undefined;
     const score = buildScores(listing as ListingRecord);
-    await prisma.listingScore.create({
-      data: {
+    if (hasMeaningfulScoreChange(normalizedExistingScore, score)) {
+      scoreCreates.push({
         listingId: listing.id,
-        scoreRunId,
+        storeId: listing.storeId,
         healthScore: score.healthScore,
         opportunityScore: score.opportunityScore,
         healthFactors: score.healthFactors,
         opportunityFactors: score.opportunityFactors,
-      },
-    });
+      });
+      changedScoreStoreIds.add(listing.storeId);
+    }
 
-    const recommendation = buildRecommendation(listing as ListingRecord);
+    const storePool = listingsByStore.get(listing.storeId) ?? [];
+    const recommendation = buildRecommendation(listing as ListingRecord, storePool);
     if (!recommendation) {
       skippedCount += 1;
       continue;
     }
 
     const existingList = existingByListing.get(listing.id) ?? [];
-    const duplicate = existingList.some((existing) => {
-      return (
-        existing.type === recommendation.type &&
-        String(existing.suggestedPrice ?? null) === String(recommendation.suggestedPrice ?? null) &&
-        existing.reason === recommendation.reason
-      );
-    });
-
-    if (duplicate) {
+    const matchingExistingRecommendation = existingList.find((existing) => recommendationIsIdentical(existing, recommendation));
+    if (matchingExistingRecommendation) {
+      if (!queueByRecommendationId.has(matchingExistingRecommendation.id)) {
+        missingQueueRows.push({
+          recommendationId: matchingExistingRecommendation.id,
+          accountId: listing.store.accountId,
+          storeId: listing.storeId,
+          rank: nextRank++,
+          status: "pending",
+        });
+      }
       skippedCount += 1;
       continue;
     }
 
-    const newRecommendation = await prisma.recommendation.create({
-      data: {
-        listingId: listing.id,
-        storeId: listing.storeId,
-        type: recommendation.type,
-        suggestedPrice:
-          recommendation.suggestedPrice !== null
-            ? new Prisma.Decimal(recommendation.suggestedPrice)
-            : undefined,
-        reason: recommendation.reason,
-        expectedProfitImpact: new Prisma.Decimal(recommendation.expectedProfitImpact),
-        confidence: recommendation.confidence,
-        status: "pending",
-      },
-    });
+    if (existingList.length > 0) {
+      const existingRecommendation = existingList[0];
+      recommendationUpdates.push({
+        id: existingRecommendation.id,
+        data: {
+          type: recommendation.type,
+          suggestedPrice:
+            recommendation.suggestedPrice !== null
+              ? new Prisma.Decimal(recommendation.suggestedPrice)
+              : null,
+          reason: recommendation.reason,
+          expectedProfitImpact: new Prisma.Decimal(recommendation.expectedProfitImpact),
+          confidence: recommendation.confidence,
+        },
+      });
 
-    createdRecommendations.push({
-      id: newRecommendation.id,
+      if (!queueByRecommendationId.has(existingRecommendation.id)) {
+        missingQueueRows.push({
+          recommendationId: existingRecommendation.id,
+          accountId: listing.store.accountId,
+          storeId: listing.storeId,
+          rank: nextRank++,
+          status: "pending",
+        });
+      }
+      continue;
+    }
+
+    const id = randomUUID();
+    recommendationCreates.push({
+      id,
       listingId: listing.id,
       storeId: listing.storeId,
+      type: recommendation.type,
+      suggestedPrice:
+        recommendation.suggestedPrice !== null ? String(recommendation.suggestedPrice) : null,
+      reason: recommendation.reason,
+      expectedProfitImpact: String(recommendation.expectedProfitImpact),
+      confidence: recommendation.confidence,
+      status: "pending",
+    });
+    queueCreates.push({
+      recommendationId: id,
       accountId: listing.store.accountId,
-      expectedProfitImpact: recommendation.expectedProfitImpact,
+      storeId: listing.storeId,
+      rank: nextRank++,
+      status: "pending",
     });
   }
 
-  const sortedRecommendations = [...createdRecommendations].sort(
-    (a, b) => b.expectedProfitImpact - a.expectedProfitImpact
-  );
+  const scoreRunByStore = new Map<string, string>();
+  if (changedScoreStoreIds.size > 0) {
+    const scoreRuns = await prisma.$transaction(
+      Array.from(changedScoreStoreIds).map((storeId) =>
+        prisma.scoreRun.create({ data: { storeId, status: "completed" } })
+      )
+    );
+    for (const scoreRun of scoreRuns) {
+      scoreRunByStore.set(scoreRun.storeId, scoreRun.id);
+    }
+  }
 
-  await prisma.$transaction(
-    sortedRecommendations.map((recommendation, index) =>
-      prisma.actionQueue.create({
-        data: {
-          recommendationId: recommendation.id,
-          accountId: recommendation.accountId,
-          storeId: recommendation.storeId,
-          rank: index + 1,
-          status: "pending",
-        },
+  if (scoreCreates.length > 0) {
+    await prisma.listingScore.createMany({
+      data: scoreCreates.map((scoreCreate) => ({
+        ...scoreCreate,
+        scoreRunId: scoreRunByStore.get(scoreCreate.storeId) ?? "",
+      })),
+    });
+  }
+
+  const dbOperations: Array<Prisma.PrismaPromise<unknown>> = [];
+
+  for (const update of recommendationUpdates) {
+    dbOperations.push(
+      prisma.recommendation.update({
+        where: { id: update.id },
+        data: update.data,
       })
-    )
-  );
+    );
+  }
+
+  if (recommendationCreates.length > 0) {
+    dbOperations.push(prisma.recommendation.createMany({ data: recommendationCreates }));
+  }
+
+  if (queueCreates.length > 0) {
+    dbOperations.push(prisma.actionQueue.createMany({ data: queueCreates }));
+  }
+
+  if (missingQueueRows.length > 0) {
+    dbOperations.push(prisma.actionQueue.createMany({ data: missingQueueRows }));
+  }
+
+  if (dbOperations.length > 0) {
+    await prisma.$transaction(dbOperations);
+  }
 
   return NextResponse.json({
-    generated: createdRecommendations.length,
+    generated: recommendationCreates.length,
     skipped: skippedCount,
   });
 }

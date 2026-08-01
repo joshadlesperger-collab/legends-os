@@ -16,5 +16,6 @@ prisma/migrations/
 # Misc
 *.log
 .DS_Store
+tsconfig.tsbuildinfo
 
 .vercel
