@@ -277,6 +277,52 @@ export default function RecommendationDashboard() {
 
   const totalCount = queue ? queue.raise.length + queue.lower.length + queue.hold.length + queue.insufficient.length : 0;
 
+  const renderCurrentRecommended = (rec: Recommendation) => {
+    const currentPrice = formatMoney(rec.listing.currentPrice);
+    const recommendedPrice = formatMoney(rec.suggestedPrice);
+
+    if (rec.type === "raise-price" || rec.type === "lower-price") {
+      return (
+        <div style={{ display: "grid", gap: 2, marginBottom: 6, fontSize: 13, color: "#444" }}>
+          <div>
+            <strong>Current:</strong> {currentPrice}
+          </div>
+          <div>
+            <strong>Recommended:</strong> {recommendedPrice}
+          </div>
+        </div>
+      );
+    }
+
+    if (rec.type === "hold") {
+      return (
+        <div style={{ display: "grid", gap: 2, marginBottom: 6, fontSize: 13, color: "#444" }}>
+          <div>
+            <strong>Current:</strong> {currentPrice}
+          </div>
+          <div>
+            <strong>Recommended:</strong> Keep price
+          </div>
+        </div>
+      );
+    }
+
+    if (rec.type === "insufficient-data") {
+      return (
+        <div style={{ display: "grid", gap: 2, marginBottom: 6, fontSize: 13, color: "#444" }}>
+          <div>
+            <strong>Current:</strong> {currentPrice}
+          </div>
+          <div>
+            <strong>Recommended:</strong> Wait for more data
+          </div>
+        </div>
+      );
+    }
+
+    return null;
+  };
+
   return (
     <section style={{ width: "100%", maxWidth: "100%", margin: "0 auto", padding: "24px 0" }}>
       <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24, gap: 24, flexWrap: "wrap" }}>
@@ -346,11 +392,11 @@ export default function RecommendationDashboard() {
       )}
 
       <div style={{ overflowX: "auto" }}>
-        <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 1320, tableLayout: "fixed" }}>
+        <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 1400, tableLayout: "auto" }}>
           <thead>
             <tr style={{ textAlign: "left", borderBottom: "2px solid #ccc" }}>
               <th style={{ padding: "10px 8px", width: 48, textAlign: "center" }}>#</th>
-              {renderSortHeader("title", "Listing", 360, "left", true)}
+              {renderSortHeader("title", "Listing", 440, "left", true)}
               {renderSortHeader("type", "Action", 110, "center")}
               {renderSortHeader("currentPrice", "Current Price", 100, "center")}
               {renderSortHeader("suggestedPrice", "Suggested Price", 100, "center")}
@@ -382,7 +428,10 @@ export default function RecommendationDashboard() {
               sortedRecommendations.map((rec, index) => (
                 <tr key={rec.id} style={{ borderBottom: "1px solid #eee" }}>
                   <td style={{ padding: "8px 6px", width: 48, textAlign: "center" }}>{index + 1}</td>
-                  <td style={{ padding: "8px 10px", width: 360, overflowWrap: "anywhere", textAlign: "left" }}>{rec.listing.title}</td>
+                  <td style={{ padding: "8px 10px", minWidth: 440, maxWidth: 560, overflowWrap: "break-word", whiteSpace: "normal", textAlign: "left" }}>
+                    {rec.listing.title}
+                    {renderCurrentRecommended(rec)}
+                  </td>
                   <td style={{ padding: "8px 6px", width: 110, textAlign: "center" }}>{labels[rec.type]}</td>
                   <td style={{ padding: "8px 6px", width: 100, textAlign: "center" }}>{formatMoney(rec.listing.currentPrice)}</td>
                   <td style={{ padding: "8px 6px", width: 100, textAlign: "center" }}>{formatMoney(rec.suggestedPrice)}</td>
@@ -394,12 +443,12 @@ export default function RecommendationDashboard() {
                   <td style={{ padding: "8px 6px", width: 75, textAlign: "center" }}>{rec.listing.quantity ?? "—"}</td>
                   <td style={{ padding: "8px 6px", width: 75, textAlign: "center" }}>{rec.listing.quantitySold ?? "—"}</td>
                   <td style={{ padding: "8px 10px", width: 460, overflowWrap: "anywhere", textAlign: "left" }}>{rec.reason}</td>
-                  <td style={{ padding: "8px 10px", width: 150, display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "center" }}>
+                  <td style={{ padding: "8px 10px", width: 150, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6, justifyContent: "center" }}>
                     <button
                       type="button"
                       onClick={() => handleAction(rec.id, "dismiss")}
                       disabled={activeAction === rec.id}
-                      style={{ padding: "8px 12px", cursor: "pointer" }}
+                      style={{ padding: "6px 10px", cursor: "pointer", width: "100%" }}
                     >
                       Dismiss
                     </button>
@@ -407,7 +456,7 @@ export default function RecommendationDashboard() {
                       type="button"
                       onClick={() => handleAction(rec.id, "apply")}
                       disabled={activeAction === rec.id}
-                      style={{ padding: "8px 12px", cursor: "pointer" }}
+                      style={{ padding: "6px 10px", cursor: "pointer", width: "100%" }}
                     >
                       Mark Completed
                     </button>
