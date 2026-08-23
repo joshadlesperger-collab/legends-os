@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import crypto from "crypto";
 import { prisma } from "@/lib/prisma";
 import { getEbayOAuthUrl } from "@/lib/ebay";
+import { issueEbayOAuthState } from "@/lib/ebay-oauth-state";
 
 export async function GET() {
   const stores = await prisma.store.findMany({
@@ -27,16 +27,16 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  const state = crypto.randomBytes(16).toString("hex");
   const store = await prisma.store.create({
     data: {
       accountId,
-      oauthState: state,
       connectionStatus: "pending",
       isActive: true,
     },
   });
 
-  const url = getEbayOAuthUrl(state);
-  return NextResponse.json({ storeId: store.id, oauthUrl: url, state });
+  const issued = issueEbayOAuthState(store.id, "connect");
+  await prisma.store.update({ where: { id: store.id }, data: { oauthState: issued.storedState } });
+  const url = getEbayOAuthUrl(issued.state);
+  return NextResponse.json({ storeId: store.id, oauthUrl: url });
 }

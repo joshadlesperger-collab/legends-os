@@ -46,24 +46,10 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    let raw: string;
-    try {
-      raw = await req.text();
-    } catch {
-      raw = "";
-    }
-
-    let payload: unknown;
-    try {
-      payload = JSON.parse(raw);
-    } catch {
-      payload = raw;
-    }
-
-    console.log("[eBay MADN] received notification:", JSON.stringify({
-      headers: Object.fromEntries(req.headers.entries()),
-      payload,
-    }));
+    // Acknowledge without logging headers or the notification payload. Both may
+    // contain authentication material and personal account identifiers.
+    await req.text();
+    console.info("[eBay MADN] notification acknowledged");
 
     return NextResponse.json({ status: "acknowledged" }, { status: 200 });
   } catch (err: unknown) {

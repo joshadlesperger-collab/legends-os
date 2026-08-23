@@ -1,0 +1,20 @@
+import { prisma } from "./prisma.ts";
+import { hasLegacyDuplicateDiscriminator, hasUnresolvedDuplicateFamily, inspectListingTitle, legacyDuplicateTitleKey, type TitleInspection } from "./title-inspection-agent.ts";
+export async function loadTitleInspection(now = new Date()) {
+  const observationStart=new Date(now.getTime()-14*86_400_000);
+  const [allListings,recentTitleExecutions] = await Promise.all([
+    prisma.listing.findMany({ select: { id: true, ebayItemId: true, title: true, currentPrice:true, listingStatus:true, itemSpecifics: true, authoritativeObservedAt: true, lastSyncedAt: true }, orderBy: { ebayItemId: "asc" } }),
+    prisma.ebayActionExecution.findMany({where:{action:"OPTIMIZE_TITLE",status:"verified",providerVerifiedAt:{gte:observationStart}},select:{listingId:true}}),
+  ]);
+  const listings=allListings.filter(row=>row.listingStatus==="active"),titlesByKey=new Map<string,string[]>();for(const row of allListings){const key=legacyDuplicateTitleKey(row.title),titles=titlesByKey.get(key)??[];titles.push(row.title);titlesByKey.set(key,titles);}
+  const observing=new Set(recentTitleExecutions.map(row=>row.listingId));
+  const inspections = listings.map(row => {const siblings=titlesByKey.get(legacyDuplicateTitleKey(row.title))??[];return inspectListingTitle({ listingId: row.id, ebayItemId: row.ebayItemId, title: row.title, itemSpecifics: row.itemSpecifics, evidenceObservedAt: row.authoritativeObservedAt ?? row.lastSyncedAt, now, excludeReason:observing.has(row.id)?"Recent governed title optimization is still in its observation window":hasUnresolvedDuplicateFamily(row.title,siblings)?"Active or historical normalized-title duplicate family requires operator review":null,legacyDuplicateDiscriminator:hasLegacyDuplicateDiscriminator(row.title,siblings) })});
+  const recommendations = inspections.filter(row => row.status === "RECOMMEND").sort((left, right) => right.confidence - left.confidence || right.qualityImprovement-left.qualityImprovement || right.additions.length - left.additions.length || left.ebayItemId.localeCompare(right.ebayItemId));
+  const byAspect = new Map<string, number>(); for (const row of recommendations) for (const addition of row.additions) byAspect.set(addition.aspect, (byAspect.get(addition.aspect) ?? 0) + 1);
+  const statusCounts = { RECOMMEND: 0, NO_CHANGE: 0, REVIEW: 0 }; for (const row of inspections) statusCounts[row.status] += 1;
+  const classificationCounts={"READY TO APPROVE":0,"REVIEW":0,"NO CHANGE NEEDED":0,"DO NOT TOUCH":0};for(const row of inspections)classificationCounts[row.classification]+=1;
+  const beforeAverage=average(inspections.map(row=>row.qualityBefore.total)),afterAverage=average(recommendations.map(row=>row.qualityAfter?.total??row.qualityBefore.total));
+  return { generatedAt: now.toISOString(), inspected: inspections.length, inspections, recommendations, top100: recommendations.slice(0, 100), topDefects:[...inspections].filter(row=>row.classification==="REVIEW"||row.classification==="DO NOT TOUCH").sort((a,b)=>a.qualityBefore.total-b.qualityBefore.total).slice(0,25), statusCounts, classificationCounts, excludedRecent:observing.size, quality:{beforeAverage,afterAverage,averageImprovement:average(recommendations.map(row=>row.qualityImprovement))}, byAspect: Array.from(byAspect, ([aspect, count]) => ({ aspect, count })).sort((a, b) => b.count - a.count || a.aspect.localeCompare(b.aspect)), reviewReasons: countReasons(inspections.filter(row => row.status === "REVIEW")), priceByListingId:new Map(listings.map(row=>[row.id,Number(row.currentPrice)])) };
+}
+function countReasons(rows: TitleInspection[]) { const counts = new Map<string, number>(); for (const row of rows) { const reason = row.missingEvidence[0] ?? row.conflicts[0] ?? row.reason; counts.set(reason, (counts.get(reason) ?? 0) + 1); } return Array.from(counts, ([reason, count]) => ({ reason, count })).sort((a, b) => b.count - a.count || a.reason.localeCompare(b.reason)); }
+function average(values:number[]){return values.length?Math.round(values.reduce((sum,value)=>sum+value,0)/values.length*10)/10:0;}

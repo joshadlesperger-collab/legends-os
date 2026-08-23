@@ -66,7 +66,14 @@ export const fixtureCompProvider: CompProviderAdapter = {
         buyerPremium: premium,
         totalBuyerCost,
         isAuction,
+        priceConfirmed: true,
+        currency: "USD",
         attributes: {
+          player: identity.player,
+          year: identity.year,
+          manufacturer: identity.manufacturer,
+          setName: identity.setName,
+          cardNumber: identity.cardNumber,
           rawOrGraded: identity.rawOrGraded,
           gradeCompany: identity.gradeCompany,
           gradeValue,
@@ -76,6 +83,7 @@ export const fixtureCompProvider: CompProviderAdapter = {
           parallel: identity.parallel,
           variation: identity.variation,
           serialNumbered: identity.serialNumbered,
+          printRun: identity.printRun,
         },
       });
     }

@@ -70,6 +70,15 @@ export type RecommendationResult = {
   breakdown?: RecommendationBreakdown;
 };
 
+export type MarketEvidence = {
+  marketValue: unknown;
+  acceptedCompCount: number;
+  confidenceScore: number;
+  confidenceBand: string;
+  source: string;
+  observedAt: Date | string;
+};
+
 const RECOMMENDATION_SCORE_LEAVE_ALONE_MAX = 39;
 const RECOMMENDATION_SCORE_LOWER_PRICE_MAX = 69;
 
@@ -92,7 +101,64 @@ function numeric(value: unknown) {
     const parsed = Number(value);
     return Number.isFinite(parsed) ? parsed : 0;
   }
+  if (value && typeof value === "object" && typeof (value as { toString?: unknown }).toString === "function") {
+    const parsed = Number((value as { toString: () => string }).toString());
+    return Number.isFinite(parsed) ? parsed : 0;
+  }
   return 0;
+}
+
+function positiveMoney(value: unknown): number | null {
+  const parsed = numeric(value);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : null;
+}
+
+export function getReliableMarketEvidence(
+  listingQuality: unknown,
+  identityHash: string,
+  now = new Date()
+): MarketEvidence | null {
+  if (!listingQuality || typeof listingQuality !== "object") return null;
+  const root = listingQuality as Record<string, unknown>;
+  const compValidation = root.compValidation;
+  if (!compValidation || typeof compValidation !== "object") return null;
+  const cache = (compValidation as Record<string, unknown>).cache;
+  if (!cache || typeof cache !== "object") return null;
+  const entry = (cache as Record<string, unknown>)[identityHash];
+  if (!entry || typeof entry !== "object") return null;
+
+  const record = entry as Record<string, unknown>;
+  const result = record.result;
+  if (!result || typeof result !== "object") return null;
+  const summary = result as Record<string, unknown>;
+  const marketValue = positiveMoney(summary.weightedRecentMarketValue ?? summary.recommendedPrice);
+  const acceptedCompCount = numeric(summary.acceptedCompCount);
+  const confidenceScore = numeric(summary.confidenceScore);
+  const confidenceBand = typeof summary.confidenceBand === "string" ? summary.confidenceBand : "insufficient";
+  const providerId = typeof summary.providerId === "string" ? summary.providerId : null;
+  const updatedAt = typeof record.updatedAt === "string" ? new Date(record.updatedAt) : null;
+  const ageMs = updatedAt ? now.getTime() - updatedAt.getTime() : Number.POSITIVE_INFINITY;
+  const fresh = updatedAt != null && Number.isFinite(ageMs) && ageMs >= 0 && ageMs <= 30 * 24 * 60 * 60 * 1000;
+
+  if (
+    marketValue == null ||
+    acceptedCompCount < 3 ||
+    confidenceScore < 60 ||
+    !["moderate", "high", "very-high"].includes(confidenceBand) ||
+    providerId !== "the-card-api" ||
+    !fresh
+  ) {
+    return null;
+  }
+
+  return {
+    marketValue,
+    acceptedCompCount,
+    confidenceScore,
+    confidenceBand,
+    source: "validated sold comps",
+    observedAt: updatedAt,
+  };
 }
 
 function normalize(value: number, min: number, max: number) {
@@ -350,96 +416,47 @@ function buildConfidence(
   return Math.round(clamp(confidence, 10, 95));
 }
 
-export function buildRecommendation(listing: ListingRecord, pool: ListingRecord[] = []): RecommendationResult | null {
+export function buildRecommendation(listing: ListingRecord, marketEvidence: MarketEvidence | null = null): RecommendationResult {
   const breakdown = computeRecommendationScore(listing);
   const score = breakdown.score;
-  const price = numeric(listing.currentPrice);
-  const age = daysSince(listing.startTime ?? listing.createdAt);
-  const views = numeric(listing.views);
-  const watchers = numeric(listing.watchers);
-  const quantitySold = numeric(listing.quantitySold);
-  const viewsPerDay = age > 0 ? views / age : views;
-  const strongEngagement = viewsPerDay >= 1.5 || watchers > 3;
-  const weakEngagement = viewsPerDay < 0.75 && watchers <= 2;
-  const snapshotMetrics = computeRecentSnapshotMetrics(listing);
-  const velocity = snapshotMetrics.days > 0 ? snapshotMetrics.quantitySoldDelta / snapshotMetrics.days : 0;
-  const compStats = computeComparableStats(listing, pool);
-  const priceGap = compStats?.compMedianPrice ? price / compStats.compMedianPrice : 1;
-  const priceAboveMedian = compStats ? price > compStats.compMedianPrice * 1.05 : false;
-  const priceBelowMedian = compStats ? price < compStats.compMedianPrice * 0.95 : false;
-  const priceFarAboveMedian = compStats ? price > compStats.compMedianPrice * 1.10 : false;
-  const priceFarBelowMedian = compStats ? price < compStats.compMedianPrice * 0.90 : false;
+  const price = positiveMoney(listing.currentPrice);
+  const marketValue = marketEvidence ? positiveMoney(marketEvidence.marketValue) : null;
 
-  const type: RecommendationType = (() => {
-    if (!compStats) {
-      if (quantitySold > 0 || strongEngagement || velocity >= 0.2) {
-        return "hold";
-      }
-      return "insufficient-data";
-    }
+  if (price == null || marketValue == null || !marketEvidence) {
+    return {
+      type: "insufficient-data",
+      suggestedPrice: null,
+      reason: price == null
+        ? "No reliable price recommendation: the current listing price is missing or invalid."
+        : "Insufficient comp evidence: at least three fresh, validated sold comps with moderate or high confidence are required.",
+      expectedProfitImpact: 0,
+      confidence: 0,
+      breakdown,
+    };
+  }
 
-    if (priceFarBelowMedian && strongEngagement) {
-      return "raise-price";
-    }
-
-    if (priceFarAboveMedian && weakEngagement) {
-      return "lower-price";
-    }
-
-    if (priceAboveMedian && velocity < 0.25) {
-      return "lower-price";
-    }
-
-    if (priceBelowMedian && strongEngagement) {
-      return "raise-price";
-    }
-
-    return "hold";
-  })();
+  const ratio = price / marketValue;
+  const type: RecommendationType = ratio > 1.05 ? "lower-price" : ratio < 0.95 ? "raise-price" : "hold";
+  const evidenceReason = `${marketEvidence.acceptedCompCount} ${marketEvidence.source}; ${marketEvidence.confidenceBand} confidence (${Math.round(marketEvidence.confidenceScore)}%); market value $${marketValue.toFixed(2)}.`;
 
   if (type === "hold") {
     return {
       type,
       suggestedPrice: null,
-      reason: compStats
-        ? `This listing sits within our internal comparable range; keep it priced to stay competitive.`
-        : `No strong internal pricing comparables were available, so hold price until more data is collected.`,
+      reason: `Current price is within 5% of the supported market value. Evidence: ${evidenceReason}`,
       expectedProfitImpact: 0,
-      confidence: buildConfidence(type, score, listing, compStats),
+      confidence: Math.round(marketEvidence.confidenceScore),
       breakdown,
     };
   }
 
-  if (type === "insufficient-data") {
-    return {
-      type,
-      suggestedPrice: null,
-      reason: `Insufficient internal comp or engagement data exists to make a confident pricing recommendation. Wait for more listing performance history or active comparables.`,
-      expectedProfitImpact: 0,
-      confidence: buildConfidence(type, score, listing, compStats),
-      breakdown,
-    };
-  }
-
-  if (type === "raise-price") {
-    const suggestedPrice = Math.max(1, Number((price * Math.min(1.08, 1 + (0.03 + Math.min(priceGap - 1, 0.08)))).toFixed(2)));
-    return {
-      type,
-      suggestedPrice,
-      reason: `This listing is priced below internal comparable median with solid engagement; consider raising price slightly while preserving conversion.`,
-      expectedProfitImpact: Number(Math.max(1, (score * 0.06 + velocity * 4 + viewsPerDay * 0.2) / 4).toFixed(2)),
-      confidence: buildConfidence(type, score, listing, compStats),
-      breakdown,
-    };
-  }
-
-  const suggestedPrice = formatSuggestedPrice(price, score);
+  const suggestedPrice = Number(marketValue.toFixed(2));
   return {
     type,
     suggestedPrice,
-    reason: `This listing is priced above internal comparable range and has weaker engagement; lower price to improve conversion.`,
-    expectedProfitImpact: Number(Math.max(1, (score * 0.08 + velocity * 2 + viewsPerDay * 0.1) / 4).toFixed(2)),
-    confidence: buildConfidence(type, score, listing, compStats),
+    reason: `${type === "raise-price" ? "Raise" : "Lower"} toward the supported market value. Evidence: ${evidenceReason}`,
+    expectedProfitImpact: Number(Math.abs(suggestedPrice - price).toFixed(2)),
+    confidence: Math.round(marketEvidence.confidenceScore),
     breakdown,
   };
 }

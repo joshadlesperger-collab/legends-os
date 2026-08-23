@@ -1,7 +1,9 @@
 import crypto from "crypto";
-import { parseCardIdentity } from "@/lib/comp-validation/identity";
-import { fixtureCompProvider } from "@/lib/comp-validation/fixtureProvider";
-import { getProviderStatus, getProviderWeights } from "@/lib/comp-validation/provider";
+import { parseCardIdentity } from "./identity.ts";
+import { fixtureCompProvider } from "./fixtureProvider.ts";
+import { getProviderStatus, getProviderWeights } from "./provider.ts";
+import type { CompProviderAdapter } from "./provider.ts";
+import { theCardApiProvider } from "./theCardApiProvider.ts";
 import type {
   CohortBand,
   CohortItem,
@@ -12,13 +14,14 @@ import type {
   MatchTier,
   TelemetryCounters,
   ValuationResult,
-} from "@/lib/comp-validation/types";
+  ProviderStatus,
+} from "./types.ts";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
-type CompValidationState = {
+export type CompValidationState = {
   feedback?: Record<string, CompFeedbackEntry>;
-  cache?: Record<string, { stateHash: string; updatedAt: string; result: Pick<ValuationResult, "recommendedPrice" | "weightedRecentMarketValue" | "lowMarketRange" | "highMarketRange" | "confidenceScore" | "confidenceBand" | "trendDirection" | "trendPct" | "recommendationType" | "acceptedCompCount" | "excludedCompCount"> }>;
+  cache?: Record<string, { stateHash: string; updatedAt: string; result: Omit<Pick<ValuationResult, "recommendedPrice" | "weightedRecentMarketValue" | "lowMarketRange" | "highMarketRange" | "confidenceScore" | "confidenceBand" | "trendDirection" | "trendPct" | "recommendationType" | "acceptedCompCount" | "excludedCompCount" | "newestCompDate" | "oldestCompDate" | "evidenceSources" | "evidenceWindowDays" | "medianSoldPrice" | "meanSoldPrice" | "priceDispersionPct" | "exactMatchCount" | "nearExactMatchCount" | "confidenceComponents" | "evidenceObservedAt">, never> & { providerId?: string } }>;
 };
 
 export function createTelemetry(): TelemetryCounters {
@@ -96,11 +99,45 @@ function recencyWeight(daysSinceSale: number, exactRecentCount: number) {
   return clamp(weight, 0.001, 1);
 }
 
+function normalized(value: string | null | undefined) {
+  return (value ?? "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+}
+
+function titleSimilarity(soldTitle: string, target: ReturnType<typeof parseCardIdentity>) {
+  const ignored = new Set(["the", "and", "card", "sports", "baseball", "football", "basketball", "hockey", "rookie", "rc"]);
+  const targetTokens = new Set(normalized(target.setName).split(" ").filter((token) => token.length > 1 && !ignored.has(token)));
+  const soldTokens = new Set(normalized(soldTitle).split(" ").filter((token) => token.length > 1 && !ignored.has(token)));
+  if (!targetTokens.size) return 0;
+  return Array.from(targetTokens).filter((token) => soldTokens.has(token)).length / targetTokens.size;
+}
+
 function getMatchScore(sale: CompSale, target: ReturnType<typeof parseCardIdentity>) {
   let score = 0;
   const saleIdentity = sale.attributes;
 
-  if (saleIdentity.rawOrGraded === target.rawOrGraded) score += 15;
+  if (!sale.priceConfirmed || sale.currency !== "USD") return 0;
+  if (target.year == null || saleIdentity.year == null || target.year !== saleIdentity.year) return 0;
+  if (!target.player || !saleIdentity.player || normalized(target.player) !== normalized(saleIdentity.player)) return 0;
+  if (!target.setName || !saleIdentity.setName || normalized(target.setName) !== normalized(saleIdentity.setName)) return 0;
+  if (target.cardNumber && saleIdentity.cardNumber && normalized(target.cardNumber) !== normalized(saleIdentity.cardNumber)) return 0;
+  if (target.rawOrGraded !== saleIdentity.rawOrGraded) return 0;
+  if (target.gradeCompany && normalized(target.gradeCompany) !== normalized(saleIdentity.gradeCompany)) return 0;
+  if (target.gradeValue != null && saleIdentity.gradeValue != null && Math.abs(target.gradeValue - saleIdentity.gradeValue) > 0.01) return 0;
+  if (normalized(target.parallel) !== normalized(saleIdentity.parallel)) return 0;
+  if(target.rookie!==saleIdentity.rookie)return 0;
+  if(target.serialNumbered!==saleIdentity.serialNumbered)return 0;
+  if(target.printRun!=null&&saleIdentity.printRun!==target.printRun)return 0;
+  if(target.autograph!==saleIdentity.autograph||target.patch!==saleIdentity.patch)return 0;
+  if((target.variation??null)!==(saleIdentity.variation??null))return 0;
+
+  const similarity = titleSimilarity(sale.soldTitle, target);
+  if (similarity < 0.45 && !(target.cardNumber && saleIdentity.cardNumber)) return 0;
+
+  score += 15;
+  score += Math.round(similarity * 30);
+  if (target.year != null && saleIdentity.year === target.year) score += 10;
+  if (target.cardNumber && normalized(target.cardNumber) === normalized(saleIdentity.cardNumber)) score += 20;
+  if (target.manufacturer && normalized(target.manufacturer) === normalized(saleIdentity.manufacturer)) score += 5;
   if (saleIdentity.rookie === target.rookie) score += 10;
   if (saleIdentity.autograph === target.autograph) score += 10;
   if (saleIdentity.patch === target.patch) score += 8;
@@ -108,25 +145,45 @@ function getMatchScore(sale: CompSale, target: ReturnType<typeof parseCardIdenti
   if ((saleIdentity.variation ?? "") === (target.variation ?? "")) score += 8;
   if (saleIdentity.serialNumbered === target.serialNumbered) score += 8;
 
-  const sameGradeCompany = (saleIdentity.gradeCompany ?? "") === (target.gradeCompany ?? "");
-  if (sameGradeCompany) score += 10;
+  const sameGradeCompany = normalized(saleIdentity.gradeCompany) === normalized(target.gradeCompany);
+  if (sameGradeCompany && target.gradeCompany) score += 10;
   if (saleIdentity.gradeValue != null && target.gradeValue != null) {
     const delta = Math.abs(saleIdentity.gradeValue - target.gradeValue);
     score += Math.max(0, 10 - 2 * delta);
   }
 
-  if (target.baseCardKey.length > 0) score += 19;
-
   return clamp(Math.round(score), 0, 100);
 }
 
+function getMatchFailureReason(sale: CompSale, target: ReturnType<typeof parseCardIdentity>): string | null {
+  const attrs = sale.attributes;
+  if (!sale.priceConfirmed) return "missing-sale-confirmation";
+  if (sale.currency !== "USD") return "non-usd";
+  if (target.year == null || attrs.year == null) return "missing-year";
+  if (target.year !== attrs.year) return "wrong-year";
+  if (!target.player || !attrs.player) return "missing-player";
+  if(normalized(target.player)!==normalized(attrs.player))return "different-player";
+  if(!target.setName||!attrs.setName)return "missing-product";
+  if(normalized(target.setName)!==normalized(attrs.setName))return "different-product";
+  if (target.cardNumber && attrs.cardNumber && normalized(target.cardNumber) !== normalized(attrs.cardNumber)) return "different-card-number";
+  if (target.rawOrGraded !== attrs.rawOrGraded) return "wrong-grade-format";
+  if (target.gradeCompany && normalized(target.gradeCompany) !== normalized(attrs.gradeCompany)) return "wrong-grading-company";
+  if (target.gradeValue != null && attrs.gradeValue != null && Math.abs(target.gradeValue - attrs.gradeValue) > 0.01) return "wrong-grade";
+  if (normalized(target.parallel) !== normalized(attrs.parallel)) return "different-parallel";
+  if(target.rookie!==attrs.rookie)return "different-rookie-status";
+  if(target.serialNumbered!==attrs.serialNumbered)return "different-serial-format";
+  if(target.printRun!=null&&attrs.printRun!==target.printRun)return "different-print-run";
+  if(target.autograph!==attrs.autograph)return "different-autograph-format";
+  if(target.patch!==attrs.patch)return "different-memorabilia-format";
+  if((target.variation??null)!==(attrs.variation??null))return "different-variation";
+  return null;
+}
+
 function classifyTier(score: number, sale: CompSale, target: ReturnType<typeof parseCardIdentity>): MatchTier | null {
-  if (sale.attributes.rawOrGraded !== target.rawOrGraded) {
-    return score >= 40 ? "fallback" : null;
-  }
-  if (score >= 90) return "exact";
-  if (score >= 70) return "near-exact";
-  if (score >= 40) return "fallback";
+  if (sale.attributes.rawOrGraded !== target.rawOrGraded) return null;
+  const exactCardNumber = Boolean(target.cardNumber && sale.attributes.cardNumber && normalized(target.cardNumber) === normalized(sale.attributes.cardNumber));
+  if (score >= 85 && exactCardNumber) return "exact";
+  if (score >= 65) return "near-exact";
   return null;
 }
 
@@ -154,11 +211,30 @@ export function mergeCompState(listingQuality: unknown, state: CompValidationSta
   return record;
 }
 
-function confidenceBand(score: number, acceptedCompCount: number) {
-  if (score < 30 || acceptedCompCount < 3) return "insufficient" as const;
+export function confidenceBandForScore(score: number, acceptedCompCount: number) {
+  if (score < 40 || acceptedCompCount < 3) return "insufficient" as const;
+  if (score >= 90) return "very-high" as const;
   if (score >= 75) return "high" as const;
-  if (score >= 50) return "moderate" as const;
+  if (score >= 60) return "moderate" as const;
   return "low" as const;
+}
+
+export function evaluateCompAgainstIdentity(sale: CompSale, target: ReturnType<typeof parseCardIdentity>) {
+  const score = getMatchScore(sale, target);
+  return { score, tier: classifyTier(score, sale, target), failureReason: getMatchFailureReason(sale, target) };
+}
+
+export function selectEvidenceWindow(daysSinceSales: number[]) {
+  if (daysSinceSales.filter((days) => days <= 90).length >= 3) return 90;
+  if (daysSinceSales.filter((days) => days <= 180).length >= 3) return 180;
+  return 365;
+}
+
+export function capConfidenceForQuantity(score: number, compCount: number) {
+  if (compCount < 3) return Math.min(score, 39);
+  if (compCount === 3) return Math.min(score, 74);
+  if (compCount === 4) return Math.min(score, 89);
+  return score;
 }
 
 function recommendationType(input: {
@@ -170,7 +246,7 @@ function recommendationType(input: {
 }): "raise-price" | "lower-price" | "hold" | "insufficient-data" {
   const { confidence, acceptedCompCount, currentPrice, recommendedPrice, tierOnlyFallback } = input;
   if (recommendedPrice == null) return "insufficient-data";
-  if (confidence < 30 || acceptedCompCount < 3) return "insufficient-data";
+  if (confidence < 60 || acceptedCompCount < 3) return "insufficient-data";
 
   if (tierOnlyFallback && confidence < 50) return "hold";
 
@@ -215,10 +291,14 @@ export async function buildValuation(input: {
   listing: ListingForComp;
   telemetry: TelemetryCounters;
   identityResultCache: Map<string, ValuationResult>;
+  allowLiveProvider?: boolean;
+  evidenceAdapter?: CompProviderAdapter;
+  providerStatusOverride?: ProviderStatus;
+  countsAgainstExternalBudget?: boolean;
 }) {
-  const { listing, telemetry, identityResultCache } = input;
+  const { listing, telemetry, identityResultCache, allowLiveProvider = false, evidenceAdapter, providerStatusOverride, countsAgainstExternalBudget = true } = input;
 
-  const provider = getProviderStatus();
+  const providerStatus = providerStatusOverride??getProviderStatus();
   const providerWeights = getProviderWeights();
   const parsedIdentity = parseCardIdentity(listing.title);
 
@@ -235,18 +315,34 @@ export async function buildValuation(input: {
       listingId: listing.id,
       listingTitle: listing.title,
       currentPrice: listing.currentPrice,
+      recommendationType: recommendationType({confidence:cached.confidenceScore,acceptedCompCount:cached.acceptedCompCount,currentPrice:listing.currentPrice,recommendedPrice:cached.recommendedPrice,tierOnlyFallback:cached.exactMatchCount+cached.nearExactMatchCount===0}),
     };
     return { result: copied, compState: state };
   }
 
   telemetry.cacheMisses += 1;
-  telemetry.externalProviderCalls += 1;
+  const liveAllowedForThisRun = allowLiveProvider && providerStatus.mode === "live" && providerStatus.liveReady;
+  const fixtureExplicitlyAllowed = process.env.COMP_PROVIDER_MODE === "fixture" && process.env.NODE_ENV !== "production";
 
-  const comps = await fixtureCompProvider.searchSoldComps({
-    identity: parsedIdentity,
-    listingTitle: listing.title,
-    maxResults: 40,
-  });
+  let activeProvider = evidenceAdapter??(liveAllowedForThisRun ? theCardApiProvider : fixtureCompProvider);
+  const notesFromProviderSelection: string[] = [];
+
+  if (!liveAllowedForThisRun && providerStatus.mode === "live") {
+    notesFromProviderSelection.push("Live provider is configured but disabled for this non-cohort valuation run.");
+  }
+
+  let comps = [] as CompSale[];
+  if (evidenceAdapter||liveAllowedForThisRun || fixtureExplicitlyAllowed) try {
+    if(countsAgainstExternalBudget)telemetry.externalProviderCalls += 1;
+    comps = await activeProvider.searchSoldComps({
+      identity: parsedIdentity,
+      listingTitle: listing.title,
+      maxResults: 40,
+    });
+  } catch {
+    comps = [];
+    notesFromProviderSelection.push("Sold-comp provider request failed; valuation failed closed without simulated fallback data.");
+  }
 
   telemetry.compsRetrieved += comps.length;
 
@@ -287,6 +383,10 @@ export async function buildValuation(input: {
     const duplicateGroupId = duplicateIds.get(comp.compKey) ?? null;
 
     const days = Math.max(0, Math.floor((now - new Date(comp.soldDate).getTime()) / DAY_MS));
+    const retrievalFloor = comp.retrievalTier === "proxy" ? 4 : comp.retrievalTier === "near" ? 3 : 1;
+    const matchResearchTier:1|2|3|4|5=tier==="exact"?(days<=90?1:2):tier==="near-exact"?3:score>=45?4:5;
+    const researchTier = Math.max(retrievalFloor, matchResearchTier) as 1|2|3|4|5;
+    const researchTierLabel={1:"Exact recent sale",2:"Exact expanded-window sale",3:"Near-exact comparable",4:"Related card / parallel context",5:"Market context only"}[researchTier];
     const recency = recencyWeight(days, exactRecentCount);
     const providerWeight = providerWeights[comp.providerId] ?? 0.8;
 
@@ -303,7 +403,7 @@ export async function buildValuation(input: {
     if (!tier) {
       inclusionStatus = "excluded";
       inclusionReason = "match below fallback threshold";
-      exclusionReason = "low-match-score";
+      exclusionReason = getMatchFailureReason(comp, parsedIdentity) ?? "insufficient-identity";
     }
 
     if (comp.totalBuyerCost == null) {
@@ -333,6 +433,8 @@ export async function buildValuation(input: {
       buyerPremium: comp.buyerPremium,
       totalBuyerCost: comp.totalBuyerCost,
       matchTier: tier ?? "fallback",
+      researchTier,
+      researchTierLabel,
       matchScore: score,
       inclusionStatus,
       inclusionReason,
@@ -341,18 +443,33 @@ export async function buildValuation(input: {
       providerWeight,
       finalWeight,
       duplicateGroupId,
+      daysSinceSale: days,
+      retrievalTier: comp.retrievalTier ?? "exact",
+      retrievalQuery: comp.retrievalQuery ?? null,
+      queryStrategyVersion: comp.queryStrategyVersion ?? null,
     });
   }
 
-  const acceptedBeforeOutlier = evaluated.filter((comp) => comp.inclusionStatus === "accepted" && comp.totalBuyerCost != null);
-  const totalValues = acceptedBeforeOutlier.map((comp) => comp.totalBuyerCost as number);
+  const initiallyAccepted = evaluated.filter((comp) => comp.inclusionStatus === "accepted");
+  const evidenceWindowDays = selectEvidenceWindow(initiallyAccepted.map((comp) => comp.daysSinceSale));
+  for (const comp of evaluated) {
+    if (comp.inclusionStatus === "accepted" && comp.daysSinceSale > evidenceWindowDays) {
+      comp.inclusionStatus = "excluded";
+      comp.inclusionReason = "outside adaptive evidence window";
+      comp.exclusionReason = "stale";
+    }
+  }
+
+  const marketPrice = (comp: CompEvaluation) => comp.totalBuyerCost ?? comp.soldPrice;
+  const acceptedBeforeOutlier = evaluated.filter((comp) => comp.inclusionStatus === "accepted");
+  const totalValues = acceptedBeforeOutlier.map(marketPrice);
 
   if (totalValues.length >= 3) {
     const bounds = evaluateOutliers(totalValues, totalValues.length);
 
     for (const comp of evaluated) {
-      if (comp.inclusionStatus !== "accepted" || comp.totalBuyerCost == null) continue;
-      const value = comp.totalBuyerCost;
+      if (comp.inclusionStatus !== "accepted") continue;
+      const value = marketPrice(comp);
 
       const isExactAuction = comp.matchTier === "exact" && /sold example/i.test(comp.soldTitle);
       const outside = value < bounds.lower || value > bounds.upper;
@@ -369,18 +486,15 @@ export async function buildValuation(input: {
   }
 
   const accepted = evaluated.filter((comp) => comp.inclusionStatus === "accepted");
-  const acceptedCosts = accepted
-    .filter((comp) => comp.totalBuyerCost != null)
-    .map((comp) => ({ value: comp.totalBuyerCost as number, weight: comp.finalWeight }));
+  const acceptedCosts = accepted.map((comp) => ({ value: marketPrice(comp), weight: comp.finalWeight }));
 
   const acceptedKnownCosts = acceptedCosts.map((row) => row.value);
-  const unknownShippingAccepted = accepted.some((comp) => comp.totalBuyerCost == null);
+  const unknownShippingAccepted = accepted.some((comp) => comp.shipping == null);
 
-  const weightedMarket = acceptedCosts.length
-    ? acceptedCosts.length >= 3
-      ? weightedMedian(acceptedCosts)
-      : weightedMean(acceptedCosts)
-    : null;
+  const medianPrice = acceptedKnownCosts.length ? median(acceptedKnownCosts) : null;
+  const meanPrice = acceptedKnownCosts.length ? mean(acceptedKnownCosts) : null;
+  const weightedEstimate = acceptedCosts.length ? weightedMedian(acceptedCosts) : null;
+  const weightedMarket = medianPrice == null || weightedEstimate == null ? null : medianPrice * 0.7 + weightedEstimate * 0.3;
 
   const low = acceptedKnownCosts.length
     ? acceptedKnownCosts.length >= 5
@@ -394,36 +508,46 @@ export async function buildValuation(input: {
     : null;
 
   const recentCosts = accepted
-    .filter((comp) => now - new Date(comp.soldDate).getTime() <= 30 * DAY_MS && comp.totalBuyerCost != null)
-    .map((comp) => ({ value: comp.totalBuyerCost as number, weight: comp.finalWeight }));
+    .filter((comp) => now - new Date(comp.soldDate).getTime() <= 30 * DAY_MS)
+    .map((comp) => ({ value: marketPrice(comp), weight: comp.finalWeight }));
   const priorCosts = accepted
     .filter((comp) => {
       const days = (now - new Date(comp.soldDate).getTime()) / DAY_MS;
-      return days > 30 && days <= 90 && comp.totalBuyerCost != null;
+      return days > 30 && days <= 90;
     })
-    .map((comp) => ({ value: comp.totalBuyerCost as number, weight: comp.finalWeight }));
+    .map((comp) => ({ value: marketPrice(comp), weight: comp.finalWeight }));
 
   const recentMedian = recentCosts.length ? weightedMedian(recentCosts) : null;
   const priorMedian = priorCosts.length ? weightedMedian(priorCosts) : null;
   const trendPct = recentMedian != null && priorMedian != null && priorMedian > 0 ? ((recentMedian / priorMedian) - 1) * 100 : 0;
   const trendDirection = trendPct >= 8 ? "up" : trendPct <= -8 ? "down" : "flat";
 
-  const exactCount = accepted.filter((comp) => comp.matchTier === "exact").length;
-  const nearCount = accepted.filter((comp) => comp.matchTier === "near-exact").length;
+  const exactCount = accepted.filter((comp) => comp.matchTier === "exact" && comp.retrievalTier === "exact").length;
+  const nearCount = accepted.filter((comp) => comp.retrievalTier !== "proxy" && (comp.matchTier === "near-exact" || comp.retrievalTier === "near")).length;
+  const proxyCount = accepted.filter((comp) => comp.retrievalTier === "proxy").length;
   const fallbackCount = accepted.filter((comp) => comp.matchTier === "fallback").length;
 
-  const baseEvidence = Math.min(60, exactCount * 15 + nearCount * 8 + fallbackCount * 4);
-  const recencyBonus = Math.min(20, exactRecentCount * 8 + nearCount * 2);
-  const sourceBonus = Math.round(20 * mean(accepted.map((comp) => comp.providerWeight)));
-
   const spreadPct = weightedMarket && low != null && high != null ? ((high - low) / weightedMarket) * 100 : 999;
-  const dispersionPenalty = spreadPct > 30 ? 15 : spreadPct > 20 ? 8 : 0;
   const fallbackOnly = accepted.length > 0 && accepted.every((comp) => comp.matchTier === "fallback");
-  const fallbackPenalty = fallbackOnly ? 25 : fallbackCount > exactCount + nearCount ? 10 : 0;
-  const unknownShippingPenalty = unknownShippingAccepted ? 15 : 0;
-
-  let confidence = clamp(baseEvidence + recencyBonus + sourceBonus - dispersionPenalty - fallbackPenalty - unknownShippingPenalty, 0, 100);
-  if (accepted.length < 3) confidence = Math.min(confidence, 49);
+  const medianAbsoluteDeviation = medianPrice == null ? 0 : median(acceptedKnownCosts.map((value) => Math.abs(value - medianPrice)));
+  const robustDispersion = medianPrice && medianPrice > 0 ? (medianAbsoluteDeviation / medianPrice) * 100 : null;
+  const quantityPoints = accepted.length <= 0 ? 0 : accepted.length === 1 ? 5 : accepted.length === 2 ? 9 : accepted.length === 3 ? 12 : accepted.length === 4 ? 16 : 20;
+  const confidenceComponents = {
+    identityMatch: round2(30 * mean(accepted.map((comp) => comp.matchScore / 100))),
+    compQuantity: quantityPoints,
+    recency: round2(20 * mean(accepted.map((comp) => comp.recencyWeight))),
+    priceConsistency: robustDispersion == null ? 0 : round2(15 * (1 - clamp(robustDispersion / 50, 0, 1))),
+    sourceQuality: round2(15 * mean(accepted.map((comp) => comp.providerWeight * (["the-card-api","legends-internal-sales"].includes(comp.providerId) ? 1 : 0.7)))),
+  };
+  let confidence = Object.values(confidenceComponents).reduce((sum, value) => sum + value, 0);
+  if (fallbackOnly) confidence -= 15;
+  if (unknownShippingAccepted) confidence -= 5;
+  if (evidenceWindowDays === 180) confidence -= 4;
+  if (evidenceWindowDays > 180) confidence -= 10;
+  confidence = clamp(confidence, 0, 100);
+  confidence = capConfidenceForQuantity(confidence, accepted.length);
+  if (!parsedIdentity.cardNumber && exactCount === 0) confidence = Math.min(confidence, 59);
+  if (accepted.some((comp) => comp.retrievalTier === "proxy")) confidence = Math.min(confidence, 39);
 
   const targetShipping: number | null = null;
   const targetShippingKnown = false;
@@ -433,7 +557,7 @@ export async function buildValuation(input: {
     ? null
     : Math.max(0.01, round2(weightedMarket - targetShippingAdjustment));
 
-  const confidenceBandValue = confidenceBand(confidence, accepted.length);
+  const confidenceBandValue = confidenceBandForScore(confidence, accepted.length);
   const recoType = recommendationType({
     confidence,
     acceptedCompCount: accepted.length,
@@ -445,7 +569,10 @@ export async function buildValuation(input: {
   const notes: string[] = [];
   if (!targetShippingKnown) notes.push("Target listing shipping is unknown and confidence is reduced.");
   if (unknownShippingAccepted) notes.push("One or more accepted comps have unknown shipping; totals remain explicitly unknown.");
-  if (provider.mode === "fixture") notes.push("Fixture provider mode is active until an authorized sold-data API is configured.");
+  if (activeProvider.providerId === fixtureCompProvider.providerId) {
+    notes.push("Fixture provider mode is active for this valuation run.");
+  }
+  notes.push(...notesFromProviderSelection);
 
   const payload = {
     listingId: listing.id,
@@ -469,7 +596,13 @@ export async function buildValuation(input: {
     listingId: listing.id,
     listingTitle: listing.title,
     parsedIdentity,
-    provider,
+    provider: {
+      ...providerStatus,
+      mode: activeProvider.providerId === fixtureCompProvider.providerId ? "fixture" : providerStatus.mode,
+      providerId: activeProvider.providerId,
+      providerName: activeProvider.providerName,
+      liveReady: activeProvider.providerId === fixtureCompProvider.providerId ? false : providerStatus.liveReady,
+    },
     currentPrice: listing.currentPrice,
     targetShipping,
     targetShippingKnown,
@@ -484,6 +617,18 @@ export async function buildValuation(input: {
     recommendationType: recoType,
     acceptedCompCount: accepted.length,
     excludedCompCount: evaluated.length - accepted.length,
+    newestCompDate: accepted.length ? accepted.map((comp) => comp.soldDate).sort().at(-1) ?? null : null,
+    oldestCompDate: accepted.length ? accepted.map((comp) => comp.soldDate).sort()[0] ?? null : null,
+    evidenceSources: Array.from(new Set(accepted.map((comp) => comp.providerName))).sort(),
+    evidenceWindowDays: accepted.length ? evidenceWindowDays : null,
+    medianSoldPrice: medianPrice == null ? null : round2(medianPrice),
+    meanSoldPrice: meanPrice == null ? null : round2(meanPrice),
+    priceDispersionPct: robustDispersion == null ? null : round2(robustDispersion),
+    exactMatchCount: exactCount,
+    nearExactMatchCount: nearCount,
+    proxyMatchCount: proxyCount,
+    confidenceComponents,
+    evidenceObservedAt: new Date(now).toISOString(),
     comps: evaluated.sort((a, b) => new Date(b.soldDate).getTime() - new Date(a.soldDate).getTime()),
     notes,
     stateHash: hashState(payload),

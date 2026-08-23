@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
-import { buildRecommendation, buildScores, daysSince, ListingRecord, RecommendationResult, ScoreResult } from "@/lib/recommendations";
+import { buildRecommendation, buildScores, daysSince, getReliableMarketEvidence, ListingRecord, RecommendationResult, ScoreResult } from "@/lib/recommendations";
+import { parseCardIdentity } from "@/lib/comp-validation/identity";
+import { isActionablePricingRecommendation } from "@/lib/recommendation-queue";
 import { randomUUID } from "crypto";
 
 const SCORE_CHANGE_THRESHOLD = 3;
@@ -142,14 +144,6 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  const storeIds = Array.from(new Set(listings.map((listing) => listing.storeId)));
-  const listingsByStore = new Map<string, typeof listings>();
-  for (const listing of listings) {
-    const storePool = listingsByStore.get(listing.storeId) ?? [];
-    storePool.push(listing);
-    listingsByStore.set(listing.storeId, storePool);
-  }
-
   const scoreCreates: Array<{
     listingId: string;
     storeId: string;
@@ -193,6 +187,7 @@ export async function POST(request: NextRequest) {
     rank: number;
     status: string;
   }> = [];
+  const queueRecommendationIdsToInvalidate = new Set<string>();
 
   let skippedCount = 0;
   let nextRank = Math.max(0, ...existingQueueRows.map((row) => row.rank)) + 1;
@@ -221,8 +216,9 @@ export async function POST(request: NextRequest) {
       changedScoreStoreIds.add(listing.storeId);
     }
 
-    const storePool = listingsByStore.get(listing.storeId) ?? [];
-    const recommendation = buildRecommendation(listing as ListingRecord, storePool);
+    const identityHash = parseCardIdentity(listing.title).identityHash;
+    const marketEvidence = getReliableMarketEvidence(listing.listingQuality, identityHash);
+    const recommendation = buildRecommendation(listing as ListingRecord, marketEvidence);
     if (!recommendation) {
       skippedCount += 1;
       continue;
@@ -231,7 +227,8 @@ export async function POST(request: NextRequest) {
     const existingList = existingByListing.get(listing.id) ?? [];
     const matchingExistingRecommendation = existingList.find((existing) => recommendationIsIdentical(existing, recommendation));
     if (matchingExistingRecommendation) {
-      if (!queueByRecommendationId.has(matchingExistingRecommendation.id)) {
+      const actionable = isActionablePricingRecommendation(recommendation);
+      if (actionable && !queueByRecommendationId.has(matchingExistingRecommendation.id)) {
         missingQueueRows.push({
           recommendationId: matchingExistingRecommendation.id,
           accountId: listing.store.accountId,
@@ -239,6 +236,8 @@ export async function POST(request: NextRequest) {
           rank: nextRank++,
           status: "pending",
         });
+      } else if (!actionable && queueByRecommendationId.has(matchingExistingRecommendation.id)) {
+        queueRecommendationIdsToInvalidate.add(matchingExistingRecommendation.id);
       }
       skippedCount += 1;
       continue;
@@ -260,7 +259,8 @@ export async function POST(request: NextRequest) {
         },
       });
 
-      if (!queueByRecommendationId.has(existingRecommendation.id)) {
+      const actionable = isActionablePricingRecommendation(recommendation);
+      if (actionable && !queueByRecommendationId.has(existingRecommendation.id)) {
         missingQueueRows.push({
           recommendationId: existingRecommendation.id,
           accountId: listing.store.accountId,
@@ -268,6 +268,8 @@ export async function POST(request: NextRequest) {
           rank: nextRank++,
           status: "pending",
         });
+      } else if (!actionable && queueByRecommendationId.has(existingRecommendation.id)) {
+        queueRecommendationIdsToInvalidate.add(existingRecommendation.id);
       }
       continue;
     }
@@ -285,13 +287,15 @@ export async function POST(request: NextRequest) {
       confidence: recommendation.confidence,
       status: "pending",
     });
-    queueCreates.push({
-      recommendationId: id,
-      accountId: listing.store.accountId,
-      storeId: listing.storeId,
-      rank: nextRank++,
-      status: "pending",
-    });
+    if (isActionablePricingRecommendation(recommendation)) {
+      queueCreates.push({
+        recommendationId: id,
+        accountId: listing.store.accountId,
+        storeId: listing.storeId,
+        rank: nextRank++,
+        status: "pending",
+      });
+    }
   }
 
   const scoreRunByStore = new Map<string, string>();
@@ -336,6 +340,13 @@ export async function POST(request: NextRequest) {
 
   if (missingQueueRows.length > 0) {
     dbOperations.push(prisma.actionQueue.createMany({ data: missingQueueRows }));
+  }
+
+  if (queueRecommendationIdsToInvalidate.size > 0) {
+    dbOperations.push(prisma.actionQueue.updateMany({
+      where: { recommendationId: { in: Array.from(queueRecommendationIdsToInvalidate) }, status: "pending" },
+      data: { status: "invalidated" },
+    }));
   }
 
   if (dbOperations.length > 0) {

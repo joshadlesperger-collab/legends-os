@@ -1,3 +1,9 @@
 {
-  "buildCommand": "export DATABASE_URL=\"$PRISMA_DATABASE_URL\" && yes | npx prisma db push && next build"
+  "buildCommand": "npm run build",
+  "crons": [
+    {
+      "path": "/api/internal/jobs/process",
+      "schedule": "*/5 * * * *"
+    }
+  ]
 }

@@ -1,0 +1,4 @@
+import test from "node:test";import assert from "node:assert/strict";import {isOperatorDecision,observationWindowDays,operatorDecisionLabel} from "../lib/operator-decisions.ts";
+test("decision language states the consequence",()=>{assert.equal(operatorDecisionLabel("follow_recommendation","REVIEW TITLE / DISCOVERABILITY"),"YES — REVIEW TITLE / DISCOVERABILITY");assert.equal(operatorDecisionLabel("keep_current","ignored"),"KEEP CURRENT APPROACH");});
+test("observation windows do not judge slower interventions prematurely",()=>{assert.equal(observationWindowDays("REVIEW SUPPORTED PRICE DROP"),30);assert.equal(observationWindowDays("REVIEW TITLE / DISCOVERABILITY"),60);assert.equal(observationWindowDays("REVIEW STALE CAPITAL"),90);});
+test("unknown decisions fail closed",()=>{assert.equal(isOperatorDecision("follow_recommendation"),true);assert.equal(isOperatorDecision("execute"),false);});

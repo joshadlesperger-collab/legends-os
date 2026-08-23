@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "allowImportingTsExtensions": true,
+    "incremental": false
+  },
+  "include": ["tests/**/*.ts", "lib/ebay.ts", "lib/ebay-sync-domain.ts", "lib/ebay-order-domain.ts", "lib/ebay-oauth-state.ts"],
+  "exclude": ["node_modules"]
+}

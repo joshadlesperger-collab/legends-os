@@ -10,12 +10,13 @@ out
 .env.*
 !.env.example
 
-# Prisma
-prisma/migrations/
-
 # Misc
 *.log
 .DS_Store
 tsconfig.tsbuildinfo
 
 .vercel
+
+# Local diagnostic and visual-verification artifacts
+.forensics-readonly/
+artifacts/

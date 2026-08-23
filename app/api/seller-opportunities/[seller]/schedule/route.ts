@@ -1,0 +1,4 @@
+import { NextRequest,NextResponse } from "next/server";
+import { readOperatorSession,OPERATOR_SESSION_COOKIE } from "@/lib/operator-auth";
+import { scheduleSandboxBid } from "@/lib/scheduled-bids";
+export async function POST(request:NextRequest,{params}:{params:{seller:string}}){const session=await readOperatorSession(request.cookies.get(OPERATOR_SESSION_COOKIE)?.value);if(!session)return NextResponse.json({error:"Unauthorized"},{status:401});try{const body=await request.json();const bid=await scheduleSandboxBid({opportunityId:params.seller,operatorMaxBid:Number(body.operatorMaxBid),snipeOffsetSeconds:Number(body.snipeOffsetSeconds),approvedBy:session.operatorId});return NextResponse.json({id:bid.id,status:bid.status});}catch(error){return NextResponse.json({error:error instanceof Error?error.message:"Scheduling failed"},{status:400});}}

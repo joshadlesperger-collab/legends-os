@@ -1,0 +1,23 @@
+import Link from "next/link";
+import { prisma } from "@/lib/prisma";
+import ReconciliationActions from "@/components/ReconciliationActions";
+
+export const dynamic = "force-dynamic";
+const PAGE_SIZE = 25;
+const date = (value: Date | null) => value ? value.toLocaleDateString() : "unknown";
+
+export default async function ReconciliationPage({ searchParams }: { searchParams?: { page?: string; status?: string } }) {
+  const requestedPage = Number(searchParams?.page ?? "1"); const page = Number.isInteger(requestedPage) && requestedPage > 0 ? requestedPage : 1;
+  const status = searchParams?.status === "proposed" || searchParams?.status === "unresolved" ? searchParams.status : "all";
+  const queueWhere = { status: { in: status === "all" ? ["proposed", "unresolved"] : [status] } };
+  const [counts, queueCount, rows] = await Promise.all([
+    prisma.orderLineReconciliation.groupBy({ by: ["status"], _count: { _all: true } }),
+    prisma.orderLineReconciliation.count({ where: queueWhere }),
+    prisma.orderLineReconciliation.findMany({ where: queueWhere, take: PAGE_SIZE, skip: (page - 1) * PAGE_SIZE, orderBy: [{ confidence: "desc" }, { createdAt: "asc" }], select: { id: true, confidence: true, matchTier: true, reasons: true, orderLine: { select: { storeId: true, title: true, ebayItemId: true, sku: true, lineItemCost: true, currency: true, order: { select: { creationDate: true } } } }, candidateListing: { select: { title: true, ebayItemId: true, sku: true, currentPrice: true, listingStatus: true, startTime: true, endTime: true } } } }),
+  ]);
+  const pageCount = Math.max(1, Math.ceil(queueCount / PAGE_SIZE)); const pageHref = (next: number) => `/reconciliation?page=${next}${status === "all" ? "" : `&status=${status}`}`;
+  return <main className="page"><div className="eyebrow">Quick sales matching</div><h1>Which listing did this sold card belong to?</h1><p>Confirming the right listing improves inventory, velocity, and margin reporting. If you are not sure, leave it unresolved—Legends will not guess.</p>
+    <div className="metric-grid">{counts.map((row) => <div className="metric" key={row.status}><div className="metric-label">{row.status==="proposed"?"Legends found a likely match":"Needs help finding a listing"}</div><div className="metric-value">{row._count._all}</div></div>)}</div><div style={{ display: "flex", gap: 10, marginTop: 14 }}><Link href="/reconciliation">All open</Link><Link href="/reconciliation?status=proposed">Likely matches</Link><Link href="/reconciliation?status=unresolved">No confident match</Link></div><p>Showing {queueCount ? (page - 1) * PAGE_SIZE + 1 : 0}–{Math.min(page * PAGE_SIZE, queueCount)} of {queueCount} · page {page} of {pageCount}</p>
+    <div style={{ overflowX: "auto" }}><table style={{ width: "100%", borderCollapse: "collapse" }}><thead><tr><th>Sale</th><th>Legends thinks</th><th>Match confidence & why</th><th>What should happen?</th></tr></thead><tbody>{rows.map((row) => { const reasonData = row.reasons as { primary?: string[] }; return <tr key={row.id} style={{ borderTop: "1px solid #ddd", verticalAlign: "top" }}><td><strong>{row.orderLine.title}</strong><br/>{date(row.orderLine.order.creationDate)} · ${Number(row.orderLine.lineItemCost).toFixed(2)} {row.orderLine.currency}<details><summary>Technical identity</summary>Item {row.orderLine.ebayItemId ?? "Unavailable"} · SKU {row.orderLine.sku ?? "Unavailable"}</details></td><td>{row.candidateListing ? <><strong>{row.candidateListing.title}</strong><br/>${Number(row.candidateListing.currentPrice).toFixed(2)} · {row.candidateListing.listingStatus}<details><summary>Listing details</summary>Item {row.candidateListing.ebayItemId} · SKU {row.candidateListing.sku ?? "Unavailable"}<br/>{date(row.candidateListing.startTime)}–{date(row.candidateListing.endTime)}</details></> : <div className="card-warning"><strong>Legends couldn’t confidently identify the listing for this sale.</strong><p>Search if you recognize it, or leave it unresolved. No inventory will be changed.</p></div>}</td><td><strong>{row.confidence == null ? "Unknown" : `${row.confidence} / 100`} {row.confidence!=null?row.confidence>=90?"· Very high":row.confidence>=75?"· High":"· Review carefully":""}</strong><ul>{(reasonData.primary ?? []).slice(0, 4).map((reason) => <li key={reason}>{reason}</li>)}</ul></td><td><ReconciliationActions id={row.id} storeId={row.orderLine.storeId} hasCandidate={Boolean(row.candidateListing)}/></td></tr>; })}</tbody></table></div><div style={{ display: "flex", gap: 14, marginTop: 18 }}>{page > 1 && <Link href={pageHref(page - 1)}>Previous</Link>}{page < pageCount && <Link href={pageHref(page + 1)}>Next</Link>}</div>
+  </main>;
+}

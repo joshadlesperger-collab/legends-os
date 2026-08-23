@@ -1,0 +1,2 @@
+"use client";
+export default function CancelScheduledBidButton({id,disabled}:{id:string;disabled:boolean}){async function cancel(){if(!confirm("Cancel this scheduled Sandbox bid?"))return;const response=await fetch(`/api/scheduled-bids/${id}/cancel`,{method:"POST"});if(!response.ok){const body=await response.json();alert(body.error??"Cancellation failed");return;}window.location.reload();}return <button type="button" className="btn-secondary" disabled={disabled} onClick={cancel}>Cancel Scheduled Bid</button>;}

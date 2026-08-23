@@ -3,7 +3,7 @@ import type {
   CompSale,
   ProviderStatus,
   ProviderWeightsConfig,
-} from "@/lib/comp-validation/types";
+} from "./types.ts";
 
 export type CompProviderAdapter = {
   providerId: string;
@@ -12,25 +12,27 @@ export type CompProviderAdapter = {
     identity: CardIdentity;
     listingTitle: string;
     maxResults: number;
+    query?: string;
   }): Promise<CompSale[]>;
 };
 
 export function getProviderStatus(): ProviderStatus {
-  const hasLiveEbaySignals = Boolean(process.env.EBAY_FINDING_APP_ID) || Boolean(process.env.EBAY_BROWSE_CLIENT_ID);
+  const hasTheCardApiKey = Boolean(process.env.THE_CARD_API_KEY);
 
-  if (hasLiveEbaySignals) {
+  if (hasTheCardApiKey) {
     return {
       mode: "live",
-      providerId: "ebay-completed",
-      providerName: "eBay Completed Listings",
-      liveReady: false,
+      providerId: "the-card-api",
+      providerName: "The Card API",
+      liveReady: true,
       requirements: [
-        "Authorized completed/sold listing API access",
-        "Provider-specific credentials configured",
-        "Quota/price plan verified",
+        "x-market-api-key header",
+        "Respect daily sales-row limits by plan",
+        "Respect lookback window by plan",
       ],
       notes: [
-        "Live provider integration is intentionally gated until explicit authorization is validated.",
+        "Live lookups are restricted to the validation cohort wiring.",
+        "Fixture mode remains available as fallback.",
         "No scraping is permitted.",
       ],
     };
@@ -53,8 +55,11 @@ export function getProviderStatus(): ProviderStatus {
 }
 
 export function getProviderWeights(): ProviderWeightsConfig {
+  const theCardWeight = Number(process.env.COMP_PROVIDER_WEIGHT_THE_CARD_API ?? "1.0");
   const fixtureWeight = Number(process.env.COMP_PROVIDER_WEIGHT_FIXTURE_EBAY ?? "0.9");
   return {
+    "legends-internal-sales": 1.0,
+    "the-card-api": Number.isFinite(theCardWeight) ? Math.max(0.1, Math.min(1.5, theCardWeight)) : 1.0,
     "fixture-ebay-completed": Number.isFinite(fixtureWeight) ? Math.max(0.1, Math.min(1.5, fixtureWeight)) : 0.9,
     "ebay-completed": Number(process.env.COMP_PROVIDER_WEIGHT_EBAY_COMPLETED ?? "1.0"),
     "auction-house": Number(process.env.COMP_PROVIDER_WEIGHT_AUCTION_HOUSE ?? "0.95"),

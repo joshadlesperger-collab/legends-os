@@ -2,11 +2,49 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import {
   buildValidationCohort,
-  buildValuation,
   createTelemetry,
   updateExpectedDollarImpact,
 } from "@/lib/comp-validation/engine";
 import { getProviderStatus, getProviderWeights } from "@/lib/comp-validation/provider";
+import { parseCardIdentity } from "@/lib/comp-validation/identity";
+
+type CachedValuationSummary = {
+  recommendedPrice: number | null;
+  confidenceScore: number;
+  confidenceBand: string;
+  recommendationType: string;
+  acceptedCompCount: number;
+  excludedCompCount: number;
+};
+
+function getCachedSummary(listingQuality: unknown, identityHash: string): CachedValuationSummary | null {
+  if (!listingQuality || typeof listingQuality !== "object") return null;
+  const root = listingQuality as Record<string, unknown>;
+  const compValidation = root.compValidation;
+  if (!compValidation || typeof compValidation !== "object") return null;
+
+  const state = compValidation as Record<string, unknown>;
+  const cache = state.cache;
+  if (!cache || typeof cache !== "object") return null;
+
+  const cacheRecord = cache as Record<string, unknown>;
+  const byIdentity = cacheRecord[identityHash];
+  if (!byIdentity || typeof byIdentity !== "object") return null;
+
+  const entry = byIdentity as Record<string, unknown>;
+  const result = entry.result;
+  if (!result || typeof result !== "object") return null;
+
+  const summary = result as Record<string, unknown>;
+  return {
+    recommendedPrice: typeof summary.recommendedPrice === "number" ? summary.recommendedPrice : null,
+    confidenceScore: typeof summary.confidenceScore === "number" ? summary.confidenceScore : 0,
+    confidenceBand: typeof summary.confidenceBand === "string" ? summary.confidenceBand : "insufficient",
+    recommendationType: typeof summary.recommendationType === "string" ? summary.recommendationType : "insufficient-data",
+    acceptedCompCount: typeof summary.acceptedCompCount === "number" ? summary.acceptedCompCount : 0,
+    excludedCompCount: typeof summary.excludedCompCount === "number" ? summary.excludedCompCount : 0,
+  };
+}
 
 export const dynamic = "force-dynamic";
 
@@ -58,6 +96,8 @@ export async function GET(request: Request) {
     confidenceScore: number;
     confidenceBand: string;
     recommendationType: string;
+    acceptedCompCount: number;
+    excludedCompCount: number;
     expectedDollarImpact: number | null;
   }> = [];
 
@@ -65,28 +105,34 @@ export async function GET(request: Request) {
 
   if (includeValuations && cohort.length > 0) {
     const listingById = new Map(listings.map((row) => [row.id, row]));
-    const identityResultCache = new Map();
 
     for (let i = 0; i < cohortWithImpact.length; i += 1) {
       const item = cohortWithImpact[i];
       const listing = listingById.get(item.listingId);
       if (!listing) continue;
 
-      const { result } = await buildValuation({
-        listing,
-        telemetry,
-        identityResultCache,
-      });
+      telemetry.identitiesProcessed += 1;
+      const identity = parseCardIdentity(listing.title);
+      const cached = getCachedSummary(listing.listingQuality, identity.identityHash);
 
-      const updated = updateExpectedDollarImpact(item, result.recommendedPrice);
+      if (!cached) {
+        telemetry.cacheMisses += 1;
+        continue;
+      }
+
+      telemetry.cacheHits += 1;
+
+      const updated = updateExpectedDollarImpact(item, cached.recommendedPrice);
       cohortWithImpact[i] = updated;
 
       valuationSummaries.push({
         listingId: item.listingId,
-        recommendedPrice: result.recommendedPrice,
-        confidenceScore: result.confidenceScore,
-        confidenceBand: result.confidenceBand,
-        recommendationType: result.recommendationType,
+        recommendedPrice: cached.recommendedPrice,
+        confidenceScore: cached.confidenceScore,
+        confidenceBand: cached.confidenceBand,
+        recommendationType: cached.recommendationType,
+        acceptedCompCount: cached.acceptedCompCount,
+        excludedCompCount: cached.excludedCompCount,
         expectedDollarImpact: updated.expectedDollarImpact,
       });
     }

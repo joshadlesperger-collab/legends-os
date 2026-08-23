@@ -1,0 +1,11 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import {calculateSellerOffer,SELLER_OFFER_DISCOUNT_PCT,validateSellerOfferApproval} from "../lib/governed-seller-offers.ts";
+import {sendOfferToInterestedBuyers} from "../lib/ebay-negotiation.ts";
+
+test("the governed proposal is capped at five percent and rounds toward the seller",()=>{assert.deepEqual(calculateSellerOffer(11.95),{listedPrice:11.95,proposedPrice:11.36,discountPct:4.94,concession:.59});assert.throws(()=>calculateSellerOffer(20,SELLER_OFFER_DISCOUNT_PCT+.01),/exceeds/);});
+test("unknown cost requires explicit override while known economics remain margin-gated",()=>{assert.match(validateSellerOfferApproval({listedPrice:20,proposedPrice:19,knownUnitCost:null,costComplete:false,overrideAcknowledged:false}).join(" "),/acknowledgement/);assert.deepEqual(validateSellerOfferApproval({listedPrice:20,proposedPrice:19,knownUnitCost:null,costComplete:false,overrideAcknowledged:true}),[]);assert.match(validateSellerOfferApproval({listedPrice:20,proposedPrice:19,knownUnitCost:18,costComplete:true,overrideAcknowledged:false}).join(" "),/margin guardrail/);});
+
+test("Negotiation submission sends one exact-price offer and no unrelated mutation",async()=>{let calls=0;const result=await sendOfferToInterestedBuyers("redacted",{listingId:"123456789012",price:18.95},async(url,init)=>{calls++;assert.equal(url,"https://api.ebay.com/sell/negotiation/v1/send_offer_to_interested_buyers");assert.equal(init?.method,"POST");const body=JSON.parse(String(init?.body));assert.deepEqual(body.offeredItems,[{listingId:"123456789012",quantity:1,price:{value:"18.95",currency:"USD"}}]);assert.equal(body.allowCounterOffer,false);assert.equal(body.discountPercentage,undefined);return Response.json({offers:[{offerId:"offer-1",offerStatus:"PENDING",offeredItems:[{listingId:"123456789012",price:{value:"18.95",currency:"USD"}}]}]});});assert.equal(calls,1);assert.equal(result.offers?.[0]?.offerId,"offer-1");});
+
+test("provider rejection is surfaced once and never blindly retried",async()=>{let calls=0;await assert.rejects(sendOfferToInterestedBuyers("redacted",{listingId:"123456789012",price:18.95},async()=>{calls++;return new Response('{"error":"existing offer"}',{status:409});}),/HTTP 409/);assert.equal(calls,1);});

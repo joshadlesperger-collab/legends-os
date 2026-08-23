@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import TableDetail from "@/components/TableDetail";
 
 type CohortBand = ">=100" | "50-99.99" | "20-49.99" | "edge-case";
 
@@ -31,6 +32,8 @@ type CompRow = {
   shipping: number | null;
   totalBuyerCost: number | null;
   matchTier: "exact" | "near-exact" | "fallback";
+  researchTier: 1 | 2 | 3 | 4 | 5;
+  researchTierLabel: string;
   matchScore: number;
   inclusionStatus: "accepted" | "excluded";
   inclusionReason: string;
@@ -58,10 +61,21 @@ type ValuationResult = {
   trendDirection: "up" | "down" | "flat";
   trendPct: number;
   confidenceScore: number;
-  confidenceBand: "high" | "moderate" | "low" | "insufficient";
+  confidenceBand: "very-high" | "high" | "moderate" | "low" | "insufficient";
   recommendationType: "raise-price" | "lower-price" | "hold" | "insufficient-data";
   acceptedCompCount: number;
   excludedCompCount: number;
+  newestCompDate: string | null;
+  oldestCompDate: string | null;
+  evidenceSources: string[];
+  evidenceWindowDays: number | null;
+  medianSoldPrice: number | null;
+  meanSoldPrice: number | null;
+  priceDispersionPct: number | null;
+  exactMatchCount: number;
+  nearExactMatchCount: number;
+  confidenceComponents: Record<string, number>;
+  internalSales?: { source: string; saleCount: number; units: number; medianSoldPrice: number | null; meanSoldPrice: number | null; newestSaleDate: string | null; sales: Array<{ soldAt: string; unitPrice: number; quantity: number; status: string }> };
   comps: CompRow[];
   notes: string[];
 };
@@ -82,6 +96,16 @@ type CohortResponse = {
     total: number;
   };
   cohort: CohortItem[];
+  valuationSummaries: Array<{
+    listingId: string;
+    recommendedPrice: number | null;
+    confidenceScore: number;
+    confidenceBand: string;
+    recommendationType: string;
+    acceptedCompCount: number;
+    excludedCompCount: number;
+    expectedDollarImpact: number | null;
+  }>;
   telemetry: Record<string, number>;
 };
 
@@ -92,6 +116,7 @@ function money(value: number | null | undefined) {
 
 export default function CompValidationPage() {
   const [cohort, setCohort] = useState<CohortResponse | null>(null);
+  const [deepLinkId, setDeepLinkId] = useState<string | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [valuation, setValuation] = useState<ValuationResult | null>(null);
   const [loadingCohort, setLoadingCohort] = useState(false);
@@ -132,14 +157,36 @@ export default function CompValidationPage() {
   }
 
   useEffect(() => {
+    try {
+      const url = new URL(window.location.href);
+      const listingId = url.searchParams.get("listingId");
+      if (listingId) {
+        setDeepLinkId(listingId);
+      }
+    } catch {
+      setDeepLinkId(null);
+    }
+  }, []);
+
+  useEffect(() => {
     loadCohort();
   }, []);
 
   useEffect(() => {
-    if (selectedId) loadValuation(selectedId);
+    setValuation(null);
   }, [selectedId]);
 
-  const selectedListing = useMemo(() => cohort?.cohort.find((row) => row.listingId === selectedId) ?? null, [cohort, selectedId]);
+  useEffect(() => {
+    if (!deepLinkId || !cohort) return;
+    setSelectedId(deepLinkId);
+    void loadValuation(deepLinkId);
+  }, [cohort, deepLinkId]);
+
+  const selectedListing = useMemo(() => cohort?.cohort.find((row) => row.listingId === selectedId) ?? (selectedId ? { listingId: selectedId, title: valuation?.listingTitle ?? "Linked listing", currentPrice: valuation?.currentPrice ?? 0, quantity: 0, quantitySold: 0, views: 0, watchers: 0, condition: null, listingFormat: null, band: "edge-case" as const, complexityScore: 0, expectedDollarImpact: null } : null), [cohort, selectedId, valuation]);
+  const selectedSummary = useMemo(
+    () => cohort?.valuationSummaries.find((row) => row.listingId === selectedId) ?? null,
+    [cohort, selectedId]
+  );
 
   async function updateComp(compKey: string, action: "exclude" | "restore") {
     if (!selectedId) return;
@@ -163,9 +210,9 @@ export default function CompValidationPage() {
 
   return (
     <main style={{ maxWidth: 1480, margin: "0 auto", padding: 20 }}>
-      <h1>Comp Validation MVP</h1>
+      <h1>Explain My Comp</h1>
       <p style={{ color: "#444" }}>
-        Phase 1 uses a provider-independent engine with fixture sold data while live provider authorization is pending.
+        Cohort selection is cache-only. Use View Comps or Refresh Comps to run a live lookup for the selected listing.
       </p>
 
       {message && (
@@ -218,9 +265,32 @@ export default function CompValidationPage() {
 
         <section style={{ border: "1px solid #ddd", borderRadius: 10, padding: 12 }}>
           {!selectedListing && <div>Select a listing to view comps.</div>}
-          {selectedListing && valuation && (
+          {selectedListing && (
             <>
-              <h2 style={{ marginTop: 0 }}>View Comps</h2>
+              <h2 style={{ marginTop: 0 }}>Comp evidence</h2>
+              <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
+                <button type="button" onClick={() => loadValuation(selectedListing.listingId)} style={btn}>View Comps</button>
+                <button type="button" onClick={() => loadValuation(selectedListing.listingId)} style={btn}>Refresh Comps</button>
+              </div>
+
+              {!valuation && selectedSummary && (
+                <div style={{ marginBottom: 12, background: "#f8f8f8", padding: 10, borderRadius: 8 }}>
+                  <strong>Cached Summary</strong>
+                  <div>Recommended Price: {money(selectedSummary.recommendedPrice)}</div>
+                  <div>Confidence: {selectedSummary.confidenceScore} ({selectedSummary.confidenceBand})</div>
+                  <div>Recommendation: {selectedSummary.recommendationType}</div>
+                  <div>Expected Dollar Impact: {money(selectedSummary.expectedDollarImpact)}</div>
+                </div>
+              )}
+
+              {!valuation && !selectedSummary && !loadingValuation && (
+                <div style={{ marginBottom: 12, color: "#555" }}>
+                  No cached valuation summary is available yet for this listing.
+                </div>
+              )}
+
+              {valuation && (
+                <>
               <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(160px, 1fr))", gap: 10, marginBottom: 12 }}>
                 <div><strong>Target Listing</strong><div>{valuation.listingTitle}</div></div>
                 <div><strong>Current Price</strong><div>{money(valuation.currentPrice)}</div></div>
@@ -229,9 +299,28 @@ export default function CompValidationPage() {
                 <div><strong>Market Range</strong><div>{money(valuation.lowMarketRange)} - {money(valuation.highMarketRange)}</div></div>
                 <div><strong>Recommended Price</strong><div>{money(valuation.recommendedPrice)}</div></div>
                 <div><strong>Confidence</strong><div>{valuation.confidenceScore} ({valuation.confidenceBand})</div></div>
+                <div><strong>Qualifying Sales</strong><div>{valuation.acceptedCompCount} ({valuation.exactMatchCount} exact, {valuation.nearExactMatchCount} near)</div></div>
+                <div><strong>Evidence Window</strong><div>{valuation.evidenceWindowDays ? `${valuation.evidenceWindowDays} days` : "Unavailable"}</div></div>
+                <div><strong>Median / Mean</strong><div>{money(valuation.medianSoldPrice)} / {money(valuation.meanSoldPrice)}</div></div>
+                <div><strong>Price Dispersion</strong><div>{valuation.priceDispersionPct == null ? "Unavailable" : `${valuation.priceDispersionPct.toFixed(1)}%`}</div></div>
+                <div><strong>Comp Dates</strong><div>{valuation.oldestCompDate ? new Date(valuation.oldestCompDate).toLocaleDateString() : "—"} – {valuation.newestCompDate ? new Date(valuation.newestCompDate).toLocaleDateString() : "—"}</div></div>
                 <div><strong>Trend</strong><div>{valuation.trendDirection} ({valuation.trendPct.toFixed(1)}%)</div></div>
                 <div><strong>Recommendation</strong><div>{valuation.recommendationType}</div></div>
               </div>
+
+              <CompDistribution valuation={valuation} />
+
+              {valuation.internalSales&&<section className="panel" style={{ marginBottom: 12 }}><div className="eyebrow">Legends historical sales</div><h3 style={{ margin: "6px 0" }}>{valuation.internalSales.saleCount} authoritative sales · {valuation.internalSales.units} units</h3><p>Kept separate from external market comps and never used to inflate Comp Confidence.</p><div className="metric-grid"><div className="metric"><div className="metric-label">Internal median</div><div className="metric-value">{money(valuation.internalSales.medianSoldPrice)}</div></div><div className="metric"><div className="metric-label">Internal mean</div><div className="metric-value">{money(valuation.internalSales.meanSoldPrice)}</div></div><div className="metric"><div className="metric-label">Most recent</div><div className="metric-value" style={{fontSize:18}}>{valuation.internalSales.newestSaleDate?new Date(valuation.internalSales.newestSaleDate).toLocaleDateString():"No linked sale"}</div></div></div>{valuation.internalSales.sales.length>0&&<details style={{marginTop:12}}><summary>View Legends sales</summary><ul>{valuation.internalSales.sales.map((sale,index)=><li key={`${sale.soldAt}-${index}`}>{new Date(sale.soldAt).toLocaleDateString()} · {sale.quantity} × {money(sale.unitPrice)} · {sale.status}</li>)}</ul></details>}</section>}
+
+              <details className="panel" style={{ marginBottom: 12 }} open>
+                <summary style={{ cursor: "pointer", fontWeight: 700 }}>How Comp Confidence is calculated</summary>
+                <div className="metric-grid" style={{ marginTop: 12 }}>
+                  {Object.entries(valuation.confidenceComponents).map(([name, points]) => (
+                    <div className="metric" key={name}><div className="metric-label">{name.replace(/([A-Z])/g, " $1")}</div><div className="metric-value">{points.toFixed(1)}</div></div>
+                  ))}
+                </div>
+                <p>{valuation.acceptedCompCount} qualifying confirmed sold comps from {valuation.evidenceSources.join(", ") || "no external source"}. Excluded evidence remains visible below with its reason. Confidence measures evidence quality, not expected price performance.</p>
+              </details>
 
               <div style={{ marginBottom: 12 }}>
                 <strong>Parsed Identity</strong>
@@ -262,6 +351,8 @@ export default function CompValidationPage() {
                   ))}
                 </div>
               )}
+                </>
+              )}
             </>
           )}
           {selectedListing && loadingValuation && <div>Loading valuation...</div>}
@@ -269,6 +360,27 @@ export default function CompValidationPage() {
       </div>
     </main>
   );
+}
+
+function CompDistribution({ valuation }: { valuation: ValuationResult }) {
+  const prices = valuation.comps.filter((row) => row.inclusionStatus === "accepted").map((row) => row.totalBuyerCost ?? row.soldPrice);
+  const markers = [...prices, valuation.medianSoldPrice, valuation.weightedRecentMarketValue, valuation.currentPrice].filter((value): value is number => value != null);
+  if (!prices.length || !markers.length) return null;
+  const min = Math.min(...markers); const max = Math.max(...markers); const span = Math.max(0.01, max - min);
+  const left = (value: number) => `${((value - min) / span) * 100}%`;
+  return <section className="panel" style={{ marginBottom: 12 }} aria-label="Qualifying sold price distribution">
+    <strong>Comp distribution</strong><div style={{ position: "relative", height: 54, margin: "14px 8px 4px", borderTop: "2px solid var(--border)" }}>
+      {prices.map((price, index) => <span key={`${price}-${index}`} title={`Qualifying sale ${money(price)}`} style={{ position: "absolute", left: left(price), top: -6, width: 10, height: 10, borderRadius: 10, background: "var(--text)", transform: "translateX(-50%)" }} />)}
+      <Marker value={valuation.medianSoldPrice} label="Median" color="var(--gold-hover)" left={left} />
+      <Marker value={valuation.weightedRecentMarketValue} label="Legends estimate" color="var(--gold)" left={left} />
+      <Marker value={valuation.currentPrice} label="Current" color="var(--danger)" left={left} />
+    </div><div style={{ display: "flex", justifyContent: "space-between", color: "var(--muted)", fontSize: 12 }}><span>{money(min)}</span><span>{money(max)}</span></div>
+  </section>;
+}
+
+function Marker({ value, label, color, left }: { value: number | null; label: string; color: string; left: (value: number) => string }) {
+  if (value == null) return null;
+  return <span title={`${label}: ${money(value)}`} style={{ position: "absolute", left: left(value), top: 4, height: 31, borderLeft: `3px solid ${color}`, color, fontSize: 10, paddingLeft: 4, whiteSpace: "nowrap" }}>{label}</span>;
 }
 
 function CompTable(props: {
@@ -288,14 +400,13 @@ function CompTable(props: {
         <thead>
           <tr style={{ borderBottom: "2px solid #ccc" }}>
             <th style={th}>Sold Title</th>
-            <th style={th}>Source</th>
             <th style={th}>Sold Date</th>
             <th style={th}>Sold Price</th>
             <th style={th}>Shipping</th>
             <th style={th}>Total Buyer Cost</th>
-            <th style={th}>Match Tier</th>
+            <th style={th}>Evidence Tier</th>
             <th style={th}>Match Score</th>
-            <th style={th}>Reason</th>
+            <th style={th}>Evidence</th>
             <th style={th}>Action</th>
           </tr>
         </thead>
@@ -303,14 +414,13 @@ function CompTable(props: {
           {rows.map((row) => (
             <tr key={row.compKey} style={{ borderBottom: "1px solid #eee" }}>
               <td style={td}>{row.soldTitle}</td>
-              <td style={td}>{row.providerName}<div style={{ color: "#666" }}>{row.sourceItemId}</div></td>
               <td style={td}>{new Date(row.soldDate).toLocaleDateString()}</td>
               <td style={td}>{money(row.soldPrice)}</td>
               <td style={td}>{money(row.shipping)}</td>
               <td style={td}>{money(row.totalBuyerCost)}</td>
-              <td style={td}>{row.matchTier}</td>
+              <td style={td}>Tier {row.researchTier}<div style={{color:"#666"}}>{row.researchTierLabel}</div></td>
               <td style={td}>{row.matchScore}</td>
-              <td style={td}>{row.exclusionReason ?? row.inclusionReason}</td>
+              <td className="compact-prose-cell" style={td}><TableDetail summary={`${row.inclusionStatus === "accepted" ? "Included" : "Excluded"} · ${row.researchTierLabel}`} label="View evidence"><p>{row.exclusionReason ?? row.inclusionReason}</p><p><strong>Provider provenance:</strong> {row.providerName} · source item {row.sourceItemId}</p><p><strong>Evidence classification:</strong> Tier {row.researchTier} · match score {row.matchScore}.</p></TableDetail></td>
               <td style={td}>
                 {row.inclusionStatus === "accepted" ? (
                   <button type="button" onClick={() => onExclude(row.compKey)} style={btn}>Exclude</button>

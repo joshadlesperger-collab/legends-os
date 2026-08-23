@@ -1,0 +1,4 @@
+import {NextRequest,NextResponse} from "next/server";
+import {createGovernedTitleExecution} from "@/lib/governed-ebay-actions";
+import {OPERATOR_SESSION_COOKIE,readOperatorSession} from "@/lib/operator-auth";
+export async function POST(request:NextRequest,{params}:{params:{listingId:string}}){const session=await readOperatorSession(request.cookies.get(OPERATOR_SESSION_COOKIE)?.value);if(!session)return NextResponse.json({error:"Operator sign-in required"},{status:401});try{const execution=await createGovernedTitleExecution(params.listingId,session.operatorId);return NextResponse.redirect(new URL(`/inventory-actions?execution=${execution.id}`,request.url),303);}catch(error){return NextResponse.json({error:error instanceof Error?error.message:"Title action is not approval-ready"},{status:409});}}

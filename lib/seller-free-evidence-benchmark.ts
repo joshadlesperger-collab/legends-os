@@ -1,0 +1,16 @@
+import { Prisma } from "@prisma/client";
+import { prisma } from "./prisma.ts";
+import { MONITORED_SELLERS } from "./seller-registry.ts";
+import { loadActiveMarketContext } from "./seller-active-market.ts";
+import { scoreManualResearch } from "./seller-research-queue.ts";
+import { freeProviderRowsConsumed } from "./comp-validation/valuation-service.ts";
+import { valueLatestSellerSingles } from "./seller-single-valuations.ts";
+
+const object=(value:Prisma.JsonValue|null)=>value&&typeof value==="object"&&!Array.isArray(value)?value as Prisma.JsonObject:{};
+function auditRows(value:Prisma.JsonValue|null){const snapshot=object(value).canonicalSingleValuation;if(!snapshot||typeof snapshot!=="object"||Array.isArray(snapshot))return 0;const evidence=(snapshot as Prisma.JsonObject).evidence;if(!evidence||typeof evidence!=="object"||Array.isArray(evidence))return 0;const audits=(evidence as Prisma.JsonObject).queryAudit;if(!Array.isArray(audits))return 0;let total=0;for(const row of audits)if(row&&typeof row==="object"&&!Array.isArray(row)){const count=Number((row as Prisma.JsonObject).candidateCount);if(Number.isFinite(count))total+=count;}return total;}
+export async function runFreeEvidenceBenchmark(){
+  const valuation=await valueLatestSellerSingles();const run=await prisma.sellerOpportunityRun.findUniqueOrThrow({where:{id:valuation.runId},include:{auctions:{where:{kind:"single"},orderBy:{ebayItemId:"asc"}}}});const seller=MONITORED_SELLERS[0];const summaries=[];
+  for(const auction of run.auctions){const root=object(auction.itemSpecifics);const snapshot=root.canonicalSingleValuation as Prisma.JsonObject|undefined;const active=await loadActiveMarketContext({title:auction.title,targetEbayItemId:auction.ebayItemId,categoryIds:seller.browseCategoryIds});const confidence=String(snapshot?.compConfidence??"Low") as "High"|"Medium"|"Low";const estimated=typeof snapshot?.estimatedMarketValue==="number"?snapshot.estimatedMarketValue:null;const research=scoreManualResearch({title:auction.title,currentBid:Number(auction.currentBid),endTime:auction.endTime,estimatedMarketValue:estimated,confidence,active});const ladder={version:"free-evidence-ladder-v1",observedAt:new Date().toISOString(),activeMarket:active,research};await prisma.sellerOpportunityAuction.update({where:{id:auction.id},data:{itemSpecifics:{...root,freeEvidenceLadder:ladder} as Prisma.InputJsonValue}});summaries.push({ebayItemId:auction.ebayItemId,title:auction.title,estimatedMarketValue:estimated,activeUseful:active.useful,researchScore:research.score,researchQuery:research.query,researchReasons:research.reasons});}
+  const providerRowsFromAudit=run.auctions.reduce((total,auction)=>total+auditRows(auction.itemSpecifics),0);
+  return{runId:run.id,cards:summaries.length,automaticValuations:summaries.filter(row=>row.estimatedMarketValue!=null).length,usefulActiveContext:summaries.filter(row=>row.activeUseful).length,manualResearch:summaries.filter(row=>row.researchScore>=40).length,top20:summaries.filter(row=>row.researchScore>=40).sort((a,b)=>b.researchScore-a.researchScore).slice(0,20),providerRowsConsumed:providerRowsFromAudit||freeProviderRowsConsumed(),valuationTelemetry:valuation.telemetry};
+}

@@ -1,29 +1,34 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { exchangeCodeForTokens, getEbayUser, setStoredToken } from "@/lib/ebay";
+import { exchangeCodeForTokens, getEbayOAuthScopes, getEbayUser, setStoredToken } from "@/lib/ebay";
+import { getOAuthReplayOutcome, pendingOAuthState, processingOAuthState, verifyEbayOAuthState } from "@/lib/ebay-oauth-state";
 
 export async function GET(req: NextRequest) {
-  const requestUrl = req.url;
-  const nextUrl = req.nextUrl.toString();
   const searchParams = req.nextUrl.searchParams;
   const code = searchParams.get("code");
   const state = searchParams.get("state");
-
-  console.log("OAuth callback received", {
-    requestUrl,
-    nextUrl,
-    hasCode: Boolean(code),
-    codeLength: code?.length ?? 0,
-    hasState: Boolean(state),
-    stateLength: state?.length ?? 0,
-  });
 
   if (!code || !state) {
     return NextResponse.json({ error: "Missing code or state" }, { status: 400 });
   }
 
-  const store = await prisma.store.findFirst({ where: { oauthState: state } });
-  if (!store) {
+  const verified = verifyEbayOAuthState(state);
+  if (!verified) {
+    return NextResponse.json({ error: "Invalid state" }, { status: 400 });
+  }
+
+  const store = await prisma.store.findUnique({ where: { id: verified.storeId } });
+  if (!store) return NextResponse.json({ error: "Invalid state" }, { status: 400 });
+
+  const claimed = await prisma.store.updateMany({
+    where: { id: store.id, oauthState: pendingOAuthState(verified.verifier) },
+    data: { oauthState: processingOAuthState(verified.verifier) },
+  });
+  if (claimed.count !== 1) {
+    const current = await prisma.store.findUnique({ where: { id: store.id }, select: { oauthState: true, connectionStatus: true, orderAccessStatus: true } });
+    const outcome = getOAuthReplayOutcome(current?.oauthState ?? null, verified.verifier, verified.intent, current?.connectionStatus ?? "pending", current?.orderAccessStatus ?? "requires_reauth");
+    if (outcome === "completed") return NextResponse.redirect(new URL("/stores?oauth=success", req.url));
+    if (outcome === "processing") return NextResponse.redirect(new URL("/stores?oauth=processing", req.url));
     return NextResponse.json({ error: "Invalid state" }, { status: 400 });
   }
 
@@ -42,10 +47,12 @@ export async function GET(req: NextRequest) {
         tokenExpiresAt: tokens.expiresAt,
         lastSyncAt: new Date(),
         oauthState: null,
+        orderAccessStatus: "ready",
       },
     });
+    console.info("[ebay-oauth] new grant persisted",{storeId:store.id,intent:verified.intent,sellerIdentityVerified:Boolean(userId),accessTokenExpiresAt:tokens.expiresAt.toISOString(),refreshTokenReplaced:Boolean(tokens.refreshToken),requestedScopes:getEbayOAuthScopes()});
 
-    return NextResponse.json({ success: true, storeId: store.id, userId });
+    return NextResponse.redirect(new URL("/stores?oauth=success", req.url));
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : String(err);
     await prisma.apiErrorLog.create({
@@ -56,9 +63,12 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    await prisma.store.update({
-      where: { id: store.id },
-      data: { connectionStatus: "needs_auth" },
+    await prisma.store.updateMany({
+      where: { id: store.id, oauthState: processingOAuthState(verified.verifier) },
+      data: {
+        oauthState: null,
+        ...(verified.intent === "connect" ? { connectionStatus: "needs_auth" } : {}),
+      },
     });
 
     return NextResponse.json({ error: message }, { status: 500 });

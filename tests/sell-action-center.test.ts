@@ -1,0 +1,6 @@
+import assert from "node:assert/strict";
+import test from "node:test";
+import {resolveSellActions,type SellActionCandidate} from "../lib/sell-action-center-domain.ts";
+const row=(overrides:Partial<SellActionCandidate>):SellActionCandidate=>({listingId:"listing-1",itemId:"123",title:"Card",currentPrice:20,actionType:"OPTIMIZE TITLE",confidence:99,confidenceBand:"HIGH",reason:"Exact title evidence",evidence:[],warning:"None",status:"EXECUTABLE",source:"Title Inspection",sport:"Baseball",freshness:"supported",operatorAction:"Approve",buyerIntent:0,velocity:2,risk:3,freshnessScore:2,...overrides});
+test("buyer intent outranks diagnostic work and preserves the alternative",()=>{const result=resolveSellActions([row({}),row({actionType:"SEND OFFER",source:"Sales Velocity",buyerIntent:3,velocity:3,status:"REVIEW",confidence:85,confidenceBand:"MEDIUM"})]);assert.equal(result.rows.length,1);assert.equal(result.rows[0]?.actionType,"SEND OFFER");assert.equal(result.rows[0]?.alternatives[0]?.actionType,"OPTIMIZE TITLE");assert.equal(result.conflicts,1);});
+test("independent listings remain independent prioritized actions",()=>{const result=resolveSellActions([row({}),row({listingId:"listing-2",itemId:"456",actionType:"REFRESH LISTING",status:"BLOCKED",risk:0})]);assert.equal(result.rows.length,2);assert.equal(result.conflicts,0);});

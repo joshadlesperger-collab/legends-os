@@ -38,18 +38,27 @@ model Store {
   tokenExpiresAt     DateTime?
   isActive           Boolean    @default(true)
   lastSyncAt         DateTime?
+  orderSyncCheckpoint DateTime?
+  orderAccessStatus   String     @default("requires_reauth")
   createdAt          DateTime   @default(now())
   account            Account    @relation(fields: [accountId], references: [id])
   listings           Listing[]
   syncRuns           SyncRun[]
   apiQuotas          ApiQuota[]
   apiErrors          ApiErrorLog[]
+  syncJobs           SyncJob[]
+  ebayOrders         EbayOrder[]
+  ebayOrderLines      EbayOrderLine[]
+  ebayRefunds         EbayRefund[]
+  historicalListingRecoveries HistoricalListingRecovery[]
+  ebayActionExecutions EbayActionExecution[]
 }
 
 model Listing {
   id              String            @id @default(cuid())
   storeId         String
   ebayItemId      String
+  sku             String?
   title           String
   description     String?
   categoryId      String?
@@ -66,16 +75,27 @@ model Listing {
   imageUrls       String[]
   promotionStatus String?
   listingQuality  Json?
+  itemSpecifics   Json?
+  authoritativeSource String?
+  authoritativeObservedAt DateTime?
+  relistedToEbayItemId String?
   lastSyncedAt    DateTime          @default(now())
   createdAt       DateTime          @default(now())
   store           Store             @relation(fields: [storeId], references: [id])
   snapshots       ListingSnapshot[]
   priceChanges    PriceChange[]
   saleEvents      SaleEvent[]
+  ebayOrderLines  EbayOrderLine[]
   scores          ListingScore[]
   recommendations Recommendation[]
+  costBasis       ListingCostBasis?
+  reconciliationCandidates OrderLineReconciliation[]
+  historicalRecovery HistoricalListingRecovery?
+  operatorDecisions OperatorDecision[]
+  ebayActionExecutions EbayActionExecution[]
 
   @@unique([storeId, ebayItemId])
+  @@index([storeId, sku])
 }
 
 model ListingSnapshot {
@@ -94,6 +114,7 @@ model ListingSnapshot {
   listing         Listing  @relation(fields: [listingId], references: [id])
 
   @@index([storeId, capturedAt])
+  @@index([listingId, capturedAt])
 }
 
 model PriceChange {
@@ -108,11 +129,205 @@ model PriceChange {
 
 model SaleEvent {
   id        String   @id @default(cuid())
-  listingId String
+  listingId String?
+  orderLineId String? @unique
+  provider String?
+  providerEventId String?
   quantity  Int
   price     Decimal  @db.Decimal(10, 2)
+  currency  String?  @db.VarChar(3)
+  status    String   @default("confirmed")
   soldAt    DateTime
-  listing   Listing  @relation(fields: [listingId], references: [id])
+  listing   Listing? @relation(fields: [listingId], references: [id])
+  orderLine EbayOrderLine? @relation(fields: [orderLineId], references: [id])
+
+  @@unique([provider, providerEventId])
+}
+
+model HistoricalListingRecovery {
+  id                 String   @id @default(cuid())
+  storeId            String
+  ebayItemId         String
+  status             String   @default("pending")
+  attemptCount       Int      @default(0)
+  lastAttemptAt      DateTime?
+  recoveredListingId String?  @unique
+  errorCode          String?
+  errorMessage       String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  store              Store    @relation(fields: [storeId], references: [id])
+  recoveredListing   Listing? @relation(fields: [recoveredListingId], references: [id], onDelete: SetNull)
+
+  @@unique([storeId, ebayItemId])
+  @@index([status, lastAttemptAt])
+  @@index([storeId, status])
+}
+
+model ListingCostBasis {
+  id                       String   @id @default(cuid())
+  listingId                String   @unique
+  currency                 String   @default("USD") @db.VarChar(3)
+  unitAcquisitionCost      Decimal? @db.Decimal(12, 2)
+  unitGradingCost          Decimal? @db.Decimal(12, 2)
+  unitSuppliesCost         Decimal? @db.Decimal(12, 2)
+  unitOutboundPostageCost  Decimal? @db.Decimal(12, 2)
+  unitOtherCost            Decimal? @db.Decimal(12, 2)
+  notes                    String?
+  source                   String   @default("manual")
+  sourceReference          String?
+  enteredAt                DateTime @default(now())
+  importBatchId            String?
+  createdAt                DateTime @default(now())
+  updatedAt                DateTime @updatedAt
+  listing                  Listing  @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  importBatch              CostBasisImportBatch? @relation(fields: [importBatchId], references: [id], onDelete: SetNull)
+
+  @@index([importBatchId])
+}
+
+model CostBasisImportBatch {
+  id             String   @id @default(cuid())
+  sourceFileName String?
+  suppliedRows   Int
+  appliedRows    Int
+  summary        Json
+  createdAt      DateTime @default(now())
+  costBases      ListingCostBasis[]
+}
+
+model SyncJob {
+  id            String    @id @default(cuid())
+  storeId       String
+  syncRunId     String?
+  type          String
+  status        String    @default("pending")
+  attemptCount  Int       @default(0)
+  maxAttempts   Int       @default(3)
+  scheduledAt   DateTime  @default(now())
+  startedAt     DateTime?
+  completedAt   DateTime?
+  progress      Int       @default(0)
+  failureCount  Int       @default(0)
+  errorMessage  String?
+  orderWindowStart DateTime?
+  orderWindowEnd   DateTime?
+  orderNextOffset  Int       @default(0)
+  orderTotal       Int?
+  orderSliceStart        DateTime?
+  orderSliceEnd          DateTime?
+  orderSliceTotal        Int?
+  orderCompletedCount    Int       @default(0)
+  orderCompletedSlices   Int       @default(0)
+  orderSliceRestartCount Int       @default(0)
+  orderSliceSplitCount   Int       @default(0)
+  leaseToken       String?
+  leaseExpiresAt   DateTime?
+  heartbeatAt      DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  store         Store     @relation(fields: [storeId], references: [id])
+
+  @@index([status, scheduledAt])
+  @@index([status, leaseExpiresAt])
+  @@index([storeId, type, status])
+}
+
+model EbayOrder {
+  id                   String    @id @default(cuid())
+  storeId              String
+  providerOrderId      String
+  creationDate         DateTime
+  lastModifiedDate     DateTime
+  orderPaymentStatus   String
+  orderFulfillmentStatus String
+  cancelStatus         String
+  marketplace          String?
+  currency             String    @db.VarChar(3)
+  priceSubtotal        Decimal?  @db.Decimal(12, 2)
+  deliveryCost         Decimal?  @db.Decimal(12, 2)
+  priceDiscount        Decimal?  @db.Decimal(12, 2)
+  deliveryDiscount     Decimal?  @db.Decimal(12, 2)
+  tax                   Decimal?  @db.Decimal(12, 2)
+  total                 Decimal?  @db.Decimal(12, 2)
+  totalDueSeller        Decimal?  @db.Decimal(12, 2)
+  totalMarketplaceFee  Decimal?  @db.Decimal(12, 2)
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  store                 Store     @relation(fields: [storeId], references: [id])
+  lineItems             EbayOrderLine[]
+  refunds               EbayRefund[]
+
+  @@unique([storeId, providerOrderId])
+  @@index([storeId, lastModifiedDate])
+}
+
+model EbayOrderLine {
+  id                   String    @id @default(cuid())
+  orderId              String
+  storeId              String
+  listingId            String?
+  providerLineItemId   String
+  ebayItemId           String?
+  sku                   String?
+  title                 String
+  quantity              Int
+  currency              String    @db.VarChar(3)
+  lineItemCost          Decimal   @db.Decimal(12, 2)
+  total                 Decimal?  @db.Decimal(12, 2)
+  deliveryCost          Decimal?  @db.Decimal(12, 2)
+  discount              Decimal?  @db.Decimal(12, 2)
+  tax                   Decimal?  @db.Decimal(12, 2)
+  fulfillmentStatus     String?
+  marketplace           String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  order                 EbayOrder @relation(fields: [orderId], references: [id])
+  store                 Store     @relation(fields: [storeId], references: [id])
+  listing               Listing?  @relation(fields: [listingId], references: [id])
+  refunds               EbayRefund[]
+  saleEvent             SaleEvent?
+  reconciliation        OrderLineReconciliation?
+
+  @@unique([storeId, providerLineItemId])
+  @@index([storeId, ebayItemId])
+}
+
+model OrderLineReconciliation {
+  id                 String   @id @default(cuid())
+  orderLineId        String   @unique
+  candidateListingId String?
+  status             String   @default("unresolved")
+  matchTier          String?
+  confidence         Int?
+  reasons            Json
+  reviewedAt         DateTime?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  orderLine          EbayOrderLine @relation(fields: [orderLineId], references: [id], onDelete: Cascade)
+  candidateListing   Listing? @relation(fields: [candidateListingId], references: [id], onDelete: SetNull)
+
+  @@index([status, confidence])
+  @@index([candidateListingId])
+}
+
+model EbayRefund {
+  id               String    @id @default(cuid())
+  storeId          String
+  orderId          String
+  orderLineId      String?
+  providerRefundId String
+  status           String
+  amount           Decimal?  @db.Decimal(12, 2)
+  currency         String?   @db.VarChar(3)
+  refundDate       DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  store            Store     @relation(fields: [storeId], references: [id])
+  order            EbayOrder @relation(fields: [orderId], references: [id])
+  orderLine        EbayOrderLine? @relation(fields: [orderLineId], references: [id])
+
+  @@unique([storeId, providerRefundId])
 }
 
 model ScoreRun {
@@ -136,6 +351,101 @@ model ListingScore {
   listing            Listing  @relation(fields: [listingId], references: [id])
 
   @@index([listingId, calculatedAt])
+}
+
+model InventoryHealthSnapshot {
+  id                         String   @id @default(cuid())
+  snapshotDate               DateTime @unique @db.Date
+  listingWeightedHealth      Int
+  economicallyWeightedHealth Int
+  activeListings             Int
+  listedExposure             Decimal  @db.Decimal(14, 2)
+  states                     Json
+  pareto                     Json
+  velocity                   Json
+  saleLikelihood             Json
+  createdAt                  DateTime @default(now())
+
+  @@index([createdAt])
+}
+
+model OperatorDecision {
+  id                    String   @id @default(cuid())
+  listingId             String
+  operatorId            String
+  recommendedAction     String
+  doctrineVersion       String   @default("legacy")
+  decision              String
+  operatorAdjustedValue Decimal? @db.Decimal(10, 2)
+  beforeState           Json
+  evidenceSnapshot      Json
+  observationWindowDays Int
+  decidedAt             DateTime @default(now())
+  listing               Listing  @relation(fields: [listingId], references: [id], onDelete: Restrict)
+  outcomes              OutcomeObservation[]
+  ebayActionExecution   EbayActionExecution?
+
+  @@index([operatorId, decidedAt])
+  @@index([listingId, decidedAt])
+}
+
+model EbayActionExecution {
+  id                String   @id @default(cuid())
+  listingId         String
+  storeId           String
+  decisionId        String   @unique
+  operatorId        String
+  action            String
+  doctrineVersion   String
+  status            String   @default("approved")
+  idempotencyKey    String   @unique
+  oldEbayItemId     String
+  newEbayItemId     String?
+  beforeState       Json
+  proposedState     Json
+  evidenceSnapshot  Json
+  providerVerifiedAt DateTime?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  listing           Listing @relation(fields: [listingId], references: [id], onDelete: Restrict)
+  store             Store @relation(fields: [storeId], references: [id], onDelete: Restrict)
+  decision          OperatorDecision @relation(fields: [decisionId], references: [id], onDelete: Restrict)
+  events            EbayActionExecutionEvent[]
+
+  @@index([status, createdAt])
+  @@index([listingId, createdAt])
+}
+
+model EbayActionExecutionEvent {
+  id          String   @id @default(cuid())
+  executionId String
+  sequence    Int
+  type        String
+  snapshot    Json
+  createdAt   DateTime @default(now())
+  execution   EbayActionExecution @relation(fields: [executionId], references: [id], onDelete: Restrict)
+
+  @@unique([executionId, sequence])
+  @@index([createdAt])
+}
+
+model OutcomeObservation {
+  id               String   @id @default(cuid())
+  decisionId       String
+  observedAt       DateTime @default(now())
+  windowDays       Int
+  saleOccurred     Boolean?
+  timeToSaleDays   Int?
+  salePrice        Decimal? @db.Decimal(10, 2)
+  quantitySold     Int?
+  viewsChange      Int?
+  watchersChange   Int?
+  knownMargin      Decimal? @db.Decimal(12, 2)
+  evidenceSnapshot Json
+  decision         OperatorDecision @relation(fields: [decisionId], references: [id], onDelete: Restrict)
+
+  @@unique([decisionId, windowDays])
+  @@index([observedAt])
 }
 
 model Recommendation {
@@ -218,4 +528,95 @@ model ApiErrorLog {
   requestBody String?
   createdAt   DateTime @default(now())
   store       Store    @relation(fields: [storeId], references: [id])
+}
+
+model SellerOpportunityRun {
+  id          String   @id @default(cuid())
+  seller      String
+  windowStart DateTime
+  windowEnd   DateTime
+  collectedAt DateTime @default(now())
+  itemCount   Int
+  singleCount Int
+  lotCount    Int
+  auctions    SellerOpportunityAuction[]
+
+  @@index([seller, collectedAt])
+}
+
+model SellerOpportunityAuction {
+  id            String   @id @default(cuid())
+  runId         String
+  seller        String
+  ebayItemId    String
+  kind          String
+  title         String
+  listingUrl    String
+  currentBid    Decimal  @db.Decimal(10, 2)
+  currency      String   @default("USD")
+  bidCount      Int      @default(0)
+  endTime       DateTime
+  estimatedCards Int?
+  imageUrl      String?
+  categoryName  String?
+  itemSpecifics Json?
+  classificationReason String
+  run           SellerOpportunityRun @relation(fields: [runId], references: [id], onDelete: Cascade)
+  scheduledBids ScheduledBid[]
+
+  @@unique([runId, ebayItemId])
+  @@index([runId, kind, endTime])
+  @@index([seller, ebayItemId])
+}
+
+model ScheduledBid {
+  id                    String   @id @default(cuid())
+  idempotencyKey        String   @unique
+  opportunityId         String
+  environment           String   @default("SANDBOX")
+  browseItemId          String
+  legacyItemId          String?
+  listingTitle          String
+  buyerUserId           String
+  currency              String   @default("USD") @db.VarChar(3)
+  auctionEndAt          DateTime
+  operatorMaxBid        Decimal  @db.Decimal(10, 2)
+  recommendedMaxBid     Decimal? @db.Decimal(10, 2)
+  snipeOffsetSeconds    Int      @default(7)
+  scheduledExecutionAt  DateTime
+  status                String   @default("SCHEDULED")
+  approvedBy            String
+  approvedAt            DateTime
+  armedAt               DateTime?
+  submittingAt          DateTime?
+  submittedAt           DateTime?
+  completedAt           DateTime?
+  cancelledAt           DateTime?
+  lastAttemptAt         DateTime?
+  attemptCount          Int      @default(0)
+  actualLatencyMs       Int?
+  failureReason         String?
+  providerResult        Json?
+  leaseToken            String?
+  leaseExpiresAt        DateTime?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  opportunity           SellerOpportunityAuction @relation(fields: [opportunityId], references: [id], onDelete: Restrict)
+  events                ScheduledBidEvent[]
+
+  @@index([status, scheduledExecutionAt])
+  @@index([opportunityId, createdAt])
+  @@index([status, leaseExpiresAt])
+}
+
+model ScheduledBidEvent {
+  id             String   @id @default(cuid())
+  scheduledBidId String
+  type           String
+  status         String
+  occurredAt     DateTime @default(now())
+  metadata       Json?
+  scheduledBid   ScheduledBid @relation(fields: [scheduledBidId], references: [id], onDelete: Cascade)
+
+  @@index([scheduledBidId, occurredAt])
 }

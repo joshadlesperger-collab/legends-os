@@ -2,12 +2,19 @@ import crypto from "crypto";
 import { XMLParser } from "fast-xml-parser";
 
 const ALGORITHM = "aes-256-cbc";
+const MAX_TRADING_API_ATTEMPTS = 3;
+const MAX_TRADING_API_PAGES = 500;
+const EBAY_REQUEST_TIMEOUT_MS = 15_000;
 
 const EBAY_OAUTH_SCOPES = [
   "https://api.ebay.com/oauth/api_scope",
   "https://api.ebay.com/oauth/api_scope/sell.inventory",
   "https://api.ebay.com/oauth/api_scope/sell.account",
+  "https://api.ebay.com/oauth/api_scope/sell.fulfillment.readonly",
+  "https://api.ebay.com/oauth/api_scope/sell.analytics.readonly",
+  "https://api.ebay.com/oauth/api_scope/sell.marketing",
 ] as const;
+export function getEbayOAuthScopes(){return [...EBAY_OAUTH_SCOPES]}
 
 function getKey(): Buffer {
   const keyHex = process.env.TOKEN_ENCRYPTION_KEY;
@@ -64,8 +71,7 @@ export async function exchangeCodeForTokens(code: string) {
   });
 
   if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`eBay token exchange failed: ${res.status} ${text}`);
+    throw new Error(`eBay token exchange failed with HTTP ${res.status}`);
   }
 
   const data = (await res.json()) as {
@@ -91,7 +97,6 @@ export async function refreshAccessToken(refreshToken: string) {
   const body = new URLSearchParams({
     grant_type: "refresh_token",
     refresh_token: refreshToken,
-    scope: EBAY_OAUTH_SCOPES.join(" "),
   });
 
   const res = await fetch(url, {
@@ -104,8 +109,7 @@ export async function refreshAccessToken(refreshToken: string) {
   });
 
   if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`eBay token refresh failed: ${res.status} ${text}`);
+    throw new Error(`eBay token refresh failed with HTTP ${res.status}`);
   }
 
   const data = (await res.json()) as {
@@ -141,7 +145,7 @@ type StoreWithTokens = {
   tokenExpiresAt: Date | null;
 };
 
-export async function getValidAccessToken(store: StoreWithTokens) {
+export async function getValidAccessToken(store: StoreWithTokens,options:{forceRefresh?:boolean}={}) {
   const access = store.oauthAccessToken ? getStoredToken(store.oauthAccessToken) : null;
   const refresh = store.oauthRefreshToken ? getStoredToken(store.oauthRefreshToken) : null;
 
@@ -150,7 +154,7 @@ export async function getValidAccessToken(store: StoreWithTokens) {
   }
 
   const now = Date.now();
-  const expired = !store.tokenExpiresAt || store.tokenExpiresAt.getTime() < now + 60_000;
+  const expired = Boolean(options.forceRefresh)||!store.tokenExpiresAt || store.tokenExpiresAt.getTime() < now + 60_000;
 
   if (!expired) {
     return {
@@ -182,6 +186,38 @@ export class EbayApiError extends Error {
     this.code = code;
     this.name = "EbayApiError";
   }
+}
+
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+export function isTransientEbayStatus(status: number) {
+  return status === 429 || status === 408 || status >= 500;
+}
+
+function retryDelayMs(response: Response | null, attempt: number) {
+  const retryAfter = response?.headers.get("retry-after");
+  if (retryAfter) {
+    const seconds = Number(retryAfter);
+    if (Number.isFinite(seconds)) return Math.min(10_000, Math.max(0, seconds * 1000));
+  }
+  const exponential = 250 * 2 ** (attempt - 1);
+  return exponential + Math.floor(Math.random() * 150);
+}
+
+export function parseTotalPages(value: unknown, callName: string, currentPage: number) {
+  const totalPages = Number(value ?? 1);
+  if (!Number.isInteger(totalPages) || totalPages < 1) {
+    throw new EbayApiError(callName, `${callName} returned malformed pagination`, "MALFORMED_PAGINATION");
+  }
+  if (totalPages > MAX_TRADING_API_PAGES) {
+    throw new EbayApiError(callName, `${callName} exceeded the ${MAX_TRADING_API_PAGES}-page safety limit`, "PAGINATION_LIMIT");
+  }
+  if (currentPage > totalPages) {
+    throw new EbayApiError(callName, `${callName} pagination moved backwards`, "MALFORMED_PAGINATION");
+  }
+  return totalPages;
 }
 
 type TradingResponse = Record<string, unknown>;
@@ -216,6 +252,13 @@ function getAck(parsed: TradingResponse) {
   const rawErrors = response?.Errors;
   const errors = Array.isArray(rawErrors) ? rawErrors : rawErrors ? [rawErrors] : [];
   return { ack, errors, response };
+}
+
+function assertCompleteEnumeration(parsed: TradingResponse, callName: string) {
+  const { ack, errors } = getAck(parsed);
+  if (ack !== "PartialSuccess") return;
+  const { message, code } = formatEbayErrors(errors);
+  throw new EbayApiError(callName, `${callName} returned a partial result; checkpoint and reconciliation were not advanced: ${message}`, code ?? "PARTIAL_RESULT");
 }
 
 function valueAsString(value: unknown): string | undefined {
@@ -261,37 +304,47 @@ export async function callTradingApi(options: {
   siteId: number;
   accessToken: string;
   xmlBody: string;
+  retryMode?: "safe-read" | "single-attempt";
 }) {
-  const { callName, siteId, accessToken, xmlBody } = options;
+  const { callName, siteId, accessToken, xmlBody, retryMode = "safe-read" } = options;
   const endpoint = "https://api.ebay.com/ws/api.dll";
   const body = `<?xml version="1.0" encoding="utf-8"?>\n${xmlBody.trim()}`;
 
-  let res: Response;
-  try {
-    res = await fetch(endpoint, {
-      method: "POST",
-      headers: {
-        "Content-Type": "text/xml; charset=utf-8",
-        "X-EBAY-API-CALL-NAME": callName,
-        "X-EBAY-API-COMPATIBILITY-LEVEL": "1227",
-        "X-EBAY-API-SITEID": siteId.toString(),
-        "X-EBAY-API-APP-NAME": process.env.EBAY_APP_ID ?? "",
-        "X-EBAY-API-DEV-NAME": process.env.EBAY_DEV_ID ?? "",
-        "X-EBAY-API-CERT-NAME": process.env.EBAY_CERT_ID ?? "",
-        "X-EBAY-API-IAF-TOKEN": accessToken,
-      },
-      body,
-      cache: "no-store",
-    });
-  } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
-    throw new EbayApiError(callName, `${callName} network request failed: ${message}`);
+  let res: Response | null = null;
+  let lastNetworkError: unknown;
+  const maxAttempts = retryMode === "single-attempt" ? 1 : MAX_TRADING_API_ATTEMPTS;
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    try {
+      res = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "text/xml; charset=utf-8",
+          "X-EBAY-API-CALL-NAME": callName,
+          "X-EBAY-API-COMPATIBILITY-LEVEL": "1227",
+          "X-EBAY-API-SITEID": siteId.toString(),
+          "X-EBAY-API-IAF-TOKEN": accessToken,
+        },
+        body,
+        cache: "no-store",
+        signal: AbortSignal.timeout(EBAY_REQUEST_TIMEOUT_MS),
+      });
+      if (!isTransientEbayStatus(res.status) || attempt === maxAttempts) break;
+      await res.body?.cancel().catch(() => undefined);
+      await sleep(retryDelayMs(res, attempt));
+    } catch (error) {
+      lastNetworkError = error;
+      if (attempt === maxAttempts) break;
+      await sleep(retryDelayMs(null, attempt));
+    }
+  }
+
+  if (!res) {
+    const message = lastNetworkError instanceof Error ? lastNetworkError.message : String(lastNetworkError ?? "unknown network error");
+    throw new EbayApiError(callName, `${callName} network request failed after ${maxAttempts} attempt${maxAttempts === 1 ? "" : "s"}: ${message}`);
   }
 
   const text = await res.text();
-  console.error(
-    `[eBay Trading API] ${callName} HTTP ${res.status} response: ${sanitizeEbayResponse(text)}`
-  );
+  if (!res.ok) console.error(`[eBay Trading API] ${callName} HTTP ${res.status} response: ${sanitizeEbayResponse(text)}`);
 
   if (!text.trim()) {
     throw new EbayApiError(
@@ -355,23 +408,52 @@ export async function getEbayUser(accessToken: string, siteId = 0) {
 }
 
 export type EbayListingItem = {
+  [key: string]: unknown;
   ItemID: string;
+  SKU?: string;
   Title: string;
   Description?: string;
   SellingStatus?: {
-    CurrentPrice?: { "#text"?: number; "@_currencyID"?: string };
+    CurrentPrice?: number | string | { "#text"?: number; "@_currencyID"?: string };
+    BidCount?: number | string;
     QuantitySold?: number;
+    ListingStatus?: string;
   };
   Quantity: number;
   QuantityAvailable: number;
-  WatchCount?: number;
-  HitCount?: number;
+  WatchCount?: number | string | { "#text"?: number | string };
+  HitCount?: number | string | { "#text"?: number | string };
   ListingDetails?: { StartTime?: string; EndTime?: string; ViewItemURL?: string };
   ListingType?: string;
   ConditionDisplayName?: string;
   PrimaryCategory?: { CategoryID?: string; CategoryName?: string };
   PictureDetails?: { PictureURL?: string | string[] };
+  ItemSpecifics?: { NameValueList?: Array<{ Name?: string; Value?: string | string[] }> | { Name?: string; Value?: string | string[] } };
+  RelistedItemID?: string | number;
 };
+
+export type EbayTradingMutationResult = {
+  itemId: string;
+  ack: string;
+  warnings: Array<{ code: string | null; severity: string | null; message: string }>;
+};
+
+function tradingMutationResult(result: TradingResponse, itemId: string): EbayTradingMutationResult {
+  const root = getResponseRoot(result);
+  const raw = root?.Errors == null ? [] : Array.isArray(root.Errors) ? root.Errors : [root.Errors];
+  return {
+    itemId,
+    ack: valueAsString(root?.Ack) ?? "Unknown",
+    warnings: raw.map(entry => {
+      const error = (entry ?? {}) as Record<string, unknown>;
+      return {
+        code: valueAsString(error.ErrorCode) ?? null,
+        severity: valueAsString(error.SeverityCode) ?? null,
+        message: valueAsString(error.LongMessage) ?? valueAsString(error.ShortMessage) ?? "eBay warning",
+      };
+    }),
+  };
+}
 
 export type SellerListWindow = {
   startFrom?: Date;
@@ -380,10 +462,119 @@ export type SellerListWindow = {
   endTo?: Date;
 };
 
+export async function getItem(accessToken: string, itemId: string, siteId = 0): Promise<EbayListingItem> {
+  const normalizedItemId = itemId.trim();
+  if (!/^\d+$/.test(normalizedItemId)) {
+    throw new EbayApiError("GetItem", "GetItem requires a numeric eBay ItemID", "INVALID_ITEM_ID");
+  }
+  const xml = `<GetItemRequest xmlns="urn:ebay:apis:eBLBaseComponents">
+  <ItemID>${normalizedItemId}</ItemID>
+  <DetailLevel>ReturnAll</DetailLevel>
+  <IncludeItemSpecifics>true</IncludeItemSpecifics>
+</GetItemRequest>`;
+  const result = await callTradingApi({ callName: "GetItem", siteId, accessToken, xmlBody: xml });
+  const response = getResponseRoot(result);
+  const item = response?.Item as EbayListingItem | undefined;
+  if (!item?.ItemID || String(item.ItemID) !== normalizedItemId) {
+    throw new EbayApiError("GetItem", "GetItem returned no matching item identity", "MISSING_ITEM");
+  }
+  return { ...item, ItemID: String(item.ItemID) };
+}
+
+function xmlEscape(value: string) {
+  return value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&apos;");
+}
+
+function responseValue(result: TradingResponse, field: string) {
+  return valueAsString(getResponseRoot(result)?.[field]);
+}
+
+export type EbayAddFixedPriceItemResult = Omit<EbayTradingMutationResult, "itemId"> & {
+  itemId: string | null;
+};
+
+export function parseAddFixedPriceItemResponse(result: TradingResponse): EbayAddFixedPriceItemResult {
+  const root = getResponseRoot(result);
+  const parsedItemId = valueAsString(root?.ItemID)?.trim() ?? null;
+  return {
+    ...tradingMutationResult(result, parsedItemId ?? ""),
+    itemId: parsedItemId && /^\d+$/.test(parsedItemId) ? parsedItemId : null,
+  };
+}
+
+export async function addFixedPriceItemXml(accessToken: string, itemXml: string, siteId = 0) {
+  if (!itemXml.trim().startsWith("<Item") || !itemXml.includes("<SKU>")) {
+    throw new EbayApiError("AddFixedPriceItem", "A governed migration create requires an Item payload with a unique SKU", "INVALID_INPUT");
+  }
+  const xml = `<AddFixedPriceItemRequest xmlns="urn:ebay:apis:eBLBaseComponents">${itemXml}</AddFixedPriceItemRequest>`;
+  // Creating a listing is not safely retryable at the HTTP layer. Any ambiguous
+  // outcome must be reconciled by destination SKU before an operator can retry.
+  const result = await callTradingApi({ callName: "AddFixedPriceItem", siteId, accessToken, xmlBody: xml, retryMode: "single-attempt" });
+  return parseAddFixedPriceItemResponse(result);
+}
+
+export async function reviseFixedPrice(accessToken: string, itemId: string, proposedPrice: number, messageId: string, siteId = 0) {
+  if (!/^\d+$/.test(itemId) || !Number.isFinite(proposedPrice) || proposedPrice <= 0) throw new EbayApiError("ReviseInventoryStatus", "Invalid governed price change input", "INVALID_INPUT");
+  const xml = `<ReviseInventoryStatusRequest xmlns="urn:ebay:apis:eBLBaseComponents"><MessageID>${xmlEscape(messageId)}</MessageID><InventoryStatus><ItemID>${itemId}</ItemID><StartPrice>${proposedPrice.toFixed(2)}</StartPrice></InventoryStatus></ReviseInventoryStatusRequest>`;
+  await callTradingApi({ callName: "ReviseInventoryStatus", siteId, accessToken, xmlBody: xml });
+  return { itemId };
+}
+
+export async function reviseFixedPriceTitle(accessToken: string, itemId: string, proposedTitle: string, messageId: string, siteId = 0) {
+  if (!/^\d+$/.test(itemId) || !proposedTitle.trim() || proposedTitle.length > 80) throw new EbayApiError("ReviseFixedPriceItem", "Invalid governed title change input", "INVALID_INPUT");
+  const xml = `<ReviseFixedPriceItemRequest xmlns="urn:ebay:apis:eBLBaseComponents"><MessageID>${xmlEscape(messageId)}</MessageID><Item><ItemID>${itemId}</ItemID><Title>${xmlEscape(proposedTitle)}</Title></Item></ReviseFixedPriceItemRequest>`;
+  const result = await callTradingApi({ callName: "ReviseFixedPriceItem", siteId, accessToken, xmlBody: xml });
+  const root = getResponseRoot(result);
+  const errors = root?.Errors == null ? [] : Array.isArray(root.Errors) ? root.Errors : [root.Errors];
+  return { itemId, ack: valueAsString(root?.Ack) ?? "Unknown", warningCodes: errors.flatMap((error: unknown) => error && typeof error === "object" ? [valueAsString((error as Record<string, unknown>).ErrorCode)].filter((value): value is string => Boolean(value)) : []) };
+}
+
+export type EbayItemSpecific = { Name: string; Value: string[] };
+
+export async function reviseFixedPriceItemSpecifics(accessToken: string, itemId: string, itemSpecifics: EbayItemSpecific[], messageId: string, siteId = 0) {
+  if (!/^\d+$/.test(itemId) || !itemSpecifics.length || itemSpecifics.length > 45) throw new EbayApiError("ReviseFixedPriceItem", "Invalid governed item-specific revision input", "INVALID_INPUT");
+  const seen = new Set<string>();
+  for (const specific of itemSpecifics) {
+    const key = specific.Name.trim().toLocaleLowerCase();
+    if (!key || seen.has(key) || !specific.Value.length || specific.Value.some(value => !value.trim())) throw new EbayApiError("ReviseFixedPriceItem", "Invalid or duplicate governed item-specific revision input", "INVALID_INPUT");
+    seen.add(key);
+  }
+  const specificsXml = itemSpecifics.map(specific => `<NameValueList><Name>${xmlEscape(specific.Name)}</Name>${specific.Value.map(value => `<Value>${xmlEscape(value)}</Value>`).join("")}</NameValueList>`).join("");
+  const xml = `<ReviseFixedPriceItemRequest xmlns="urn:ebay:apis:eBLBaseComponents"><MessageID>${xmlEscape(messageId)}</MessageID><Item><ItemID>${itemId}</ItemID><ItemSpecifics>${specificsXml}</ItemSpecifics></Item></ReviseFixedPriceItemRequest>`;
+  const result = await callTradingApi({ callName: "ReviseFixedPriceItem", siteId, accessToken, xmlBody: xml });
+  const root = getResponseRoot(result);
+  const errors = root?.Errors == null ? [] : Array.isArray(root.Errors) ? root.Errors : [root.Errors];
+  return { itemId, ack: valueAsString(root?.Ack) ?? "Unknown", warningCodes: errors.flatMap((error: unknown) => error && typeof error === "object" ? [valueAsString((error as Record<string, unknown>).ErrorCode)].filter((value): value is string => Boolean(value)) : []) };
+}
+
+export async function endFixedPriceListing(accessToken: string, itemId: string, messageId: string, siteId = 0) {
+  if (!/^\d+$/.test(itemId)) throw new EbayApiError("EndFixedPriceItem", "Invalid governed listing identity", "INVALID_INPUT");
+  const xml = `<EndFixedPriceItemRequest xmlns="urn:ebay:apis:eBLBaseComponents"><MessageID>${xmlEscape(messageId)}</MessageID><ItemID>${itemId}</ItemID><EndingReason>NotAvailable</EndingReason></EndFixedPriceItemRequest>`;
+  await callTradingApi({ callName: "EndFixedPriceItem", siteId, accessToken, xmlBody: xml });
+  return { itemId };
+}
+
+export async function verifyRelistFixedPriceListing(accessToken: string, itemId: string, quantity: number, messageId: string, siteId = 0) {
+  if (!/^\d+$/.test(itemId) || !Number.isInteger(quantity) || quantity <= 0) throw new EbayApiError("VerifyRelistItem", "Invalid governed relist input", "INVALID_INPUT");
+  const xml = `<VerifyRelistItemRequest xmlns="urn:ebay:apis:eBLBaseComponents"><MessageID>${xmlEscape(messageId)}</MessageID><Item><ItemID>${itemId}</ItemID><Quantity>${quantity}</Quantity></Item></VerifyRelistItemRequest>`;
+  const result = await callTradingApi({ callName: "VerifyRelistItem", siteId, accessToken, xmlBody: xml });
+  return tradingMutationResult(result, itemId);
+}
+
+export async function relistFixedPriceListing(accessToken: string, itemId: string, quantity: number, messageId: string, siteId = 0) {
+  if (!/^\d+$/.test(itemId) || !Number.isInteger(quantity) || quantity <= 0) throw new EbayApiError("RelistFixedPriceItem", "Invalid governed relist input", "INVALID_INPUT");
+  const xml = `<RelistFixedPriceItemRequest xmlns="urn:ebay:apis:eBLBaseComponents"><MessageID>${xmlEscape(messageId)}</MessageID><Item><ItemID>${itemId}</ItemID><Quantity>${quantity}</Quantity></Item></RelistFixedPriceItemRequest>`;
+  const result = await callTradingApi({ callName: "RelistFixedPriceItem", siteId, accessToken, xmlBody: xml });
+  const newItemId = responseValue(result, "ItemID");
+  if (!newItemId || !/^\d+$/.test(newItemId) || newItemId === itemId) throw new EbayApiError("RelistFixedPriceItem", "Relist returned no distinct provider ItemID", "MISSING_ITEM");
+  return { oldItemId: itemId, newItemId, ...tradingMutationResult(result, itemId) };
+}
+
 export async function* getSellerList(
   accessToken: string,
   siteId = 0,
-  window: SellerListWindow = {}
+  window: SellerListWindow = {},
+  sellerUserId?: string
 ): AsyncGenerator<EbayListingItem[]> {
   let page = 1;
   const perPage = 200;
@@ -398,6 +589,7 @@ export async function* getSellerList(
 
     const xml = `<GetSellerListRequest xmlns="urn:ebay:apis:eBLBaseComponents">
   <GranularityLevel>Fine</GranularityLevel>
+  ${sellerUserId ? `<UserID>${xmlEscape(sellerUserId)}</UserID>` : ""}
   ${filters.join("\n  ")}
   <Pagination>
     <EntriesPerPage>${perPage}</EntriesPerPage>
@@ -406,12 +598,13 @@ export async function* getSellerList(
 </GetSellerListRequest>`;
 
     const res = await callTradingApi({ callName: "GetSellerList", siteId, accessToken, xmlBody: xml });
+    assertCompleteEnumeration(res, "GetSellerList");
     const response = getResponseRoot(res);
     const itemArray = response?.ItemArray as { Item?: EbayListingItem | EbayListingItem[] } | undefined;
     const pagination = response?.PaginationResult as { TotalNumberOfPages?: number | string } | undefined;
 
     const items = itemArray?.Item;
-    const totalPages = Number(pagination?.TotalNumberOfPages ?? 1);
+    const totalPages = parseTotalPages(pagination?.TotalNumberOfPages, "GetSellerList", page);
 
     if (items) {
       const list = Array.isArray(items) ? items : [items];
@@ -446,6 +639,7 @@ export async function* getActiveListings(
 </GetMyeBaySellingRequest>`;
 
     const res = await callTradingApi({ callName: "GetMyeBaySelling", siteId, accessToken, xmlBody: xml });
+    assertCompleteEnumeration(res, "GetMyeBaySelling");
     const response = getResponseRoot(res);
     const activeList = response?.ActiveList as
       | {
@@ -455,7 +649,7 @@ export async function* getActiveListings(
       | undefined;
 
     const items = activeList?.ItemArray?.Item;
-    const totalPages = Number(activeList?.PaginationResult?.TotalNumberOfPages ?? 1);
+    const totalPages = parseTotalPages(activeList?.PaginationResult?.TotalNumberOfPages, "GetMyeBaySelling", page);
 
     if (items) {
       const list = Array.isArray(items) ? items : [items];
