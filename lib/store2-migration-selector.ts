@@ -13,6 +13,11 @@ export const STORE2_MIGRATION_EXCLUDED_SOURCE_IDS = new Set([
   "358847631794",
   "358847669697",
   "358847683279",
+  "358541944254",
+  "358541944288",
+  "358541944300",
+  "358847645700",
+  "358847656916",
 ]);
 
 export const STORE2_MIGRATION_LOSSLESS_MULTI_VALUE_ASPECTS = new Set([
@@ -86,8 +91,8 @@ export function normalizeStore2MigrationTitle(value: string): string {
 /**
  * Convert a provider aspect into the exact logical values that should be sent
  * to eBay. Values at or below the provider limit are unchanged. Only the two
- * non-identity free-text fields proven through VerifyAddFixedPriceItem are
- * eligible for lossless comma-delimited splitting.
+ * non-identity fields proven through VerifyAddFixedPriceItem are eligible for
+ * lossless comma-delimited splitting.
  */
 export function getStore2MigrationAspectValues(
   name: string,
