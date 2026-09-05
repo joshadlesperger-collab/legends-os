@@ -1,0 +1,595 @@
+import nextEnv from "@next/env";
+const { loadEnvConfig } = nextEnv;
+loadEnvConfig(process.cwd(), true);
+
+import { Prisma } from "@prisma/client";
+import { readFileSync } from "node:fs";
+import { prisma } from "../lib/prisma.ts";
+import {
+  addFixedPriceItemXml,
+  callTradingApi,
+  getActiveListings,
+  getItem,
+  getValidAccessToken,
+  isEbayQuotaError,
+  isHardEbayAuthenticationError,
+  type EbayListingItem,
+} from "../lib/ebay.ts";
+import {
+  getBrowseItemByLegacyId,
+  getEbayApplicationAccessToken,
+  type EbayBrowseItem,
+} from "../lib/ebay-browse.ts";
+import { createListingOnceWithMandatorySkuRecovery } from "../lib/ebay-listing-migration.ts";
+import {
+  evaluateStore2MigrationEligibility,
+  normalizeStore2MigrationTitle,
+  orderStore2MigrationSources,
+} from "../lib/store2-migration-selector.ts";
+import {
+  findStore2MigrationSpecificDifferences,
+  serializeStore2MigrationItemSpecificsXml,
+} from "../lib/store2-migration-specifics.ts";
+
+const DEFAULT_CSV_PATH =
+  "C:\\Users\\josha\\OneDrive\\Desktop\\eBay-all-active-listings-report-2026-08-23-12340890194 (1).csv";
+const CSV_PATH = process.env.STORE2_MIGRATION_CSV_PATH ?? DEFAULT_CSV_PATH;
+const BATCH_SIZE = 250;
+const EXECUTE_FLAG = "--execute-approved-250";
+const SOURCE_SELLER = "imaydir582";
+const POLICY = {
+  payment: "248164941010",
+  returns: "248164940010",
+  singleShipping: "248164775010",
+};
+const OPERATOR_ID = "operator-approved-store2-migration-250-2026-08-23";
+const DOCTRINE_VERSION = "store2-migration-v1.2.0";
+
+type CsvRow = Record<string, string>;
+type Candidate = {
+  sourceId: string;
+  sku: string;
+  title: string;
+  price: number;
+  quantity: number;
+  categoryId: string;
+  conditionId: string;
+  condition: string;
+  images: string[];
+  specifics: Array<{ name: string; value: string }>;
+  conditionDescriptors: Array<{
+    name: string;
+    value: string;
+    additionalInfo?: string;
+  }>;
+  sport: string;
+  classification: "READY WITH MINOR NORMALIZATION";
+  itemXml: string;
+  source: CsvRow;
+  browse: EbayBrowseItem;
+};
+
+const escapeXml = (value: string) =>
+  value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&apos;");
+
+const json = (value: unknown) =>
+  JSON.parse(JSON.stringify(value)) as Prisma.InputJsonValue;
+
+function parseCsv(text: string): CsvRow[] {
+  const rows: string[][] = [];
+  let row: string[] = [];
+  let cell = "";
+  let quoted = false;
+  for (let index = 0; index < text.length; index++) {
+    const character = text[index];
+    if (quoted) {
+      if (character === '"' && text[index + 1] === '"') {
+        cell += '"';
+        index++;
+      } else if (character === '"') {
+        quoted = false;
+      } else {
+        cell += character;
+      }
+    } else if (character === '"') {
+      quoted = true;
+    } else if (character === ",") {
+      row.push(cell);
+      cell = "";
+    } else if (character === "\n") {
+      row.push(cell.replace(/\r$/, ""));
+      rows.push(row);
+      row = [];
+      cell = "";
+    } else {
+      cell += character;
+    }
+  }
+  if (cell || row.length) {
+    row.push(cell.replace(/\r$/, ""));
+    rows.push(row);
+  }
+  const headers = (rows.shift() ?? []).map((header, index) =>
+    index === 0 ? header.replace(/^\uFEFF/, "") : header,
+  );
+  return rows
+    .filter((values) => values.some(Boolean))
+    .map((values) =>
+      Object.fromEntries(headers.map((header, index) => [header, values[index] ?? ""])),
+    );
+}
+
+const normalizeTitle = normalizeStore2MigrationTitle;
+
+function currentPrice(item: EbayListingItem): number {
+  const raw = item.SellingStatus?.CurrentPrice;
+  return Number(raw && typeof raw === "object" ? raw["#text"] : raw);
+}
+
+function listingImages(item: EbayListingItem): string[] {
+  const raw = item.PictureDetails?.PictureURL;
+  return raw ? (Array.isArray(raw) ? raw : [raw]) : [];
+}
+
+function providerSpecifics(item: EbayListingItem) {
+  const raw = item.ItemSpecifics?.NameValueList;
+  if (!raw) return [];
+  return (Array.isArray(raw) ? raw : [raw]).flatMap((specific) =>
+    specific.Name && specific.Value
+      ? [
+          {
+            name: specific.Name,
+            values: Array.isArray(specific.Value) ? specific.Value : [specific.Value],
+          },
+        ]
+      : [],
+  );
+}
+
+function conditionDescriptorXml(candidate: Candidate): string {
+  if (!candidate.conditionDescriptors.length) return "";
+  return `<ConditionDescriptors>${candidate.conditionDescriptors
+    .map(
+      (descriptor) =>
+        `<ConditionDescriptor><Name>${escapeXml(descriptor.name)}</Name><Value>${escapeXml(descriptor.value)}</Value>${
+          descriptor.additionalInfo
+            ? `<AdditionalInfo>${escapeXml(descriptor.additionalInfo)}</AdditionalInfo>`
+            : ""
+        }</ConditionDescriptor>`,
+    )
+    .join("")}</ConditionDescriptors>`;
+}
+
+function buildItemXml(input: Omit<Candidate, "itemXml">): string {
+  const description = `${input.title}. ${input.condition}. You will receive the item shown in the listing photos.`;
+  return `<Item><SKU>${escapeXml(input.sku)}</SKU><Title>${escapeXml(input.title)}</Title><Description>${escapeXml(description)}</Description><PrimaryCategory><CategoryID>${input.categoryId}</CategoryID></PrimaryCategory><StartPrice currencyID="USD">${input.price.toFixed(2)}</StartPrice><Quantity>${input.quantity}</Quantity><ConditionID>${input.conditionId}</ConditionID>${conditionDescriptorXml({ ...input, itemXml: "" })}<Country>US</Country><Currency>USD</Currency><DispatchTimeMax>2</DispatchTimeMax><ListingDuration>GTC</ListingDuration><ListingType>FixedPriceItem</ListingType><Location>Waxahachie, Texas</Location><PostalCode>75167</PostalCode><PictureDetails>${input.images.map((url) => `<PictureURL>${escapeXml(url)}</PictureURL>`).join("")}</PictureDetails>${serializeStore2MigrationItemSpecificsXml(input.specifics)}<SellerProfiles><SellerPaymentProfile><PaymentProfileID>${POLICY.payment}</PaymentProfileID></SellerPaymentProfile><SellerReturnProfile><ReturnProfileID>${POLICY.returns}</ReturnProfileID></SellerReturnProfile><SellerShippingProfile><ShippingProfileID>${POLICY.singleShipping}</ShippingProfileID></SellerShippingProfile></SellerProfiles><Site>US</Site></Item>`;
+}
+
+async function appendEvent(executionId: string, type: string, snapshot: unknown) {
+  const latest = await prisma.ebayActionExecutionEvent.findFirst({
+    where: { executionId },
+    orderBy: { sequence: "desc" },
+    select: { sequence: true },
+  });
+  await prisma.ebayActionExecutionEvent.create({
+    data: {
+      executionId,
+      sequence: (latest?.sequence ?? 0) + 1,
+      type,
+      snapshot: json(snapshot),
+    },
+  });
+}
+
+function materialCompare(candidate: Candidate, item: EbayListingItem): string[] {
+  const differences: string[] = [];
+  if (item.Title !== candidate.title) differences.push("title");
+  if (Math.abs(currentPrice(item) - candidate.price) > 0.005) differences.push("price");
+  if (
+    Number(item.QuantityAvailable) !== candidate.quantity &&
+    Number(item.Quantity) !== candidate.quantity
+  ) {
+    differences.push("quantity");
+  }
+  if (String(item.PrimaryCategory?.CategoryID ?? "") !== candidate.categoryId) {
+    differences.push("category");
+  }
+  if (
+    !String(item.ConditionDisplayName ?? "")
+      .toLowerCase()
+      .includes(candidate.conditionId === "2750" ? "graded" : "ungraded")
+  ) {
+    differences.push("condition");
+  }
+  if (listingImages(item).length !== candidate.images.length) differences.push("images");
+  differences.push(
+    ...findStore2MigrationSpecificDifferences(candidate.specifics, providerSpecifics(item)),
+  );
+  return Array.from(new Set(differences));
+}
+
+async function getDestinationSnapshot(accessToken: string): Promise<EbayListingItem[]> {
+  const destination: EbayListingItem[] = [];
+  for await (const page of getActiveListings(accessToken)) destination.push(...page);
+  const ids = new Set(destination.map((item) => String(item.ItemID)));
+  if (ids.size !== destination.length) {
+    throw new Error("Fail closed: duplicate destination item IDs in stable snapshot");
+  }
+  return destination;
+}
+
+async function main() {
+  const execute = process.argv.includes(EXECUTE_FLAG);
+  const rows = parseCsv(readFileSync(CSV_PATH, "utf8")).filter(
+    (row) => row.Format === "FIXED_PRICE",
+  );
+  const store = await prisma.store.findFirst({
+    where: { isActive: true, connectionStatus: "connected" },
+  });
+  if (!store) throw new Error("No connected destination store");
+
+  const [{ accessToken }, browseToken] = await Promise.all([
+    getValidAccessToken(store),
+    getEbayApplicationAccessToken(),
+  ]);
+  const destination = await getDestinationSnapshot(accessToken);
+  const destinationTitles = new Set(destination.map((item) => normalizeTitle(item.Title)));
+  const destinationSkus = new Set(
+    destination.map((item) => String(item.SKU ?? "")).filter(Boolean),
+  );
+  const migratedSources = new Set(
+    (
+      await prisma.ebayActionExecution.findMany({
+        where: { action: "MIGRATE_LISTING", status: "verified" },
+        select: { oldEbayItemId: true },
+      })
+    )
+      .map((execution) => String(execution.oldEbayItemId ?? ""))
+      .filter(Boolean),
+  );
+
+  const candidates: Candidate[] = [];
+  const skips: Array<{ sourceId: string; reason: string }> = [];
+  for (const row of orderStore2MigrationSources(rows)) {
+    if (candidates.length === BATCH_SIZE) break;
+    const sourceId = row["Item number"];
+    try {
+      const browse = await getBrowseItemByLegacyId(browseToken, sourceId);
+      const eligibility = evaluateStore2MigrationEligibility(row, browse, {
+        sourceSeller: SOURCE_SELLER,
+        migratedSourceIds: migratedSources,
+        destinationSkus,
+        destinationNormalizedTitles: destinationTitles,
+      });
+      if (!eligibility.eligible) throw new Error(eligibility.rule);
+
+      const base = {
+        ...eligibility,
+        classification: "READY WITH MINOR NORMALIZATION" as const,
+        source: row,
+        browse,
+      };
+      const candidate: Candidate = { ...base, itemXml: buildItemXml(base) };
+      candidates.push(candidate);
+      destinationTitles.add(normalizeTitle(candidate.title));
+      destinationSkus.add(candidate.sku);
+    } catch (error) {
+      skips.push({
+        sourceId,
+        reason: error instanceof Error ? error.message : String(error),
+      });
+    }
+  }
+
+  if (candidates.length === 0) {
+    console.log(JSON.stringify({ selected: 0, manualReviewExclusions: skips }, null, 2));
+    throw new Error("Fail closed: no candidates passed reconstruction");
+  }
+
+  const preflight = candidates.map((candidate) => ({
+    sourceId: candidate.sourceId,
+    sku: candidate.sku,
+    title: candidate.title,
+    price: candidate.price,
+    quantity: candidate.quantity,
+    categoryId: candidate.categoryId,
+    condition: candidate.condition,
+    imageCount: candidate.images.length,
+    sport: candidate.sport,
+    classification: candidate.classification,
+    specifics: candidate.specifics,
+  }));
+  const compact = process.argv.includes("--compact-preflight");
+  console.log(
+    JSON.stringify(
+      compact
+        ? {
+            mode: execute ? "execute" : "preflight",
+            destinationActiveScanned: destination.length,
+            selected: preflight.map(({ sourceId, title }) => ({ sourceId, title })),
+            manualReviewExclusions: skips,
+          }
+        : {
+            mode: execute ? "execute" : "preflight",
+            destinationActiveScanned: destination.length,
+            selected: preflight,
+            manualReviewExclusions: skips,
+          },
+      null,
+      2,
+    ),
+  );
+
+  if (process.argv.includes("--verify-first-two")) {
+    const diagnostics = [];
+    for (const candidate of candidates.slice(0, 2)) {
+      try {
+        const response = await callTradingApi({
+          callName: "VerifyAddFixedPriceItem",
+          siteId: 0,
+          accessToken,
+          xmlBody: `<VerifyAddFixedPriceItemRequest xmlns="urn:ebay:apis:eBLBaseComponents">${candidate.itemXml}</VerifyAddFixedPriceItemRequest>`,
+        });
+        diagnostics.push({ sourceId: candidate.sourceId, status: "verified", response });
+      } catch (error) {
+        diagnostics.push({
+          sourceId: candidate.sourceId,
+          status: "failed",
+          error: error instanceof Error ? error.message : String(error),
+        });
+      }
+    }
+    console.log(JSON.stringify({ verifyDiagnostics: diagnostics }, null, 2));
+    return;
+  }
+
+  if (!execute) return;
+
+  const executionDestination = await getDestinationSnapshot(accessToken);
+  const executionTitles = new Set(
+    executionDestination.map((item) => normalizeTitle(item.Title)),
+  );
+  const executionSkus = new Set(
+    executionDestination.map((item) => String(item.SKU ?? "")).filter(Boolean),
+  );
+
+  const results: unknown[] = [];
+  for (const candidate of candidates) {
+    let executionId: string | undefined;
+    try {
+      const currentBrowse = await getBrowseItemByLegacyId(browseToken, candidate.sourceId);
+      const currentQuantity = Number(
+        currentBrowse.estimatedAvailabilities?.[0]?.estimatedAvailableQuantity,
+      );
+      if (
+        currentBrowse.title.trim() !== candidate.title ||
+        Math.abs(Number(currentBrowse.price?.value) - candidate.price) > 0.005 ||
+        currentQuantity !== candidate.quantity
+      ) {
+        throw new Error("Source state changed after selection");
+      }
+      if (
+        executionSkus.has(candidate.sku) ||
+        executionTitles.has(normalizeTitle(candidate.title))
+      ) {
+        throw new Error("Duplicate preflight found in fresh stable destination snapshot");
+      }
+
+      const verify = await callTradingApi({
+        callName: "VerifyAddFixedPriceItem",
+        siteId: 0,
+        accessToken,
+        xmlBody: `<VerifyAddFixedPriceItemRequest xmlns="urn:ebay:apis:eBLBaseComponents">${candidate.itemXml}</VerifyAddFixedPriceItemRequest>`,
+      });
+
+      const pendingId = `migration-pending-${candidate.sourceId}`;
+      const listing = await prisma.listing.upsert({
+        where: { storeId_ebayItemId: { storeId: store.id, ebayItemId: pendingId } },
+        update: {},
+        create: {
+          storeId: store.id,
+          ebayItemId: pendingId,
+          title: candidate.title,
+          currentPrice: candidate.price,
+          quantity: candidate.quantity,
+          listingStatus: "migration_pending",
+          listingFormat: "FixedPriceItem",
+          condition: candidate.condition,
+          categoryId: candidate.categoryId,
+          imageUrls: candidate.images,
+          itemSpecifics: json(
+            Object.fromEntries(
+              candidate.specifics.map((specific) => [specific.name, specific.value]),
+            ),
+          ),
+          authoritativeSource: "store2-public-reconstruction",
+          authoritativeObservedAt: new Date(),
+        },
+      });
+      const decision = await prisma.operatorDecision.create({
+        data: {
+          listingId: listing.id,
+          operatorId: OPERATOR_ID,
+          recommendedAction: "MIGRATE_LISTING",
+          doctrineVersion: DOCTRINE_VERSION,
+          decision: "follow_recommendation",
+          beforeState: json({
+            sourceStore: "Store #2",
+            sourceItemId: candidate.sourceId,
+            sourceUntouched: true,
+          }),
+          evidenceSnapshot: json({
+            csv: candidate.source,
+            browse: {
+              itemId: candidate.browse.itemId,
+              title: candidate.browse.title,
+              price: candidate.browse.price,
+              images: candidate.images,
+              aspects: candidate.specifics,
+              condition: candidate.browse.condition,
+              conditionDescriptors: candidate.browse.conditionDescriptors,
+            },
+            payload: preflight.find((row) => row.sourceId === candidate.sourceId),
+            verifyResponse: verify,
+          }),
+          observationWindowDays: 0,
+        },
+      });
+      const execution = await prisma.ebayActionExecution.create({
+        data: {
+          listingId: listing.id,
+          storeId: store.id,
+          decisionId: decision.id,
+          operatorId: OPERATOR_ID,
+          action: "MIGRATE_LISTING",
+          doctrineVersion: DOCTRINE_VERSION,
+          idempotencyKey: `store2:${candidate.sourceId}:destination:${store.id}`,
+          oldEbayItemId: candidate.sourceId,
+          beforeState: json({ sourceItemId: candidate.sourceId, sourceUntouched: true }),
+          proposedState: json(
+            preflight.find((row) => row.sourceId === candidate.sourceId)!,
+          ),
+          evidenceSnapshot: json({
+            sourceSku: candidate.sku,
+            classification: candidate.classification,
+          }),
+        },
+      });
+      executionId = execution.id;
+      await appendEvent(execution.id, "approved_and_preflight_verified", {
+        sourceItemId: candidate.sourceId,
+        sku: candidate.sku,
+        verifyResponse: verify,
+      });
+      await prisma.ebayActionExecution.update({
+        where: { id: execution.id },
+        data: { status: "executing" },
+      });
+
+      const resolution = await createListingOnceWithMandatorySkuRecovery(
+        {
+          createOnce: () => addFixedPriceItemXml(accessToken, candidate.itemXml),
+          getByItemId: (itemId) => getItem(accessToken, itemId),
+          findActiveBySku: async (sku) => {
+            const found: EbayListingItem[] = [];
+            for await (const page of getActiveListings(accessToken)) {
+              found.push(...page.filter((item) => String(item.SKU ?? "") === sku));
+            }
+            return found;
+          },
+        },
+        candidate.sku,
+      );
+      await appendEvent(execution.id, "provider_result_resolved", {
+        resolution: resolution.resolution,
+        itemId: resolution.itemId,
+        providerResult: resolution.providerResult,
+        providerError: resolution.providerError,
+      });
+
+      const verified = await getItem(accessToken, resolution.itemId);
+      const differences = materialCompare(candidate, verified);
+      if (differences.length) {
+        throw new Error(`Provider reconciliation differences: ${differences.join(", ")}`);
+      }
+
+      await prisma.$transaction([
+        prisma.listing.update({
+          where: { id: listing.id },
+          data: {
+            ebayItemId: resolution.itemId,
+            listingStatus: "active",
+            title: verified.Title,
+            currentPrice: currentPrice(verified),
+            quantity: candidate.quantity,
+            categoryId: candidate.categoryId,
+            condition: verified.ConditionDisplayName ?? candidate.condition,
+            imageUrls: listingImages(verified),
+            authoritativeSource: "store2-migration-provider-verified",
+            authoritativeObservedAt: new Date(),
+            lastSyncedAt: new Date(),
+          },
+        }),
+        prisma.ebayActionExecution.update({
+          where: { id: execution.id },
+          data: {
+            status: "verified",
+            newEbayItemId: resolution.itemId,
+            providerVerifiedAt: new Date(),
+          },
+        }),
+      ]);
+      await appendEvent(execution.id, "provider_verified", {
+        sourceItemId: candidate.sourceId,
+        destinationItemId: resolution.itemId,
+        resolution: resolution.resolution,
+        differences: [],
+        sourceUntouched: true,
+      });
+      executionSkus.add(candidate.sku);
+      executionTitles.add(normalizeTitle(candidate.title));
+      results.push({
+        sourceItemId: candidate.sourceId,
+        destinationItemId: resolution.itemId,
+        title: candidate.title,
+        images: `${candidate.images.length}->${listingImages(verified).length}`,
+        price: `${candidate.price}->${currentPrice(verified)}`,
+        quantity: `${candidate.quantity}->${Number(verified.QuantityAvailable) || Number(verified.Quantity)}`,
+        resolution: resolution.resolution,
+        status: "verified",
+        executionId: execution.id,
+      });
+    } catch (error) {
+      if (executionId) {
+        await appendEvent(executionId, "execution_failed", {
+          message: error instanceof Error ? error.message : String(error),
+          automaticRetryProhibited: true,
+        });
+        await prisma.ebayActionExecution.update({
+          where: { id: executionId },
+          data: { status: "failed" },
+        });
+      }
+      results.push({
+        sourceItemId: candidate.sourceId,
+        status: "failed",
+        error: error instanceof Error ? error.message : String(error),
+        executionId,
+      });
+      if (isHardEbayAuthenticationError(error)) {
+        throw new Error(
+          `AUTH BLOCKED after ${candidate.sourceId}: ${
+            error instanceof Error ? error.message : String(error)
+          }`,
+        );
+      }
+      if (isEbayQuotaError(error)) {
+        throw new Error(
+          `QUOTA BLOCKED after ${candidate.sourceId}: ${
+            error instanceof Error ? error.message : String(error)
+          }`,
+        );
+      }
+    }
+  }
+
+  console.log(
+    JSON.stringify(
+      { attempted: candidates.length, results, sourceStoreMutations: 0 },
+      null,
+      2,
+    ),
+  );
+}
+
+main()
+  .finally(() => prisma.$disconnect())
+  .catch((error) => {
+    console.error(error instanceof Error ? error.stack ?? error.message : error);
+    process.exitCode = 1;
+  });
