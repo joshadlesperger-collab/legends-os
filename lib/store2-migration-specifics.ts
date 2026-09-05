@@ -1,4 +1,4 @@
-import { getStore2MigrationAspectValues } from "./store2-migration-selector";
+import { getStore2MigrationAspectValues } from "./store2-migration-selector.ts";
 
 export type Store2MigrationSpecific = { name: string; value: string };
 export type Store2MigrationProviderSpecific = { name: string; values: string[] };
