@@ -18,7 +18,7 @@ test("migration XML serializes verified overlength fields as multiple values", (
     xml,
     /<NameValueList><Name>League<\/Name><Value>National Collegiate Athletic Association \(NCAA\)<\/Value><Value>National Football League \(NFL\)<\/Value><\/NameValueList>/,
   );
-  assert.doesNotMatch(xml, /<Value>National Collegiate.*National Football League/);
+  assert.equal(xml.includes(`<Value>${league}</Value>`), false);
 });
 
 test("migration XML continues to fail closed for unsafe overlength identity fields", () => {
