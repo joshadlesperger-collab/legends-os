@@ -13,13 +13,11 @@ export const STORE2_MIGRATION_EXCLUDED_SOURCE_IDS = new Set([
   "358847631794",
   "358847669697",
   "358847683279",
-  "358541944249",
-  "358541944254",
-  "358541944288",
-  "358541944298",
-  "358541944300",
-  "358847645700",
-  "358847656916",
+]);
+
+export const STORE2_MIGRATION_LOSSLESS_MULTI_VALUE_ASPECTS = new Set([
+  "features",
+  "league",
 ]);
 
 const GRADER_IDS: Record<string, string> = {
@@ -85,6 +83,35 @@ export function normalizeStore2MigrationTitle(value: string): string {
   return value.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
 }
 
+/**
+ * Convert a provider aspect into the exact logical values that should be sent
+ * to eBay. Values at or below the provider limit are unchanged. Only the two
+ * non-identity free-text fields proven through VerifyAddFixedPriceItem are
+ * eligible for lossless comma-delimited splitting.
+ */
+export function getStore2MigrationAspectValues(
+  name: string,
+  value: string,
+  maximumLength = 65,
+): string[] | null {
+  const normalizedName = name.trim().toLowerCase();
+  const trimmedValue = value.trim();
+  if (!trimmedValue) return null;
+  if (trimmedValue.length <= maximumLength) return [trimmedValue];
+  if (!STORE2_MIGRATION_LOSSLESS_MULTI_VALUE_ASPECTS.has(normalizedName)) {
+    return null;
+  }
+
+  const values = trimmedValue
+    .split(/\s*,\s*/)
+    .map((part) => part.trim())
+    .filter(Boolean);
+  if (values.length < 2 || values.some((part) => part.length > maximumLength)) {
+    return null;
+  }
+  return values;
+}
+
 function rejected(
   sourceId: string,
   sku: string,
@@ -132,6 +159,7 @@ export function evaluateStore2MigrationEligibility(
       browseTitle: browse.title,
     });
   }
+
   const price = Number(row["Current price"]);
   const providerPrice = Number(browse.price?.value);
   if (!Number.isFinite(price) || price <= 0 || Math.abs(providerPrice - price) > 0.005) {
@@ -140,6 +168,7 @@ export function evaluateStore2MigrationEligibility(
       browsePrice: providerPrice,
     });
   }
+
   const quantity = Number(row["Available quantity"]);
   const providerQuantity = Number(
     browse.estimatedAvailabilities?.[0]?.estimatedAvailableQuantity,
@@ -150,12 +179,14 @@ export function evaluateStore2MigrationEligibility(
       browseQuantity: providerQuantity,
     });
   }
+
   const normalizedTitle = normalizeStore2MigrationTitle(row.Title);
   if (context.destinationNormalizedTitles.has(normalizedTitle)) {
     return rejected(sourceId, sku, "DESTINATION_NORMALIZED_TITLE_DUPLICATE", {
       normalizedTitle,
     });
   }
+
   const categoryId = row["eBay category 1 number"];
   if (
     !STORE2_MIGRATION_SUPPORTED_CATEGORIES.has(categoryId) ||
@@ -166,6 +197,7 @@ export function evaluateStore2MigrationEligibility(
       browseCategory: browse.categoryId ?? null,
     });
   }
+
   const images = [
     browse.image?.imageUrl,
     ...(browse.additionalImages ?? []).map((image) => image.imageUrl),
@@ -176,15 +208,21 @@ export function evaluateStore2MigrationEligibility(
       uniqueImageCount: new Set(images).size,
     });
   }
+
   const specifics = (browse.localizedAspects ?? []).flatMap((aspect) =>
     aspect.name?.trim() && aspect.value?.trim()
       ? [{ name: aspect.name.trim(), value: aspect.value.trim() }]
       : [],
   );
-  const overlength = findOverlengthMigrationAspects(specifics);
-  if (overlength.length) {
-    return rejected(sourceId, sku, "OVERLENGTH_ASPECT", { aspects: overlength });
+  const blockingOverlength = findOverlengthMigrationAspects(specifics).filter(
+    (aspect) => getStore2MigrationAspectValues(aspect.name, aspect.value) === null,
+  );
+  if (blockingOverlength.length) {
+    return rejected(sourceId, sku, "OVERLENGTH_ASPECT", {
+      aspects: blockingOverlength,
+    });
   }
+
   const aspectMap = new Map(
     specifics.map((specific) => [specific.name.toLowerCase(), specific.value]),
   );
@@ -194,6 +232,7 @@ export function evaluateStore2MigrationEligibility(
       sport: aspectMap.get("sport") ?? null,
     });
   }
+
   const autographed = aspectMap.get("autographed");
   const safeSpecifics = specifics.filter((specific) => {
     const key = specific.name.toLowerCase();
@@ -305,12 +344,10 @@ export function orderStore2MigrationSources(
   );
 
   const seen = new Set<string>();
-  return [...graded, ...multi, ...otherCategory, ...raw].filter(
-    (row) => {
-      const itemId = row["Item number"];
-      if (!itemId || seen.has(itemId)) return false;
-      seen.add(itemId);
-      return true;
-    },
-  );
+  return [...graded, ...multi, ...otherCategory, ...raw].filter((row) => {
+    const itemId = row["Item number"];
+    if (!itemId || seen.has(itemId)) return false;
+    seen.add(itemId);
+    return true;
+  });
 }
