@@ -3,6 +3,7 @@ import test from "node:test";
 import {
   evaluateStore2MigrationEligibility,
   findOverlengthMigrationAspects,
+  getStore2MigrationAspectValues,
   normalizeStore2MigrationTitle,
   orderStore2MigrationSources,
 } from "../lib/store2-migration-selector.ts";
@@ -66,16 +67,44 @@ test("multi-quantity listings beyond the former first-80 window remain discovera
   assert.equal(ordered.at(-1)?.["Item number"], multi.at(-1)?.["Item number"]);
 });
 
-test("overlength aspect records remain outside governed ready batches", () => {
-  const overlength = findOverlengthMigrationAspects([
-    { name: "League", value: "x".repeat(66) },
-    { name: "Sport", value: "Football" },
-  ]);
+test("lossless multi-value fields can cross the 65-character provider limit", () => {
+  const league =
+    "National Collegiate Athletic Association (NCAA), National Football League (NFL)";
+  const features =
+    "Base Set, Chase, Exclusive, Insert, Parallel/Variety, Serial Numbered, Short Print, SP";
 
-  assert.deepEqual(overlength, [{ name: "League", value: "x".repeat(66) }]);
+  assert.deepEqual(getStore2MigrationAspectValues("League", league), [
+    "National Collegiate Athletic Association (NCAA)",
+    "National Football League (NFL)",
+  ]);
+  assert.deepEqual(getStore2MigrationAspectValues("Features", features), [
+    "Base Set",
+    "Chase",
+    "Exclusive",
+    "Insert",
+    "Parallel/Variety",
+    "Serial Numbered",
+    "Short Print",
+    "SP",
+  ]);
+});
+
+test("identity-sensitive or unsplittable overlength values remain blocked", () => {
+  assert.equal(
+    getStore2MigrationAspectValues("Player/Athlete", "x".repeat(66)),
+    null,
+  );
+  assert.equal(
+    getStore2MigrationAspectValues("Team", "x".repeat(66)),
+    null,
+  );
+  assert.equal(
+    getStore2MigrationAspectValues("League", "x".repeat(66)),
+    null,
+  );
   assert.deepEqual(
-    findOverlengthMigrationAspects([{ name: "League", value: "x".repeat(65) }]),
-    [],
+    findOverlengthMigrationAspects([{ name: "League", value: "x".repeat(66) }]),
+    [{ name: "League", value: "x".repeat(66) }],
   );
 });
 
@@ -139,6 +168,25 @@ test("canonical eligibility preserves the proven execution safeguards", () => {
       evidence: { normalizedTitle: normalizeStore2MigrationTitle(source.Title) },
     },
   );
+});
+
+test("canonical eligibility accepts only proven lossless overlength fields", () => {
+  const source = eligibleRow("358000000021");
+  const browse = eligibleBrowse(source["Item number"]);
+  browse.localizedAspects!.push({
+    name: "League",
+    value:
+      "National Collegiate Athletic Association (NCAA), National Football League (NFL)",
+  });
+  assert.equal(
+    evaluateStore2MigrationEligibility(source, browse, emptyContext()).eligible,
+    true,
+  );
+
+  browse.localizedAspects!.push({ name: "Player/Athlete", value: "x".repeat(66) });
+  const blocked = evaluateStore2MigrationEligibility(source, browse, emptyContext());
+  assert.equal(blocked.eligible, false);
+  if (!blocked.eligible) assert.equal(blocked.rule, "OVERLENGTH_ASPECT");
 });
 
 test("reported READY NOW and canonical execution-eligible populations are identical", () => {
