@@ -28,6 +28,7 @@ const sections: NavSection[] = [
       { href: "/seller-opportunities/title-inspection", label: "Title Inspection" },
       { href: "/seller-opportunities/listing-refresh", label: "Listing Refresh" },
       { href: "/seller-opportunities/listing-completeness", label: "Listing Completeness" },
+      { href: "/seller-opportunities/image-quality", label: "Image Quality" },
     ] },
   ] },
   { label: "Manage", items: [

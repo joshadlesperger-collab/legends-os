@@ -188,12 +188,27 @@ export class EbayApiError extends Error {
   }
 }
 
+const HARD_AUTH_ERROR_CODES = new Set(["21917053", "932"]);
+
+export function isHardEbayAuthenticationError(error: unknown) {
+  if (error instanceof EbayApiError && error.code && HARD_AUTH_ERROR_CODES.has(error.code)) return true;
+  const message = error instanceof Error ? error.message : String(error);
+  return /\b(?:21917053|932)\b/.test(message) || /IAF token supplied is expired/i.test(message) || /Auth token is hard expired/i.test(message);
+}
+
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 export function isTransientEbayStatus(status: number) {
   return status === 429 || status === 408 || status >= 500;
+}
+
+export function isEbayQuotaError(error: unknown): boolean {
+  return (
+    (error instanceof EbayApiError && error.code === "429") ||
+    (error instanceof Error && /HTTP 429|request limit has been reached/i.test(error.message))
+  );
 }
 
 function retryDelayMs(response: Response | null, attempt: number) {

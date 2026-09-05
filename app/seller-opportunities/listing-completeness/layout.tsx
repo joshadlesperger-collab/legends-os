@@ -1,0 +1,2 @@
+import Link from "next/link";
+export default function ListingCompletenessLayout({children}:{children:React.ReactNode}){return <><nav className="page" aria-label="Listing Completeness views" style={{maxWidth:1720,paddingBottom:0,display:"flex",gap:14}}><Link href="/seller-opportunities/listing-completeness">Completeness</Link><Link href="/seller-opportunities/listing-completeness/identity-integrity">Identity Integrity</Link></nav>{children}</>}

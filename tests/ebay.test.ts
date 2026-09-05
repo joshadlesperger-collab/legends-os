@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { callTradingApi, endFixedPriceListing, getActiveListings, getItem, getSellerList, getStoredToken, getValidAccessToken, isTransientEbayStatus, parseTotalPages, relistFixedPriceListing, reviseFixedPrice, reviseFixedPriceTitle, setStoredToken, verifyRelistFixedPriceListing } from "../lib/ebay.ts";
+import { callTradingApi, EbayApiError, endFixedPriceListing, getActiveListings, getItem, getSellerList, getStoredToken, getValidAccessToken, isEbayQuotaError, isHardEbayAuthenticationError, isTransientEbayStatus, parseTotalPages, relistFixedPriceListing, reviseFixedPrice, reviseFixedPriceTitle, setStoredToken, verifyRelistFixedPriceListing } from "../lib/ebay.ts";
 import { bulkCreateAdsByListingId } from "../lib/ebay-marketing.ts";
 
 test("governed promoted-ad creation is fixed to a unique listing batch at exactly five percent", async () => {
@@ -23,11 +23,24 @@ test("pagination accepts bounded page counts and rejects malformed/runaway value
   assert.throws(() => parseTotalPages(1, "TestCall", 2), /moved backwards/);
 });
 
+test("provider quota failures latch across Trading and Browse error shapes", () => {
+  assert.equal(isEbayQuotaError(new EbayApiError("BrowseGetItem", "limited", "429")), true);
+  assert.equal(isEbayQuotaError(new Error("eBay Browse item lookup failed with HTTP 429: The request limit has been reached")), true);
+  assert.equal(isEbayQuotaError(new Error("unrelated provider failure")), false);
+});
+
 test("retry policy is limited to transient HTTP statuses", () => {
   assert.equal(isTransientEbayStatus(429), true);
   assert.equal(isTransientEbayStatus(503), true);
   assert.equal(isTransientEbayStatus(400), false);
   assert.equal(isTransientEbayStatus(401), false);
+});
+
+test("hard Trading authentication failures latch the migration stop condition", () => {
+  assert.equal(isHardEbayAuthenticationError(new EbayApiError("VerifyAddFixedPriceItem", "expired", "21917053")), true);
+  assert.equal(isHardEbayAuthenticationError(new EbayApiError("GetMyeBaySelling", "hard expired", "932")), true);
+  assert.equal(isHardEbayAuthenticationError(new Error("IAF token supplied is expired")), true);
+  assert.equal(isHardEbayAuthenticationError(new EbayApiError("GetItem", "quota", "518")), false);
 });
 
 test("Trading API retries a transient response and then succeeds", async (t) => {
