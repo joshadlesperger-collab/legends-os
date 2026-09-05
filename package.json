@@ -8,7 +8,7 @@
     "test:refresh": "node --experimental-strip-types --test tests/listing-refresh-agent.test.ts",
     "test:image-quality": "node --experimental-strip-types --test tests/listing-image-quality.test.ts",
     "test:identity-integrity": "node --experimental-strip-types --test tests/listing-identity-integrity.test.ts tests/listing-identity-integrity-canary.test.ts",
-    "test": "node --experimental-strip-types --test tests/title-inspection.test.ts tests/weekend-traffic-sprint.test.ts tests/listing-completeness.test.ts tests/sales-velocity.test.ts tests/inventory-decision-doctrine.test.ts tests/pricing-evidence-acquisition.test.ts tests/ebay-sync-domain.test.ts tests/ebay-order-domain.test.ts tests/ebay-oauth-state.test.ts tests/ebay.test.ts tests/ebay-listing-migration.test.ts tests/store2-migration-selector.test.ts tests/seller-opportunities.test.ts tests/seller-opportunity-view.test.ts tests/seller-bid-domain.test.ts tests/seller-single-valuation.test.ts tests/reconciliation.test.ts tests/recommendations.test.ts tests/profitability.test.ts tests/inventory-health.test.ts tests/sold-inventory-integrity.test.ts tests/operator-auth.test.ts tests/operator-decisions.test.ts tests/action-outcomes.test.ts tests/action-presentation.test.ts tests/inventory-action-queues.test.ts",
+    "test": "node --experimental-strip-types --test tests/title-inspection.test.ts tests/weekend-traffic-sprint.test.ts tests/listing-completeness.test.ts tests/sales-velocity.test.ts tests/inventory-decision-doctrine.test.ts tests/pricing-evidence-acquisition.test.ts tests/ebay-sync-domain.test.ts tests/ebay-order-domain.test.ts tests/ebay-oauth-state.test.ts tests/ebay.test.ts tests/ebay-listing-migration.test.ts tests/store2-migration-selector.test.ts tests/store2-migration-specifics.test.ts tests/seller-opportunities.test.ts tests/seller-opportunity-view.test.ts tests/seller-bid-domain.test.ts tests/seller-single-valuation.test.ts tests/reconciliation.test.ts tests/recommendations.test.ts tests/profitability.test.ts tests/inventory-health.test.ts tests/sold-inventory-integrity.test.ts tests/operator-auth.test.ts tests/operator-decisions.test.ts tests/action-outcomes.test.ts tests/action-presentation.test.ts tests/inventory-action-queues.test.ts",
     "test:integration": "node scripts/run-integration-tests.mjs",
     "typecheck": "tsc --noEmit --incremental false && tsc --noEmit -p tsconfig.tests.json",
     "validate": "npm run typecheck && prisma validate && npm test",
@@ -19,8 +19,8 @@
     "db:migrate:status": "prisma migrate status",
     "db:studio": "prisma studio",
     "db:seed": "tsx prisma/seed.ts",
-    "seller:valuate-singles": "node --experimental-strip-types scripts/value-seller-singles.ts"
-    ,"seller:benchmark-free-evidence": "node --experimental-strip-types scripts/benchmark-free-evidence.ts"
+    "seller:valuate-singles": "node --experimental-strip-types scripts/value-seller-singles.ts",
+    "seller:benchmark-free-evidence": "node --experimental-strip-types scripts/benchmark-free-evidence.ts"
   },
   "dependencies": {
     "next": "14.2.5",
