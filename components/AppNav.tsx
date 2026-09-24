@@ -29,6 +29,7 @@ const sections: NavSection[] = [
       { href: "/seller-opportunities/listing-refresh", label: "Listing Refresh" },
       { href: "/seller-opportunities/listing-completeness", label: "Listing Completeness" },
       { href: "/seller-opportunities/image-quality", label: "Image Quality" },
+      { href: "/free-shipping-phase1", label: "Free Shipping Test" },
     ] },
   ] },
   { label: "Manage", items: [
