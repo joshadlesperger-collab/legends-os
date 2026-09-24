@@ -21,7 +21,7 @@ async function main() {
   const byItemId = new Map(listings.map(listing => [listing.ebayItemId, listing]));
   const missing = FREE_SHIPPING_PHASE1_ITEM_IDS.filter(itemId => !byItemId.has(itemId));
 
-  const storeIds = [...new Set(listings.map(listing => listing.storeId))];
+  const storeIds = Array.from(new Set(listings.map(listing => listing.storeId)));
   const storeState = new Map<string, {
     accessToken: string;
     adContext: Awaited<ReturnType<typeof getAdvertisingContext>>;
@@ -72,7 +72,7 @@ async function main() {
     }
   }
 
-  const freePolicyCandidates = [...storeState.entries()].map(([storeId, state]) => ({
+  const freePolicyCandidates = Array.from(storeState.entries()).map(([storeId, state]) => ({
     storeId,
     policies: state.freePolicies.map(policy => ({
       fulfillmentPolicyId: policy.fulfillmentPolicyId ?? null,
