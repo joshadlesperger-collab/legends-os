@@ -6,8 +6,8 @@ import {findEligibleItems,sendOfferToInterestedBuyers} from "./ebay-negotiation.
 import {getItem,getValidAccessToken} from "./ebay.ts";
 import {createGovernedRefreshExecution,ebayWriteProvider,executeGovernedAction,preservedRelistState,remainingProviderQuantity} from "./governed-ebay-actions.ts";
 
-import {VELOCITY_AUTOPILOT_VERSION,VELOCITY_OFFER_DISCOUNT_PCT,VELOCITY_OFFER_MAX_PER_RUN,VELOCITY_REFRESH_MAX_PER_RUN,VELOCITY_REFRESH_CANARY,VELOCITY_APPROVAL_TEXT,calculateVelocityOfferPrice} from "./sales-velocity-autopilot-domain.ts";
-export {VELOCITY_AUTOPILOT_VERSION,VELOCITY_OFFER_DISCOUNT_PCT,VELOCITY_OFFER_MAX_PER_RUN,VELOCITY_REFRESH_MAX_PER_RUN,VELOCITY_REFRESH_CANARY,VELOCITY_APPROVAL_TEXT,calculateVelocityOfferPrice} from "./sales-velocity-autopilot-domain.ts";
+import {VELOCITY_AUTOPILOT_VERSION,VELOCITY_OFFER_DISCOUNT_PCT,VELOCITY_OFFER_MAX_PER_RUN,VELOCITY_UNKNOWN_COST_OFFER_MAX_PER_DAY,VELOCITY_REFRESH_MAX_PER_RUN,VELOCITY_REFRESH_CANARY,VELOCITY_APPROVAL_TEXT,calculateVelocityOfferPrice} from "./sales-velocity-autopilot-domain.ts";
+export {VELOCITY_AUTOPILOT_VERSION,VELOCITY_OFFER_DISCOUNT_PCT,VELOCITY_OFFER_MAX_PER_RUN,VELOCITY_UNKNOWN_COST_OFFER_MAX_PER_DAY,VELOCITY_REFRESH_MAX_PER_RUN,VELOCITY_REFRESH_CANARY,VELOCITY_APPROVAL_TEXT,calculateVelocityOfferPrice} from "./sales-velocity-autopilot-domain.ts";
 const DAY=86_400_000;
 const ACTIVE=["approved","executing","partial_failure","manual_reconciliation_required"];
 const json=(value:unknown)=>JSON.parse(JSON.stringify(value)) as Prisma.InputJsonValue;
@@ -18,7 +18,7 @@ const active=(item:Awaited<ReturnType<typeof getItem>>)=>String(item.SellingStat
 export type VelocityOfferPlan={
   listingId:string;itemId:string;title:string;currentPrice:number;offerPrice:number;discountPct:number;
   watchers:number|null;ageDays:number|null;units30:number;knownUnitCost:number|null;estimatedGrossMarginPct:number|null;
-  ready:boolean;blockers:string[];
+  unknownCostException:boolean;ready:boolean;blockers:string[];
 };
 export type VelocityRefreshPlan={
   listingId:string;itemId:string;title:string;currentPrice:number;ageDays:number|null;views30:number|null;watchers:number|null;
@@ -66,7 +66,7 @@ export async function buildVelocityAutopilotPlan(now=new Date()):Promise<Velocit
     const proposed=calculateVelocityOfferPrice(row.currentPrice);
     const margin=row.knownUnitCost!=null&&proposed>0?cents((proposed-row.knownUnitCost)/proposed*100):null;
     if(row.knownUnitCost!=null&&proposed<row.knownUnitCost*1.2)blockers.push("8% offer would violate the 20% known-cost margin guardrail");
-    offerCandidates.push({listingId:row.listingId,itemId:row.ebayItemId,title:row.title,currentPrice:row.currentPrice,offerPrice:proposed,discountPct:cents((row.currentPrice-proposed)/row.currentPrice*100),watchers:row.watchers.value,ageDays:row.ageDays,units30:row.units30,knownUnitCost:row.knownUnitCost,estimatedGrossMarginPct:margin,ready:blockers.length===0,blockers});
+    offerCandidates.push({listingId:row.listingId,itemId:row.ebayItemId,title:row.title,currentPrice:row.currentPrice,offerPrice:proposed,discountPct:cents((row.currentPrice-proposed)/row.currentPrice*100),watchers:row.watchers.value,ageDays:row.ageDays,units30:row.units30,knownUnitCost:row.knownUnitCost,estimatedGrossMarginPct:margin,unknownCostException:unknownCostLowValue&&row.currentPrice<25,ready:blockers.length===0,blockers});
   }
   offerCandidates.sort((a,b)=>Number(b.ready)-Number(a.ready)||(b.watchers??0)-(a.watchers??0)||(b.ageDays??0)-(a.ageDays??0)||a.itemId.localeCompare(b.itemId));
 
@@ -141,7 +141,15 @@ async function executeRefresh(candidate:VelocityRefreshPlan,operatorId:string){
 export async function executeVelocityAutopilot(input:{operatorId:string;approvalText:string}){
   if(input.approvalText!==VELOCITY_APPROVAL_TEXT)throw new Error("Exact Velocity Autopilot approval is required");
   const plan=await buildVelocityAutopilotPlan();
-  const offers=plan.offerCandidates.filter(x=>x.ready).slice(0,VELOCITY_OFFER_MAX_PER_RUN);
+  const sinceToday=new Date();sinceToday.setHours(0,0,0,0);
+  const unknownCostSentToday=await prisma.ebayActionExecution.count({where:{action:"VELOCITY_OFFER_8",status:"verified",providerVerifiedAt:{gte:sinceToday},evidenceSnapshot:{path:["candidate","unknownCostException"],equals:true}}});
+  const remainingUnknownCost=Math.max(0,VELOCITY_UNKNOWN_COST_OFFER_MAX_PER_DAY-unknownCostSentToday);
+  let unknownSelected=0;
+  const offers=plan.offerCandidates.filter(x=>x.ready).filter(x=>{
+    if(!x.unknownCostException)return true;
+    if(unknownSelected>=remainingUnknownCost)return false;
+    unknownSelected++;return true;
+  }).slice(0,VELOCITY_OFFER_MAX_PER_RUN);
   const refreshes=plan.refreshCandidates.filter(x=>x.ready).slice(0,VELOCITY_REFRESH_MAX_PER_RUN);
   const offerResults:unknown[]=[];
   for(let i=0;i<offers.length;i++){
