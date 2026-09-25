@@ -28,8 +28,8 @@ export default function FreeShippingPhase1Page(){
   const [execution,setExecution]=useState<ExecResult|null>(null);
   const [runHistory,setRunHistory]=useState<ExecResult[]>([]);
 
-  async function run(){
-    setRunning(true);setError(null);
+  async function run(options:{preserveError?:boolean}={}){
+    setRunning(true);if(!options.preserveError)setError(null);
     try{
       const response=await fetch("/api/free-shipping-phase1/dry-run",{method:"POST",cache:"no-store"});
       const body=await response.json();
