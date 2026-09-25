@@ -16,7 +16,7 @@ const DAY=86_400_000;
 const ACTIVE=["approved","executing","partial_failure","manual_reconciliation_required"];
 const json=(value:unknown)=>JSON.parse(JSON.stringify(value)) as Prisma.InputJsonValue;
 const cents=(value:number)=>Math.round((value+Number.EPSILON)*100)/100;
-const offerPrice=(price:number)=>Math.ceil(price*(1-VELOCITY_OFFER_DISCOUNT_PCT/100)*100-1e-9)/100;
+export const calculateVelocityOfferPrice=(price:number)=>Math.ceil(price*(1-VELOCITY_OFFER_DISCOUNT_PCT/100)*100-1e-9)/100;
 const livePrice=(item:Awaited<ReturnType<typeof getItem>>)=>{const value=item.SellingStatus?.CurrentPrice;return Number(value&&typeof value==="object"?value["#text"]:value);};
 const active=(item:Awaited<ReturnType<typeof getItem>>)=>String(item.SellingStatus?.ListingStatus??"").toLowerCase()==="active";
 
@@ -67,7 +67,7 @@ export async function buildVelocityAutopilotPlan(now=new Date()):Promise<Velocit
     if(listing.ebayActionExecutions.some(x=>ACTIVE.includes(x.status)))blockers.push("Another governed action is active");
     if(listing.ebayActionExecutions.some(x=>(x.action==="VELOCITY_OFFER_8"||x.action==="SEND_OFFER")&&x.providerVerifiedAt&&now.getTime()-x.providerVerifiedAt.getTime()<7*DAY))blockers.push("A seller offer was already sent within 7 days");
     if(!row.costComplete||row.knownUnitCost==null)blockers.push("Known cost basis is incomplete; autopilot will not guess margin");
-    const proposed=offerPrice(row.currentPrice);
+    const proposed=calculateVelocityOfferPrice(row.currentPrice);
     const margin=row.knownUnitCost!=null&&proposed>0?cents((proposed-row.knownUnitCost)/proposed*100):null;
     if(row.knownUnitCost!=null&&proposed<row.knownUnitCost*1.2)blockers.push("8% offer would violate the 20% known-cost margin guardrail");
     offerCandidates.push({listingId:row.listingId,itemId:row.ebayItemId,title:row.title,currentPrice:row.currentPrice,offerPrice:proposed,discountPct:cents((row.currentPrice-proposed)/row.currentPrice*100),watchers:row.watchers.value,ageDays:row.ageDays,units30:row.units30,knownUnitCost:row.knownUnitCost,estimatedGrossMarginPct:margin,ready:blockers.length===0,blockers});
@@ -107,7 +107,7 @@ async function executeOffer(candidate:VelocityOfferPlan,operatorId:string){
   const cost=listing.costBasis;
   if(!cost||[cost.unitAcquisitionCost,cost.unitGradingCost,cost.unitSuppliesCost,cost.unitOutboundPostageCost,cost.unitOtherCost].some(v=>v==null))throw new Error("Cost basis is no longer complete");
   const knownCost=[cost.unitAcquisitionCost,cost.unitGradingCost,cost.unitSuppliesCost,cost.unitOutboundPostageCost,cost.unitOtherCost].reduce((sum,v)=>sum+Number(v??0),0);
-  const proposed=offerPrice(candidate.currentPrice);
+  const proposed=calculateVelocityOfferPrice(candidate.currentPrice);
   if(proposed<knownCost*1.2)throw new Error("Current economics fail 20% known-cost margin guardrail");
   const dayKey=new Date().toISOString().slice(0,10),idempotencyKey=`velocity-offer-8:${candidate.itemId}:${dayKey}`;
   const existing=await prisma.ebayActionExecution.findUnique({where:{idempotencyKey}});
