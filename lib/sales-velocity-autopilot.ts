@@ -101,10 +101,11 @@ async function executeOffer(candidate:VelocityOfferPlan,operatorId:string){
   if(!eligible.has(candidate.itemId))throw new Error("Listing is no longer Negotiation eligible");
   if(!active(live)||live.Title!==listing.title||Math.abs(livePrice(live)-candidate.currentPrice)>.005)throw new Error("Live listing state changed before offer");
   const cost=listing.costBasis;
-  if(!cost||[cost.unitAcquisitionCost,cost.unitGradingCost,cost.unitSuppliesCost,cost.unitOutboundPostageCost,cost.unitOtherCost].some(v=>v==null))throw new Error("Cost basis is no longer complete");
-  const knownCost=[cost.unitAcquisitionCost,cost.unitGradingCost,cost.unitSuppliesCost,cost.unitOutboundPostageCost,cost.unitOtherCost].reduce((sum,v)=>sum+Number(v??0),0);
   const proposed=calculateVelocityOfferPrice(candidate.currentPrice);
-  if(proposed<knownCost*1.2)throw new Error("Current economics fail 20% known-cost margin guardrail");
+  const costComplete=Boolean(cost)&&[cost?.unitAcquisitionCost,cost?.unitGradingCost,cost?.unitSuppliesCost,cost?.unitOutboundPostageCost,cost?.unitOtherCost].every(v=>v!=null);
+  const knownCost=costComplete&&cost?[cost.unitAcquisitionCost,cost.unitGradingCost,cost.unitSuppliesCost,cost.unitOutboundPostageCost,cost.unitOtherCost].reduce((sum,v)=>sum+Number(v??0),0):null;
+  if(knownCost!=null&&proposed<knownCost*1.2)throw new Error("Current economics fail 20% known-cost margin guardrail");
+  if(knownCost==null&&candidate.currentPrice>=25)throw new Error("Unknown-cost offers are limited to listings priced under $25");
   const dayKey=new Date().toISOString().slice(0,10),idempotencyKey=`velocity-offer-8:${candidate.itemId}:${dayKey}`;
   const existing=await prisma.ebayActionExecution.findUnique({where:{idempotencyKey}});
   if(existing?.status==="verified")return{itemId:candidate.itemId,status:"already_verified",executionId:existing.id};
@@ -138,19 +139,19 @@ async function executeRefresh(candidate:VelocityRefreshPlan,operatorId:string){
   return{oldItemId:candidate.itemId,newItemId:completed.newEbayItemId,status:completed.status,executionId:execution.id};
 }
 
-export async function executeVelocityAutopilot(input:{operatorId:string;approvalText:string}){
+export async function executeVelocityAutopilot(input:{operatorId:string;approvalText:string;mode?:"all"|"offers"|"refresh"}){
   if(input.approvalText!==VELOCITY_APPROVAL_TEXT)throw new Error("Exact Velocity Autopilot approval is required");
   const plan=await buildVelocityAutopilotPlan();
   const unknownCostWindowStart=new Date(Date.now()-DAY);
   const unknownCostSentToday=await prisma.ebayActionExecution.count({where:{action:"VELOCITY_OFFER_8",status:"verified",providerVerifiedAt:{gte:unknownCostWindowStart},evidenceSnapshot:{path:["candidate","unknownCostException"],equals:true}}});
   const remainingUnknownCost=Math.max(0,VELOCITY_UNKNOWN_COST_OFFER_MAX_PER_DAY-unknownCostSentToday);
   let unknownSelected=0;
-  const offers=plan.offerCandidates.filter(x=>x.ready).filter(x=>{
+  const offers=input.mode==="refresh"?[]:plan.offerCandidates.filter(x=>x.ready).filter(x=>{
     if(!x.unknownCostException)return true;
     if(unknownSelected>=remainingUnknownCost)return false;
     unknownSelected++;return true;
   }).slice(0,VELOCITY_OFFER_MAX_PER_RUN);
-  const refreshes=plan.refreshCandidates.filter(x=>x.ready).slice(0,VELOCITY_REFRESH_MAX_PER_RUN);
+  const refreshes=input.mode==="offers"?[]:plan.refreshCandidates.filter(x=>x.ready).slice(0,VELOCITY_REFRESH_MAX_PER_RUN);
   const offerResults:unknown[]=[];
   for(let i=0;i<offers.length;i++){
     try{offerResults.push(await executeOffer(offers[i],input.operatorId));}
