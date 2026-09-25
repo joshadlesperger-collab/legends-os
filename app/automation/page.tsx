@@ -5,7 +5,9 @@ const rows=[
   ["Velocity opportunity scan","Every 4 hours","Read-only"],
   ["Seller offers","9:00 AM + 6:00 PM CT target","Write-gated"],
   ["Stale listing refresh","7:30 AM CT target","Write-gated · canary first"],
+  ["Title optimization","Daily ~7:45 AM CT target","Write-gated · 3-item canary · 10/day"],
   ["Title / completeness / image diagnostics","Daily ~6:00 AM CT","Read-only"],
+  ["Closed-loop outcome learning","Daily ~5:30 AM CT","Read-only · 90-day learning window"],
   ["Durable job worker","Every 5 minutes","Existing bounded worker"],
 ] as const;
 export default function AutomationPage(){
@@ -20,7 +22,7 @@ export default function AutomationPage(){
     <section className="panel" style={{marginTop:18}}>
       <div className="eyebrow">Operating rhythm</div><h2>Automation cadence</h2>
       <p>Scheduled write routes fail closed unless <code>LEGENDS_AUTOPILOT_WRITES_ENABLED=explicitly-approved</code>. The first controlled live Velocity batch should be verified before that gate is enabled.</p>
-      <div className="pareto-table"><div className="pareto-row pareto-head"><span>Job</span><span>Cadence</span><span>Mode</span><span>Guardrail</span></div>{rows.map(([job,cadence,mode])=><div className="pareto-row" key={job}><strong>{job}</strong><span>{cadence}</span><span>{mode}</span><span>{job==="Seller offers"?"8% max · under-$25 unknown-cost exception · 10/24h · 7-day cooldown":job==="Stale listing refresh"?"90+ days · ≤5 views · 0 watchers · 0 sales · <$100 · 3-item canary":"No marketplace mutation"}</span></div>)}</div>
+      <div className="pareto-table"><div className="pareto-row pareto-head"><span>Job</span><span>Cadence</span><span>Mode</span><span>Guardrail</span></div>{rows.map(([job,cadence,mode])=><div className="pareto-row" key={job}><strong>{job}</strong><span>{cadence}</span><span>{mode}</span><span>{job==="Seller offers"?"8% max · under-$25 unknown-cost exception · 10/24h · 7-day cooldown":job==="Stale listing refresh"?"90+ days · ≤5 views · 0 watchers · 0 sales · <$100 · 3-item canary":job==="Title optimization"?"Proven non-destructive title policy · 30-day cooldown · provider verification":"No marketplace mutation"}</span></div>)}</div>
     </section>
     <section className="panel" style={{marginTop:18}}>
       <div className="eyebrow">Kill switches</div><h2>Fail-closed controls</h2>
