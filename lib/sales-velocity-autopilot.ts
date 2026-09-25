@@ -35,28 +35,19 @@ async function getConnectedStores(){
 
 export async function buildVelocityAutopilotPlan(now=new Date()):Promise<VelocityAutopilotPlan>{
   const [velocity,refresh,stores]=await Promise.all([loadSalesVelocity(now),loadListingRefreshCandidates(now),getConnectedStores()]);
-  const storeById=new Map(stores.map(store=>[store.id,store]));
   const listings=await prisma.listing.findMany({
     where:{listingStatus:"active"},
     select:{id:true,storeId:true,ebayItemId:true,title:true,currentPrice:true,quantity:true,
       costBasis:true,ebayActionExecutions:{where:{OR:[{status:{in:ACTIVE}},{action:{in:["VELOCITY_OFFER_8","SEND_OFFER"]},providerVerifiedAt:{gte:new Date(now.getTime()-7*DAY)}}]},select:{action:true,status:true,providerVerifiedAt:true}}}
   });
   const listingById=new Map(listings.map(row=>[row.id,row]));
-  const eligByStore=new Map<string,Map<string,{listingId:string;eligible:true;observedAt:string}>>();
-  for(const store of stores){
-    try{
-      const {accessToken}=await getValidAccessToken(store);
-      eligByStore.set(store.id,await findEligibleItems(accessToken));
-    }catch{
-      eligByStore.set(store.id,new Map());
-    }
-  }
+  const eligibleItemIds=new Set(velocity.rows.filter(row=>row.offerEligibility.eligible===true).map(row=>row.ebayItemId));
 
   const offerCandidates:VelocityOfferPlan[]=[];
   for(const row of velocity.rows){
     const listing=listingById.get(row.listingId);if(!listing)continue;
     const blockers:string[]=[];
-    const eligible=eligByStore.get(listing.storeId)?.has(row.ebayItemId)??false;
+    const eligible=eligibleItemIds.has(row.ebayItemId);
     if(!eligible)continue;
     if(row.units30>0)blockers.push("Authoritative sale exists within 30 days");
     if(listing.ebayActionExecutions.some(x=>ACTIVE.includes(x.status)))blockers.push("Another governed action is active");
@@ -79,7 +70,7 @@ export async function buildVelocityAutopilotPlan(now=new Date()):Promise<Velocit
     if((row.watchers??999)>0)blockers.push("Autopilot requires zero authoritative watchers");
     if(row.units30>0)blockers.push("Authoritative sale exists within 30 days");
     if(row.currentPrice>=100)blockers.push("Autopilot refresh is capped below $100");
-    if(eligByStore.get(listing.storeId)?.has(row.ebayItemId))blockers.push("Negotiation eligible; buyer-intent action outranks refresh");
+    if(eligibleItemIds.has(row.ebayItemId))blockers.push("Negotiation eligible; buyer-intent action outranks refresh");
     if(listing.ebayActionExecutions.some(x=>ACTIVE.includes(x.status)))blockers.push("Another governed action is active");
     refreshCandidates.push({listingId:row.listingId,itemId:row.ebayItemId,title:row.title,currentPrice:row.currentPrice,ageDays:row.ageDays,views30:row.views30,watchers:row.watchers,units30:row.units30,score:row.score,confidence:row.confidence,ready:blockers.length===0,blockers});
   }
