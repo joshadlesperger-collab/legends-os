@@ -128,6 +128,18 @@ export async function searchActiveMarket(token: string, query: string, categoryI
   return data.itemSummaries ?? [];
 }
 
+/** A bounded, unfiltered Best Match sample. Positions describe the API result only. */
+export async function searchBestMatchSample(token:string,query:string,limit=50,offset=0):Promise<{items:EbayBrowseItemSummary[];total:number|null}>{
+  if(!query.trim()||limit<1||limit>100||offset<0||offset>900)throw new Error("Invalid Best Match search window");
+  const url=new URL("https://api.ebay.com/buy/browse/v1/item_summary/search");
+  url.searchParams.set("q",query.slice(0,100));url.searchParams.set("limit",String(limit));url.searchParams.set("offset",String(offset));
+  const response=await fetch(url,{headers:{Authorization:`Bearer ${token}`,"X-EBAY-C-MARKETPLACE-ID":"EBAY_US"},cache:"no-store",signal:AbortSignal.timeout(REQUEST_TIMEOUT_MS)});
+  const data=await response.json().catch(()=>({})) as BrowseSearchResponse;
+  if(!response.ok)throw new EbayApiError("BrowseBestMatch",`eBay Best Match search failed with HTTP ${response.status}`,String(response.status));
+  if(data.warnings?.length)throw new EbayApiError("BrowseBestMatch",`eBay modified the search: ${data.warnings.map(w=>w.message).join("; ")}`);
+  return {items:data.itemSummaries??[],total:Number.isFinite(data.total)?Number(data.total):null};
+}
+
 export async function getBrowseItemByLegacyId(token: string, legacyItemId: string): Promise<EbayBrowseItem> {
   if (!/^\d+$/.test(legacyItemId)) throw new EbayApiError("BrowseGetItem", "A numeric legacy ItemID is required", "INVALID_ITEM_ID");
   const url = new URL("https://api.ebay.com/buy/browse/v1/item/get_item_by_legacy_id");
