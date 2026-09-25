@@ -1,10 +1,10 @@
 import {Prisma} from "@prisma/client";
-import {prisma} from "@/lib/prisma";
-import {loadSalesVelocity} from "@/lib/sales-velocity";
-import {loadListingRefreshCandidates} from "@/lib/listing-refresh-data";
-import {findEligibleItems,sendOfferToInterestedBuyers} from "@/lib/ebay-negotiation";
-import {getItem,getValidAccessToken} from "@/lib/ebay";
-import {createGovernedRefreshExecution,ebayWriteProvider,executeGovernedAction,preservedRelistState,remainingProviderQuantity} from "@/lib/governed-ebay-actions";
+import {prisma} from "./prisma.ts";
+import {loadSalesVelocity} from "./sales-velocity.ts";
+import {loadListingRefreshCandidates} from "./listing-refresh-data.ts";
+import {findEligibleItems,sendOfferToInterestedBuyers} from "./ebay-negotiation.ts";
+import {getItem,getValidAccessToken} from "./ebay.ts";
+import {createGovernedRefreshExecution,ebayWriteProvider,executeGovernedAction,preservedRelistState,remainingProviderQuantity} from "./governed-ebay-actions.ts";
 
 export const VELOCITY_AUTOPILOT_VERSION="sales-velocity-autopilot-v1.0.0";
 export const VELOCITY_OFFER_DISCOUNT_PCT=8;
