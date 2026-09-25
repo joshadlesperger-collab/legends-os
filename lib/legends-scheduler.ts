@@ -3,6 +3,8 @@ import {buildVelocityAutopilotPlan,executeVelocityAutopilot,VELOCITY_APPROVAL_TE
 import {loadTitleInspection} from "./title-inspection-data.ts";
 import {loadListingCompleteness} from "./listing-completeness-data.ts";
 import {loadListingImageQuality} from "./listing-image-quality-data.ts";
+import {executeTitleAutopilot} from "./title-autopilot.ts";
+import {buildLearningSummary} from "./closed-loop-learning.ts";
 
 const ACTIVE_JOB_STATUSES=["pending","running","retryable","paused"];
 export const SCHEDULER_VERSION="legends-scheduler-v1.0.0";
@@ -68,3 +70,21 @@ async function runScheduledWrite(mode:"offers"|"refresh"){
 
 export const runSchedulerOffers=()=>runScheduledWrite("offers");
 export const runSchedulerRefresh=()=>runScheduledWrite("refresh");
+
+export async function runSchedulerTitles(){
+  const state=schedulerState();
+  if(state.paused)return{...state,skipped:true,reason:"LEGENDS_AUTOPILOT_PAUSED=true"};
+  const operatorId=process.env.OPERATOR_ID||"owner";
+  const result=await executeTitleAutopilot({operatorId,writesEnabled:state.writesEnabled});
+  if(!result.skipped&&result.stopped)console.error("Legends Scheduler title batch stopped",JSON.stringify(result.results));
+  else console.log("Legends Scheduler title batch",JSON.stringify({skipped:result.skipped,count:result.results.length}));
+  return{...state,...result};
+}
+
+export async function runSchedulerLearning(){
+  const state=schedulerState();
+  if(state.paused)return{...state,skipped:true,reason:"LEGENDS_AUTOPILOT_PAUSED=true"};
+  const result=await buildLearningSummary();
+  console.log("Legends Scheduler learning",JSON.stringify(result));
+  return{...state,skipped:false,...result};
+}
