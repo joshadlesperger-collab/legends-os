@@ -17,11 +17,11 @@ export async function buildLearningSummary(now=new Date()){
   const grouped=new Map<string,typeof observations>();
   for(const row of observations){const action=row.decision.recommendedAction;const items=grouped.get(action)??[];items.push(row);grouped.set(action,items);}
   const summaries:LearningActionSummary[]=[];
-  for(const [action,rows] of grouped){
-    const salesObserved=rows.filter(x=>x.saleOccurred===true).length;
+  for(const [action,rows] of Array.from(grouped.entries())){
+    const salesObserved=rows.filter((x:(typeof rows)[number])=>x.saleOccurred===true).length;
     const rate=rows.length?salesObserved/rows.length*100:0;
-    const views=rows.flatMap(x=>x.viewsChange==null?[]:[x.viewsChange]);
-    const watchers=rows.flatMap(x=>x.watchersChange==null?[]:[x.watchersChange]);
+    const views=rows.flatMap((x:(typeof rows)[number])=>x.viewsChange==null?[]:[x.viewsChange]);
+    const watchers=rows.flatMap((x:(typeof rows)[number])=>x.watchersChange==null?[]:[x.watchersChange]);
     let posture:LearningActionSummary["posture"]="INSUFFICIENT DATA";
     if(rows.length>=10){
       if(rate>=20)posture="FAVOR";
