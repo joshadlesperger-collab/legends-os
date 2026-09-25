@@ -39,6 +39,7 @@ const sections: NavSection[] = [
     { href: "/sales", label: "Sales & Performance" },
     { href: "/reconciliation", label: "Reconciliation" },
     { href: "/action-history", label: "Action History" },
+    { href: "/automation", label: "Automation" },
     { href: "/cost-basis", label: "Cost Basis" },
   ] },
 ];
