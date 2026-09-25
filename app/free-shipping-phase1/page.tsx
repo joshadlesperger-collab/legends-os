@@ -24,9 +24,9 @@ export default function FreeShippingPhase1Page(){
   const [result,setResult]=useState<Result|null>(null);
   const [error,setError]=useState<string|null>(null);
   const [running,setRunning]=useState(false);
-  const [approval,setApproval]=useState("");
   const [executing,setExecuting]=useState<"canary"|"remaining"|null>(null);
   const [execution,setExecution]=useState<ExecResult|null>(null);
+  const [runHistory,setRunHistory]=useState<ExecResult[]>([]);
 
   async function run(){
     setRunning(true);setError(null);
@@ -40,21 +40,28 @@ export default function FreeShippingPhase1Page(){
     }finally{setRunning(false);}
   }
 
-  async function execute(phase:"canary"|"remaining"){
-    setExecuting(phase);setError(null);setExecution(null);
+  async function executePhase(phase:"canary"|"remaining"){
+    setExecuting(phase);setError(null);
+    const response=await fetch("/api/free-shipping-phase1/execute",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({phase,approvalText:APPROVAL})});
+    const body=await response.json();
+    if(!response.ok)throw new Error(body.error??"Execution failed");
+    setExecution(body);setRunHistory(current=>[...current,body]);
+    return body as ExecResult;
+  }
+
+  async function executeApprovedPhase1(){
+    setExecution(null);setRunHistory([]);
     try{
-      const response=await fetch("/api/free-shipping-phase1/execute",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({phase,approvalText:approval})});
-      const body=await response.json();
-      if(!response.ok)throw new Error(body.error??"Execution failed");
-      setExecution(body);
+      const canary=await executePhase("canary");
+      if(canary.failed!==0||canary.verified!==canary.requested)throw new Error("Canary did not verify cleanly. Remaining 70 were not attempted.");
+      const remaining=await executePhase("remaining");
+      if(remaining.failed!==0||remaining.verified!==remaining.requested)throw new Error("Remaining cohort stopped before full verification.");
       await run();
     }catch(err){
       setError(err instanceof Error?err.message:"Execution failed");
+      await run().catch(()=>undefined);
     }finally{setExecuting(null);}
   }
-
-  const approvalReady=approval===APPROVAL;
-  const canaryVerified=execution?.phase==="canary"&&execution.failed===0&&execution.verified===execution.requested;
 
   return <main className="page" style={{maxWidth:1500}}>
     <section style={{display:"flex",justifyContent:"space-between",gap:20,alignItems:"end",flexWrap:"wrap",marginBottom:24}}>
@@ -93,26 +100,19 @@ export default function FreeShippingPhase1Page(){
         <h2>Canary first, then remaining cohort</h2>
         <p>The execution path revalidates each listing immediately before writing, changes only price + shipping policy, verifies the 5.0% promoted rate is unchanged, reads the listing back from eBay, and stops the batch on the first mismatch.</p>
         <p><strong>Canary:</strong> first 5 treatment listings. <strong>Remaining:</strong> 70 listings only after the canary is provider-verified.</p>
-        <label style={{display:"block",fontWeight:700,marginBottom:6}}>Exact approval phrase</label>
-        <input value={approval} onChange={e=>setApproval(e.target.value)} placeholder={APPROVAL} style={{width:"min(620px,100%)",padding:"10px 12px",marginBottom:12}} />
-        <div style={{display:"flex",gap:10,flexWrap:"wrap"}}>
-          <button type="button" disabled={!approvalReady||result.ready!==75||result.blocked!==0||executing!==null} onClick={()=>execute("canary")} style={{padding:"11px 16px",fontWeight:700}}>
-            {executing==="canary"?"Executing 5-item canary…":"Execute 5-item canary"}
-          </button>
-          <button type="button" disabled={!approvalReady||!canaryVerified||executing!==null} onClick={()=>execute("remaining")} style={{padding:"11px 16px",fontWeight:700}}>
-            {executing==="remaining"?"Executing remaining 70…":"Execute remaining 70"}
-          </button>
-        </div>
-        <p style={{fontSize:12,opacity:.8}}>The remaining-70 button stays locked until this browser session has a successful canary result.</p>
+        <button type="button" disabled={result.ready!==75||result.blocked!==0||executing!==null} onClick={executeApprovedPhase1} style={{padding:"11px 16px",fontWeight:700}}>
+          {executing==="canary"?"Executing and verifying 5-item canary…":executing==="remaining"?"Canary passed — executing remaining 70…":"Execute approved Phase 1"}
+        </button>
+        <p style={{fontSize:12,opacity:.8}}>This approval was already given for the fixed 75-listing cohort. The remaining 70 proceed automatically only after all 5 canary listings verify cleanly.</p>
       </section>
 
-      {execution&&<section className="panel" style={{marginBottom:18}}>
+      {runHistory.length>0&&<section className="panel" style={{marginBottom:18}}>
         <div className="eyebrow">Execution result</div>
-        <h2>{execution.phase==="canary"?"Canary":"Remaining cohort"} · {execution.verified}/{execution.requested} verified</h2>
-        <p>Failures: {execution.failed}</p>
+        <h2>{runHistory.map(run=>`${run.phase==="canary"?"Canary":"Remaining"} ${run.verified}/${run.requested}`).join(" · ")}</h2>
+        <p>Failures: {runHistory.reduce((sum,run)=>sum+run.failed,0)}</p>
         <div style={{overflowX:"auto"}}><table style={{width:"100%",borderCollapse:"collapse",fontSize:13}}>
           <thead><tr style={{textAlign:"left",borderBottom:"2px solid var(--border)"}}><th>Item</th><th>Status</th><th>Price</th><th>Shipping</th><th>Error</th></tr></thead>
-          <tbody>{execution.results.map(row=><tr key={row.itemId} style={{borderBottom:"1px solid var(--border)"}}>
+          <tbody>{runHistory.flatMap(run=>run.results).map(row=><tr key={row.itemId} style={{borderBottom:"1px solid var(--border)"}}>
             <td style={{padding:"8px 6px"}}>{row.itemId}</td><td>{row.status}</td>
             <td>{usd(row.beforePrice)} → {usd(row.afterPrice)}</td><td>{usd(row.beforeShipping)} → {usd(row.afterShipping)}</td><td>{row.error??"—"}</td>
           </tr>)}</tbody>
