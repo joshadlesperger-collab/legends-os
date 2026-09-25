@@ -18,7 +18,9 @@ export type FreeShippingPhase1DryRunResult = {
   persistedListingsFound:number;
   missing:string[];
   ready:number;
+  completed:number;
   blocked:number;
+  completedItemIds:string[];
   freePolicyCandidates:Array<{
     storeId:string;
     policies:Array<{fulfillmentPolicyId:string|null;name:string|null;handlingTime:unknown|null}>;
@@ -42,6 +44,17 @@ export async function runFreeShippingPhase1DryRun():Promise<FreeShippingPhase1Dr
   const byItemId=new Map(listings.map(listing=>[listing.ebayItemId,listing]));
   const missing=FREE_SHIPPING_PHASE1_ITEM_IDS.filter(itemId=>!byItemId.has(itemId));
   const storeIds=Array.from(new Set(listings.map(listing=>listing.storeId)));
+  const verifiedExecutions=await prisma.ebayActionExecution.findMany({
+    where:{
+      action:"FREE_SHIPPING_PHASE1",
+      doctrineVersion:FREE_SHIPPING_PHASE1_VERSION,
+      status:"verified",
+      oldEbayItemId:{in:[...FREE_SHIPPING_PHASE1_ITEM_IDS]},
+    },
+    select:{oldEbayItemId:true},
+  });
+  const completedItemIds=Array.from(new Set(verifiedExecutions.map(row=>row.oldEbayItemId))); 
+  const completedSet=new Set(completedItemIds);
 
   const storeState=new Map<string,{
     accessToken:string;
@@ -103,8 +116,10 @@ export async function runFreeShippingPhase1DryRun():Promise<FreeShippingPhase1Dr
     selected:FREE_SHIPPING_PHASE1_ITEM_IDS.length,
     persistedListingsFound:listings.length,
     missing:[...missing],
-    ready:rows.filter(row=>row.ready).length,
-    blocked:rows.filter(row=>!row.ready).length,
+    ready:rows.filter(row=>row.ready&&!completedSet.has(row.itemId)).length,
+    completed:completedItemIds.length,
+    blocked:rows.filter(row=>!row.ready&&!completedSet.has(row.itemId)).length,
+    completedItemIds,
     freePolicyCandidates:Array.from(storeState.entries()).map(([storeId,state])=>({
       storeId,
       policies:state.freePolicies.map(policy=>({
