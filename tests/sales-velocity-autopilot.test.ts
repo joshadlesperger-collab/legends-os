@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import {calculateVelocityOfferPrice,VELOCITY_OFFER_DISCOUNT_PCT,VELOCITY_OFFER_MAX_PER_RUN,VELOCITY_REFRESH_CANARY,VELOCITY_REFRESH_MAX_PER_RUN} from "../lib/sales-velocity-autopilot.ts";
+import {calculateVelocityOfferPrice,VELOCITY_OFFER_DISCOUNT_PCT,VELOCITY_OFFER_MAX_PER_RUN,VELOCITY_REFRESH_CANARY,VELOCITY_REFRESH_MAX_PER_RUN} from "../lib/sales-velocity-autopilot-domain.ts";
 
 test("Velocity Autopilot offer policy is capped at eight percent and rounds toward seller",()=>{
   assert.equal(VELOCITY_OFFER_DISCOUNT_PCT,8);
