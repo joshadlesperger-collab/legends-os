@@ -24,10 +24,10 @@ export async function buildTitleAutopilotPlan(now=new Date()){
   return{version:TITLE_AUTOPILOT_VERSION,generatedAt:now.toISOString(),ready:rows.filter(x=>x.ready).length,rows};
 }
 
-export async function executeTitleAutopilot(input:{operatorId:string;writesEnabled:boolean}){
+export async function executeTitleAutopilot(input:{operatorId:string;writesEnabled:boolean;maxPerRun?:number}){
   if(!input.writesEnabled)return{skipped:true,reason:"Scheduled title writes are disabled",results:[]};
   const plan=await buildTitleAutopilotPlan();
-  const selected=plan.rows.filter(x=>x.ready).slice(0,TITLE_AUTOPILOT_MAX_PER_DAY);
+  const selected=plan.rows.filter(x=>x.ready).slice(0,Math.max(1,Math.min(input.maxPerRun??TITLE_AUTOPILOT_MAX_PER_DAY,20)));
   const results:any[]=[];
   const executeOne=async(row:(typeof selected)[number])=>{
     const execution=await createGovernedTitleExecution(row.listingId,input.operatorId);
