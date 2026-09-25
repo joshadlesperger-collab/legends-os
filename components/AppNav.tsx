@@ -24,6 +24,7 @@ const sections: NavSection[] = [
   { label: "Sell", items: [
     { href: "/inventory-actions", label: "Action Center" },
     { href: "/seller-opportunities/sales-velocity", label: "Sales Velocity" },
+    { href: "/sales-velocity-autopilot", label: "Velocity Autopilot" },
     { label: "Listing Optimization", items: [
       { href: "/seller-opportunities/title-inspection", label: "Title Inspection" },
       { href: "/seller-opportunities/listing-refresh", label: "Listing Refresh" },
