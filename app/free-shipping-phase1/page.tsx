@@ -9,7 +9,7 @@ type Row={
 };
 type Result={
   experiment:string;mode:string;providerWrites:boolean;selected:number;persistedListingsFound:number;missing:string[];
-  ready:number;blocked:number;freePolicyCandidates:Array<{storeId:string;policies:Array<{fulfillmentPolicyId:string|null;name:string|null;handlingTime:unknown|null}>}>;
+  ready:number;completed:number;blocked:number;completedItemIds:string[];freePolicyCandidates:Array<{storeId:string;policies:Array<{fulfillmentPolicyId:string|null;name:string|null;handlingTime:unknown|null}>}>;
   rows:Row[];
 };
 type ExecResult={
@@ -80,7 +80,7 @@ export default function FreeShippingPhase1Page(){
         <div className="metric-grid">
           <div><div className="confidence-value">{result.selected}</div><div>Selected</div></div>
           <div><div className="confidence-value">{result.ready}</div><div>Ready</div></div>
-          <div><div className="confidence-value">{result.blocked}</div><div>Blocked</div></div>
+          <div><div className="confidence-value">{result.completed}</div><div>Completed</div></div><div><div className="confidence-value">{result.blocked}</div><div>Blocked</div></div>
           <div><div className="confidence-value">{result.persistedListingsFound}</div><div>Found in Legends</div></div>
         </div>
         <p style={{marginBottom:0}}>Mode: <strong>{result.mode}</strong> · Provider writes: <strong>{String(result.providerWrites)}</strong></p>
@@ -100,7 +100,7 @@ export default function FreeShippingPhase1Page(){
         <h2>Canary first, then remaining cohort</h2>
         <p>The execution path revalidates each listing immediately before writing, changes only price + shipping policy, verifies the 5.0% promoted rate is unchanged, reads the listing back from eBay, and stops the batch on the first mismatch.</p>
         <p><strong>Canary:</strong> first 5 treatment listings. <strong>Remaining:</strong> 70 listings only after the canary is provider-verified.</p>
-        <button type="button" disabled={result.ready!==75||result.blocked!==0||executing!==null} onClick={executeApprovedPhase1} style={{padding:"11px 16px",fontWeight:700}}>
+        <button type="button" disabled={result.ready+result.completed!==75||result.blocked!==0||executing!==null} onClick={executeApprovedPhase1} style={{padding:"11px 16px",fontWeight:700}}>
           {executing==="canary"?"Executing and verifying 5-item canary…":executing==="remaining"?"Canary passed — executing remaining 70…":"Execute approved Phase 1"}
         </button>
         <p style={{fontSize:12,opacity:.8}}>This approval was already given for the fixed 75-listing cohort. The remaining 70 proceed automatically only after all 5 canary listings verify cleanly.</p>
@@ -126,7 +126,7 @@ export default function FreeShippingPhase1Page(){
             <th>Status</th><th>Item</th><th>Title</th><th>Current</th><th>Shipping</th><th>Delivered</th><th>Proposed price</th><th>Ad rate</th><th>Shipping policy</th><th>Blockers</th>
           </tr></thead>
           <tbody>{result.rows.map(row=><tr key={row.itemId} style={{borderBottom:"1px solid var(--border)",verticalAlign:"top"}}>
-            <td style={{padding:"8px 6px"}}><strong>{row.ready?"READY":"BLOCKED"}</strong></td>
+            <td style={{padding:"8px 6px"}}><strong>{result.completedItemIds.includes(row.itemId)?"COMPLETED":row.ready?"READY":"BLOCKED"}</strong></td>
             <td style={{padding:"8px 6px"}}>{row.itemId}</td>
             <td style={{padding:"8px 6px",minWidth:280}}>{row.title??"—"}</td>
             <td style={{padding:"8px 6px"}}>{usd(row.currentPrice)}</td>
@@ -135,7 +135,7 @@ export default function FreeShippingPhase1Page(){
             <td style={{padding:"8px 6px"}}>{usd(row.proposedPrice)}</td>
             <td style={{padding:"8px 6px"}}>{row.adRate==null?"—":`${row.adRate.toFixed(1)}%`}</td>
             <td style={{padding:"8px 6px"}}>{row.shippingProfileId??"—"}</td>
-            <td style={{padding:"8px 6px",minWidth:260}}>{row.blockers.length?row.blockers.join("; "):"—"}</td>
+            <td style={{padding:"8px 6px",minWidth:260}}>{result.completedItemIds.includes(row.itemId)?"Provider-verified Phase 1 conversion":row.blockers.length?row.blockers.join("; "):"—"}</td>
           </tr>)}</tbody>
         </table>
       </section>
