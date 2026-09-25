@@ -141,8 +141,8 @@ async function executeRefresh(candidate:VelocityRefreshPlan,operatorId:string){
 export async function executeVelocityAutopilot(input:{operatorId:string;approvalText:string}){
   if(input.approvalText!==VELOCITY_APPROVAL_TEXT)throw new Error("Exact Velocity Autopilot approval is required");
   const plan=await buildVelocityAutopilotPlan();
-  const sinceToday=new Date();sinceToday.setHours(0,0,0,0);
-  const unknownCostSentToday=await prisma.ebayActionExecution.count({where:{action:"VELOCITY_OFFER_8",status:"verified",providerVerifiedAt:{gte:sinceToday},evidenceSnapshot:{path:["candidate","unknownCostException"],equals:true}}});
+  const unknownCostWindowStart=new Date(Date.now()-DAY);
+  const unknownCostSentToday=await prisma.ebayActionExecution.count({where:{action:"VELOCITY_OFFER_8",status:"verified",providerVerifiedAt:{gte:unknownCostWindowStart},evidenceSnapshot:{path:["candidate","unknownCostException"],equals:true}}});
   const remainingUnknownCost=Math.max(0,VELOCITY_UNKNOWN_COST_OFFER_MAX_PER_DAY-unknownCostSentToday);
   let unknownSelected=0;
   const offers=plan.offerCandidates.filter(x=>x.ready).filter(x=>{
