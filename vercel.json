@@ -4,6 +4,26 @@
     {
       "path": "/api/internal/jobs/process",
       "schedule": "*/5 * * * *"
+    },
+    {
+      "path": "/api/internal/scheduler/sense",
+      "schedule": "0 */2 * * *"
+    },
+    {
+      "path": "/api/internal/scheduler/velocity-plan",
+      "schedule": "15 */4 * * *"
+    },
+    {
+      "path": "/api/internal/scheduler/offers",
+      "schedule": "0 14,23 * * *"
+    },
+    {
+      "path": "/api/internal/scheduler/refresh",
+      "schedule": "30 12 * * *"
+    },
+    {
+      "path": "/api/internal/scheduler/diagnostics",
+      "schedule": "0 11 * * *"
     }
   ]
 }
