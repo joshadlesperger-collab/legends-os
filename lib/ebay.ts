@@ -535,6 +535,15 @@ export async function reviseFixedPrice(accessToken: string, itemId: string, prop
   return { itemId };
 }
 
+export async function reviseFixedPricePriceAndShippingProfile(accessToken: string, itemId: string, proposedPrice: number, shippingProfileId: string, messageId: string, siteId = 0) {
+  if (!/^\d+$/.test(itemId) || !Number.isFinite(proposedPrice) || proposedPrice <= 0 || !/^\d+$/.test(shippingProfileId)) {
+    throw new EbayApiError("ReviseFixedPriceItem", "Invalid governed free-shipping revision input", "INVALID_INPUT");
+  }
+  const xml = `<ReviseFixedPriceItemRequest xmlns="urn:ebay:apis:eBLBaseComponents"><MessageID>${xmlEscape(messageId)}</MessageID><Item><ItemID>${itemId}</ItemID><StartPrice>${proposedPrice.toFixed(2)}</StartPrice><SellerProfiles><SellerShippingProfile><ShippingProfileID>${xmlEscape(shippingProfileId)}</ShippingProfileID></SellerShippingProfile></SellerProfiles></Item></ReviseFixedPriceItemRequest>`;
+  const result = await callTradingApi({ callName: "ReviseFixedPriceItem", siteId, accessToken, xmlBody: xml, retryMode: "single-attempt" });
+  return tradingMutationResult(result, itemId);
+}
+
 export async function reviseFixedPriceTitle(accessToken: string, itemId: string, proposedTitle: string, messageId: string, siteId = 0) {
   if (!/^\d+$/.test(itemId) || !proposedTitle.trim() || proposedTitle.length > 80) throw new EbayApiError("ReviseFixedPriceItem", "Invalid governed title change input", "INVALID_INPUT");
   const xml = `<ReviseFixedPriceItemRequest xmlns="urn:ebay:apis:eBLBaseComponents"><MessageID>${xmlEscape(messageId)}</MessageID><Item><ItemID>${itemId}</ItemID><Title>${xmlEscape(proposedTitle)}</Title></Item></ReviseFixedPriceItemRequest>`;

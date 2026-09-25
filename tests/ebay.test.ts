@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { callTradingApi, EbayApiError, endFixedPriceListing, getActiveListings, getItem, getSellerList, getStoredToken, getValidAccessToken, isEbayQuotaError, isHardEbayAuthenticationError, isTransientEbayStatus, parseTotalPages, relistFixedPriceListing, reviseFixedPrice, reviseFixedPriceTitle, setStoredToken, verifyRelistFixedPriceListing } from "../lib/ebay.ts";
+import { callTradingApi, EbayApiError, endFixedPriceListing, getActiveListings, getItem, getSellerList, getStoredToken, getValidAccessToken, isEbayQuotaError, isHardEbayAuthenticationError, isTransientEbayStatus, parseTotalPages, relistFixedPriceListing, reviseFixedPrice, reviseFixedPricePriceAndShippingProfile, reviseFixedPriceTitle, setStoredToken, verifyRelistFixedPriceListing } from "../lib/ebay.ts";
 import { bulkCreateAdsByListingId } from "../lib/ebay-marketing.ts";
 
 test("governed promoted-ad creation is fixed to a unique listing batch at exactly five percent", async () => {
@@ -117,14 +117,20 @@ test("governed provider calls send only the explicitly approved field", async (t
   globalThis.fetch=async(_input,init)=>{const headers=new Headers(init?.headers);const name=headers.get("X-EBAY-API-CALL-NAME")??"";const body=String(init?.body??"");calls.push({name,body});const response=name==="RelistFixedPriceItem"?"<RelistFixedPriceItemResponse><Ack>Success</Ack><ItemID>222222222222</ItemID></RelistFixedPriceItemResponse>":`<${name}Response><Ack>Success</Ack></${name}Response>`;return new Response(response,{status:200});};
   await reviseFixedPrice("redacted-test-token","111111111111",35,"price-key");
   await reviseFixedPriceTitle("redacted-test-token","111111111111","Ohtani & Trout","title-key");
+  await reviseFixedPricePriceAndShippingProfile("redacted-test-token","111111111111",36.49,"248164605010","shipping-key");
   await endFixedPriceListing("redacted-test-token","111111111111","end-key");
   await verifyRelistFixedPriceListing("redacted-test-token","111111111111",3,"verify-key");
   assert.deepEqual(await relistFixedPriceListing("redacted-test-token","111111111111",3,"relist-key"),{oldItemId:"111111111111",newItemId:"222222222222",itemId:"111111111111",ack:"Success",warnings:[]});
   assert.match(calls[0].body,/<StartPrice>35\.00<\/StartPrice>/);assert.doesNotMatch(calls[0].body,/<Title>/);
   assert.match(calls[1].body,/<Title>Ohtani &amp; Trout<\/Title>/);assert.doesNotMatch(calls[1].body,/<StartPrice>/);
-  assert.match(calls[2].body,/<EndingReason>NotAvailable<\/EndingReason>/);
-  assert.match(calls[3].body,/<Quantity>3<\/Quantity>/);assert.match(calls[4].body,/<Quantity>3<\/Quantity>/);
-  assert.deepEqual(calls.map(call=>call.name),["ReviseInventoryStatus","ReviseFixedPriceItem","EndFixedPriceItem","VerifyRelistItem","RelistFixedPriceItem"]);
+  assert.match(calls[2].body,/<StartPrice>36\.49<\/StartPrice>/);
+  assert.match(calls[2].body,/<ShippingProfileID>248164605010<\/ShippingProfileID>/);
+  assert.doesNotMatch(calls[2].body,/<Title>/);
+  assert.doesNotMatch(calls[2].body,/<SellerReturnProfile>/);
+  assert.doesNotMatch(calls[2].body,/<SellerPaymentProfile>/);
+  assert.match(calls[3].body,/<EndingReason>NotAvailable<\/EndingReason>/);
+  assert.match(calls[4].body,/<Quantity>3<\/Quantity>/);assert.match(calls[5].body,/<Quantity>3<\/Quantity>/);
+  assert.deepEqual(calls.map(call=>call.name),["ReviseInventoryStatus","ReviseFixedPriceItem","ReviseFixedPriceItem","EndFixedPriceItem","VerifyRelistItem","RelistFixedPriceItem"]);
 });
 
 test("token storage round-trips and malformed stored values fail closed", (t) => {
