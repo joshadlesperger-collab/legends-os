@@ -33,3 +33,22 @@ export async function buildLearningSummary(now=new Date()){
   summaries.sort((a,b)=>b.observations-a.observations||b.saleRatePct-a.saleRatePct||a.action.localeCompare(b.action));
   return{generatedAt:now.toISOString(),windowDays:90,summaries};
 }
+
+export async function deriveAdaptiveExecutionPolicy(now=new Date()){
+  const learning=await buildLearningSummary(now);
+  const posture=(action:string)=>learning.summaries.find(x=>x.action===action)?.posture??"INSUFFICIENT DATA";
+  const scale=(base:number,value:LearningActionSummary["posture"],min:number,max:number)=>{
+    if(value==="FAVOR")return Math.min(max,Math.ceil(base*1.5));
+    if(value==="SLOW DOWN")return Math.max(min,Math.floor(base*0.5));
+    return base;
+  };
+  const offerPosture=posture("VELOCITY_OFFER_8"),refreshPosture=posture("END_SELL_SIMILAR"),titlePosture=posture("OPTIMIZE_TITLE");
+  return{
+    generatedAt:learning.generatedAt,
+    sampleGate:10,
+    sellerOffer:{posture:offerPosture,maxPerRun:scale(25,offerPosture,10,35),unknownCostMax24h:scale(10,offerPosture,5,15),discountPct:8},
+    refresh:{posture:refreshPosture,maxPerRun:scale(10,refreshPosture,5,15),canary:3},
+    title:{posture:titlePosture,maxPerRun:scale(10,titlePosture,5,15),canary:3,cooldownDays:30},
+    immutableGuardrails:["Seller-offer discount remains 8%","Unknown-cost automatic offers remain under $25","Refresh eligibility thresholds do not loosen","Title execution policy remains non-destructive and provider-verified"]
+  };
+}
