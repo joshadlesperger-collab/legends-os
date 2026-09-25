@@ -6,17 +6,12 @@ import {findEligibleItems,sendOfferToInterestedBuyers} from "./ebay-negotiation.
 import {getItem,getValidAccessToken} from "./ebay.ts";
 import {createGovernedRefreshExecution,ebayWriteProvider,executeGovernedAction,preservedRelistState,remainingProviderQuantity} from "./governed-ebay-actions.ts";
 
-export const VELOCITY_AUTOPILOT_VERSION="sales-velocity-autopilot-v1.0.0";
-export const VELOCITY_OFFER_DISCOUNT_PCT=8;
-export const VELOCITY_OFFER_MAX_PER_RUN=25;
-export const VELOCITY_REFRESH_MAX_PER_RUN=10;
-export const VELOCITY_REFRESH_CANARY=3;
-export const VELOCITY_APPROVAL_TEXT="I APPROVE SALES VELOCITY AUTOPILOT V1";
+import {VELOCITY_AUTOPILOT_VERSION,VELOCITY_OFFER_DISCOUNT_PCT,VELOCITY_OFFER_MAX_PER_RUN,VELOCITY_REFRESH_MAX_PER_RUN,VELOCITY_REFRESH_CANARY,VELOCITY_APPROVAL_TEXT,calculateVelocityOfferPrice} from "./sales-velocity-autopilot-domain.ts";
+export {VELOCITY_AUTOPILOT_VERSION,VELOCITY_OFFER_DISCOUNT_PCT,VELOCITY_OFFER_MAX_PER_RUN,VELOCITY_REFRESH_MAX_PER_RUN,VELOCITY_REFRESH_CANARY,VELOCITY_APPROVAL_TEXT,calculateVelocityOfferPrice} from "./sales-velocity-autopilot-domain.ts";
 const DAY=86_400_000;
 const ACTIVE=["approved","executing","partial_failure","manual_reconciliation_required"];
 const json=(value:unknown)=>JSON.parse(JSON.stringify(value)) as Prisma.InputJsonValue;
 const cents=(value:number)=>Math.round((value+Number.EPSILON)*100)/100;
-export const calculateVelocityOfferPrice=(price:number)=>Math.ceil(price*(1-VELOCITY_OFFER_DISCOUNT_PCT/100)*100-1e-9)/100;
 const livePrice=(item:Awaited<ReturnType<typeof getItem>>)=>{const value=item.SellingStatus?.CurrentPrice;return Number(value&&typeof value==="object"?value["#text"]:value);};
 const active=(item:Awaited<ReturnType<typeof getItem>>)=>String(item.SellingStatus?.ListingStatus??"").toLowerCase()==="active";
 
