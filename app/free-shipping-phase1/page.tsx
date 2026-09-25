@@ -67,7 +67,7 @@ export default function FreeShippingPhase1Page(){
     <section style={{display:"flex",justifyContent:"space-between",gap:20,alignItems:"end",flexWrap:"wrap",marginBottom:24}}>
       <div><div className="eyebrow">eBay experiment</div><h1 style={{margin:"6px 0 8px"}}>Free Shipping Phase 1</h1>
         <p style={{maxWidth:820,margin:0}}>Live validation and governed execution for the fixed 75-listing treatment cohort. Price increases exactly by current shipping while the approved free-shipping policy replaces the paid policy.</p></div>
-      <button type="button" onClick={run} disabled={running} style={{padding:"12px 18px",fontWeight:700}}>
+      <button type="button" onClick={()=>run()} disabled={running} style={{padding:"12px 18px",fontWeight:700}}>
         {running?"Checking live eBay state…":"Run live dry check"}
       </button>
     </section>
