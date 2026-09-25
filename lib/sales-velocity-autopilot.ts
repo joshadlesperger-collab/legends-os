@@ -139,19 +139,20 @@ async function executeRefresh(candidate:VelocityRefreshPlan,operatorId:string){
   return{oldItemId:candidate.itemId,newItemId:completed.newEbayItemId,status:completed.status,executionId:execution.id};
 }
 
-export async function executeVelocityAutopilot(input:{operatorId:string;approvalText:string;mode?:"all"|"offers"|"refresh"}){
+export async function executeVelocityAutopilot(input:{operatorId:string;approvalText:string;mode?:"all"|"offers"|"refresh";offerLimit?:number;unknownCostLimit24h?:number;refreshLimit?:number}){
   if(input.approvalText!==VELOCITY_APPROVAL_TEXT)throw new Error("Exact Velocity Autopilot approval is required");
   const plan=await buildVelocityAutopilotPlan();
   const unknownCostWindowStart=new Date(Date.now()-DAY);
   const unknownCostSentToday=await prisma.ebayActionExecution.count({where:{action:"VELOCITY_OFFER_8",status:"verified",providerVerifiedAt:{gte:unknownCostWindowStart},evidenceSnapshot:{path:["candidate","unknownCostException"],equals:true}}});
-  const remainingUnknownCost=Math.max(0,VELOCITY_UNKNOWN_COST_OFFER_MAX_PER_DAY-unknownCostSentToday);
+  const unknownCostLimit=Math.max(1,Math.min(input.unknownCostLimit24h??VELOCITY_UNKNOWN_COST_OFFER_MAX_PER_DAY,50));
+  const remainingUnknownCost=Math.max(0,unknownCostLimit-unknownCostSentToday);
   let unknownSelected=0;
   const offers=input.mode==="refresh"?[]:plan.offerCandidates.filter(x=>x.ready).filter(x=>{
     if(!x.unknownCostException)return true;
     if(unknownSelected>=remainingUnknownCost)return false;
     unknownSelected++;return true;
-  }).slice(0,VELOCITY_OFFER_MAX_PER_RUN);
-  const refreshes=input.mode==="offers"?[]:plan.refreshCandidates.filter(x=>x.ready).slice(0,VELOCITY_REFRESH_MAX_PER_RUN);
+  }).slice(0,Math.max(1,Math.min(input.offerLimit??VELOCITY_OFFER_MAX_PER_RUN,50)));
+  const refreshes=input.mode==="offers"?[]:plan.refreshCandidates.filter(x=>x.ready).slice(0,Math.max(1,Math.min(input.refreshLimit??VELOCITY_REFRESH_MAX_PER_RUN,20)));
   const offerResults:unknown[]=[];
   for(let i=0;i<offers.length;i++){
     try{offerResults.push(await executeOffer(offers[i],input.operatorId));}
