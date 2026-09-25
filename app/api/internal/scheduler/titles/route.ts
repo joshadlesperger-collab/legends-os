@@ -1,0 +1,4 @@
+import {NextRequest,NextResponse} from "next/server";
+import {runSchedulerTitles} from "@/lib/legends-scheduler";
+export const dynamic="force-dynamic";export const maxDuration=300;
+export async function GET(request:NextRequest){const secret=process.env.CRON_SECRET;if(!secret||request.headers.get("authorization")!==`Bearer ${secret}`)return NextResponse.json({error:"Unauthorized"},{status:401});try{return NextResponse.json(await runSchedulerTitles());}catch(error){console.error("Scheduler titles failed",error);return NextResponse.json({error:error instanceof Error?error.message:"Scheduler titles failed"},{status:409});}}
