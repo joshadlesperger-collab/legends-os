@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import {calculateVelocityOfferPrice,VELOCITY_OFFER_DISCOUNT_PCT,VELOCITY_OFFER_MAX_PER_RUN,VELOCITY_REFRESH_CANARY,VELOCITY_REFRESH_MAX_PER_RUN} from "../lib/sales-velocity-autopilot-domain.ts";
+import {calculateVelocityOfferPrice,VELOCITY_OFFER_DISCOUNT_PCT,VELOCITY_OFFER_MAX_PER_RUN,VELOCITY_UNKNOWN_COST_OFFER_MAX_PER_DAY,VELOCITY_REFRESH_CANARY,VELOCITY_REFRESH_MAX_PER_RUN} from "../lib/sales-velocity-autopilot-domain.ts";
 
 test("Velocity Autopilot offer policy is capped at eight percent and rounds toward seller",()=>{
   assert.equal(VELOCITY_OFFER_DISCOUNT_PCT,8);
@@ -10,6 +10,7 @@ test("Velocity Autopilot offer policy is capped at eight percent and rounds towa
 
 test("Velocity Autopilot batch limits preserve canary-first execution",()=>{
   assert.equal(VELOCITY_OFFER_MAX_PER_RUN,25);
+  assert.equal(VELOCITY_UNKNOWN_COST_OFFER_MAX_PER_DAY,10);
   assert.equal(VELOCITY_REFRESH_CANARY,3);
   assert.equal(VELOCITY_REFRESH_MAX_PER_RUN,10);
   assert.ok(VELOCITY_REFRESH_CANARY<VELOCITY_REFRESH_MAX_PER_RUN);
