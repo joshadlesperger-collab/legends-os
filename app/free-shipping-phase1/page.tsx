@@ -59,7 +59,7 @@ export default function FreeShippingPhase1Page(){
       await run();
     }catch(err){
       setError(err instanceof Error?err.message:"Execution failed");
-      await run().catch(()=>undefined);
+      await run({preserveError:true}).catch(()=>undefined);
     }finally{setExecuting(null);}
   }
 
