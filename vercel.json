@@ -24,6 +24,14 @@
     {
       "path": "/api/internal/scheduler/diagnostics",
       "schedule": "0 11 * * *"
+    },
+    {
+      "path": "/api/internal/scheduler/titles",
+      "schedule": "45 12 * * *"
+    },
+    {
+      "path": "/api/internal/scheduler/learning",
+      "schedule": "30 10 * * *"
     }
   ]
 }

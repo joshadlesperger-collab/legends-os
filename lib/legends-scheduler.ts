@@ -3,6 +3,8 @@ import {buildVelocityAutopilotPlan,executeVelocityAutopilot,VELOCITY_APPROVAL_TE
 import {loadTitleInspection} from "./title-inspection-data.ts";
 import {loadListingCompleteness} from "./listing-completeness-data.ts";
 import {loadListingImageQuality} from "./listing-image-quality-data.ts";
+import {executeTitleAutopilot} from "./title-autopilot.ts";
+import {buildLearningSummary,deriveAdaptiveExecutionPolicy} from "./closed-loop-learning.ts";
 
 const ACTIVE_JOB_STATUSES=["pending","running","retryable","paused"];
 export const SCHEDULER_VERSION="legends-scheduler-v1.0.0";
@@ -59,7 +61,13 @@ async function runScheduledWrite(mode:"offers"|"refresh"){
   if(state.paused)return{...state,mode,skipped:true,reason:"LEGENDS_AUTOPILOT_PAUSED=true"};
   if(!state.writesEnabled)return{...state,mode,skipped:true,reason:"Scheduled eBay writes remain disabled until first controlled batch is verified and LEGENDS_AUTOPILOT_WRITES_ENABLED=explicitly-approved"};
   const operatorId=process.env.OPERATOR_ID||"owner";
-  const result=await executeVelocityAutopilot({operatorId,approvalText:VELOCITY_APPROVAL_TEXT,mode});
+  const adaptive=await deriveAdaptiveExecutionPolicy();
+  const result=await executeVelocityAutopilot({
+    operatorId,approvalText:VELOCITY_APPROVAL_TEXT,mode,
+    offerLimit:adaptive.sellerOffer.maxPerRun,
+    unknownCostLimit24h:adaptive.sellerOffer.unknownCostMax24h,
+    refreshLimit:adaptive.refresh.maxPerRun
+  });
   const failures=[...result.offerResults,...result.refreshResults].filter((row:any)=>row?.status==="failed");
   if(failures.length)console.error("Legends Scheduler write batch stopped",JSON.stringify({mode,failures}));
   else console.log("Legends Scheduler write batch complete",JSON.stringify({mode,offers:result.offerResults.length,refreshes:result.refreshResults.length}));
@@ -68,3 +76,22 @@ async function runScheduledWrite(mode:"offers"|"refresh"){
 
 export const runSchedulerOffers=()=>runScheduledWrite("offers");
 export const runSchedulerRefresh=()=>runScheduledWrite("refresh");
+
+export async function runSchedulerTitles(){
+  const state=schedulerState();
+  if(state.paused)return{...state,skipped:true,reason:"LEGENDS_AUTOPILOT_PAUSED=true"};
+  const operatorId=process.env.OPERATOR_ID||"owner";
+  const adaptive=await deriveAdaptiveExecutionPolicy();
+  const result=await executeTitleAutopilot({operatorId,writesEnabled:state.writesEnabled,maxPerRun:adaptive.title.maxPerRun});
+  if(!result.skipped&&result.stopped)console.error("Legends Scheduler title batch stopped",JSON.stringify(result.results));
+  else console.log("Legends Scheduler title batch",JSON.stringify({skipped:result.skipped,count:result.results.length}));
+  return{...state,...result};
+}
+
+export async function runSchedulerLearning(){
+  const state=schedulerState();
+  if(state.paused)return{...state,skipped:true,reason:"LEGENDS_AUTOPILOT_PAUSED=true"};
+  const [result,adaptive]=await Promise.all([buildLearningSummary(),deriveAdaptiveExecutionPolicy()]);
+  console.log("Legends Scheduler learning",JSON.stringify({result,adaptive}));
+  return{...state,skipped:false,...result,adaptive};
+}

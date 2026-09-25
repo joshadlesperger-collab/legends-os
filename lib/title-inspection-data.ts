@@ -1,7 +1,7 @@
 import { prisma } from "./prisma.ts";
 import { hasLegacyDuplicateDiscriminator, hasUnresolvedDuplicateFamily, inspectListingTitle, legacyDuplicateTitleKey, type TitleInspection } from "./title-inspection-agent.ts";
 export async function loadTitleInspection(now = new Date()) {
-  const observationStart=new Date(now.getTime()-14*86_400_000);
+  const observationStart=new Date(now.getTime()-30*86_400_000);
   const [allListings,recentTitleExecutions] = await Promise.all([
     prisma.listing.findMany({ select: { id: true, ebayItemId: true, title: true, currentPrice:true, listingStatus:true, itemSpecifics: true, authoritativeObservedAt: true, lastSyncedAt: true }, orderBy: { ebayItemId: "asc" } }),
     prisma.ebayActionExecution.findMany({where:{action:"OPTIMIZE_TITLE",status:"verified",providerVerifiedAt:{gte:observationStart}},select:{listingId:true}}),

@@ -11,6 +11,8 @@ test("Legends Scheduler cron cadence is explicit and bounded",()=>{
   assert.equal(byPath.get("/api/internal/scheduler/offers"),"0 14,23 * * *");
   assert.equal(byPath.get("/api/internal/scheduler/refresh"),"30 12 * * *");
   assert.equal(byPath.get("/api/internal/scheduler/diagnostics"),"0 11 * * *");
+  assert.equal(byPath.get("/api/internal/scheduler/titles"),"45 12 * * *");
+  assert.equal(byPath.get("/api/internal/scheduler/learning"),"30 10 * * *");
   assert.equal(new Set(config.crons.map(row=>row.path)).size,config.crons.length);
 });
 
