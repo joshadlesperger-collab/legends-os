@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { applyIdentityCorrection, projectListing, type CardIdentity, type DraftCard } from "@/lib/card-listing-factory";
 
 type Photo = { id: string; file: File; url: string };
@@ -15,7 +15,7 @@ export default function CardListingFactory(){
  const [cards,setCards]=useState<ReviewCard[]>([]);
  const [selected,setSelected]=useState(0);
  const [warning,setWarning]=useState("");
- useEffect(()=>()=>{ cards.forEach(c=>{if(c.front)URL.revokeObjectURL(c.front.url);if(c.back)URL.revokeObjectURL(c.back.url)}) },[cards]);
+
  const card=cards[selected];
  function ingest(files:FileList|null){
   if(!files?.length)return;
