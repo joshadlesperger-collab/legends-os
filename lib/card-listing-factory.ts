@@ -11,6 +11,7 @@ export type DraftCard = {
   identity: CardIdentity; quantity: number; frontImageId?: string; backImageId?: string;
   manualTitle?: string; lockedFields?: string[]; verified: boolean;
   pricing?: PricingReview;
+  photoReviewReasons?: string[];
   automation?: { message: string; warnings: string[] };
 };
 export type ListingProjection = {
@@ -65,7 +66,7 @@ export function generateTitle(c: CardIdentity): string {
 }
 export function projectListing(draft: DraftCard): ListingProjection {
   const c=draft.identity;
-  const issues:string[]=[];
+  const issues:string[]=[...(draft.photoReviewReasons ?? [])];
   const problem=identityError(c);
   if(problem) issues.push(problem);
   if(!validQuantity(draft.quantity)) issues.push("Quantity must be a positive integer");

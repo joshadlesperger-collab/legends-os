@@ -1,8 +1,8 @@
 import { canonicalCardKey, priceFromSoldComp, projectListing, suggestedShipping, type DraftCard } from "./card-listing-factory.ts";
 
 export type SoldComp = { id: string; sourceUrl: string; soldDate: string; itemPrice: number; shipping: number; notes: string; verified: boolean; identityKey?: string };
-export type PricingReview = { comps: SoldComp[]; premiumPercent: number; needsTracked: boolean; envelopeEligible: boolean; approvedSnapshot?: string };
-export const emptyPricing = (): PricingReview => ({ comps: [], premiumPercent: 9, needsTracked: false, envelopeEligible: false });
+export type PricingReview = { comps: SoldComp[]; premiumPercent: number; needsTracked: boolean; envelopeEligible: boolean; generalPromotionPercent?: number; approvedSnapshot?: string };
+export const emptyPricing = (): PricingReview => ({ comps: [], premiumPercent: 9, needsTracked: false, envelopeEligible: false, generalPromotionPercent: 3 });
 const cents = (n: number, positive: boolean) => Number.isFinite(n) && (positive ? n > 0 : n >= 0) && n <= 1_000_000 && Math.abs(n * 100 - Math.round(n * 100)) < 0.000001;
 const round = (n: number) => Math.round(n * 100) / 100;
 
@@ -38,6 +38,9 @@ export function projectPricing(draft: DraftCard, today = new Date().toISOString(
   });
   if (!Number.isFinite(pricing.premiumPercent) || pricing.premiumPercent < 8 || pricing.premiumPercent > 10) reasons.push("Premium must be between 8% and 10%.");
   const evidenceValid = reasons.length === 0;
+  const generalPromotionPercent = pricing.generalPromotionPercent ?? 3;
+  const promotionValid = Number.isFinite(generalPromotionPercent) && (generalPromotionPercent === 0 || (generalPromotionPercent >= 3 && generalPromotionPercent <= 5));
+  if (!promotionValid) reasons.push("General promotion must be off (0%) or between 3% and 5%; review any increase above the 3% default.");
   // Use the seller's arithmetic average; round only the final listing price.
   const compValue = evidenceValid ? pricing.comps.reduce((sum, comp) => sum + comp.itemPrice, 0) / pricing.comps.length : null;
   const premiumPrice = compValue === null ? null : compValue * (1 + pricing.premiumPercent / 100);
@@ -46,12 +49,14 @@ export function projectPricing(draft: DraftCard, today = new Date().toISOString(
   const shippingCharge = listingPrice === null ? null : suggestedShipping(listingPrice, tracked);
   if (!tracked && listingPrice !== null && !pricing.envelopeEligible) reasons.push("Verify envelope eligibility for the packaged card, or choose tracked shipping.");
   if (projectListing(draft).requiresReview) reasons.push("Confirm card identity and front/back photos first.");
-  const { approvedSnapshot: _approval, ...inputs } = pricing;
-  const snapshot = JSON.stringify({ method: "mean-endings-up-v2", identity: canonicalCardKey(draft.identity), front: draft.frontImageId, back: draft.backImageId, quantity: draft.quantity, inputs, listingPrice, shippingCharge });
+  const { approvedSnapshot: _approval, ...savedInputs } = pricing;
+  const inputs = { ...savedInputs, generalPromotionPercent };
+  const estimatedPromotionFeeBeforeTax = listingPrice === null || shippingCharge === null || !promotionValid ? null : round((listingPrice + shippingCharge) * generalPromotionPercent / 100);
+  const snapshot = JSON.stringify({ method: "mean-endings-up-general-v3", identity: canonicalCardKey(draft.identity), front: draft.frontImageId, back: draft.backImageId, quantity: draft.quantity, inputs, listingPrice, shippingCharge });
   const approved = reasons.length === 0 && pricing.approvedSnapshot === snapshot;
   return { compValue, premiumPrice, roundingAdjustment: listingPrice === null || premiumPrice === null ? null : listingPrice - premiumPrice,
     effectivePremiumPercent: listingPrice === null || compValue === null ? null : (listingPrice / compValue - 1) * 100,
-    listingPrice, shippingCharge, buyerTotal: listingPrice === null || shippingCharge === null ? null : round(listingPrice + shippingCharge),
+    listingPrice, shippingCharge, generalPromotionPercent, estimatedPromotionFeeBeforeTax, buyerTotal: listingPrice === null || shippingCharge === null ? null : round(listingPrice + shippingCharge),
     lowPrice: compValue === null ? null : priceFromSoldComp(compValue, 8), highPrice: compValue === null ? null : priceFromSoldComp(compValue, 10),
     shippingMethod: tracked ? "Tracked shipping" : "Envelope (eligibility must be verified)",
     approved, snapshot, reviewReasons: reasons, inputs, currency: "USD", basis: "Arithmetic average sold item price excluding shipping; apply 8–10% base premium, then round up to next .49 or .95 for all cards; buyer total excludes tax", warnings: pricing.comps.length === 1 ? ["Only one sold comp: limited evidence. Review carefully."] : [] };

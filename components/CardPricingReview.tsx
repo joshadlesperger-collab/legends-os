@@ -33,6 +33,14 @@ export default function CardPricingReview({ draft, onChange }: { draft: DraftCar
       <label><span><input type="checkbox" checked={pricing.envelopeEligible} onChange={event => change({ envelopeEligible: event.target.checked })} /> I verified current envelope service eligibility, packaged dimensions, weight and value.</span></label>
     </div>
     <p>Seller charge rules: under $10 → $1.49; $10–$19.99 → $1.95; $20+ or tracked → $6.29. These are proposed buyer charges, not purchased postage or verified carrier rates. Graded cards require tracked shipping.</p>
+    <fieldset>
+      <legend>General promotion</legend>
+      <label><span><input type="checkbox" checked={result.generalPromotionPercent !== 0} onChange={event => change({ generalPromotionPercent: event.target.checked ? 3 : 0 })} /> Include General promotion (default 3%)</span></label>
+      {result.generalPromotionPercent !== 0 && <label>General ad rate (%)<input type="number" min="3" max="5" step="0.1" value={Number.isFinite(result.generalPromotionPercent) ? result.generalPromotionPercent : ""} onChange={event => change({ generalPromotionPercent: event.target.value === "" ? NaN : Number(event.target.value) })} /></label>}
+      <p>Use 3% by default. An increase up to 5% needs review and renewed financial approval. No automatic increases or Priority advertising.</p>
+      <p>Estimated General promotion expense before tax: <strong>{money(result.estimatedPromotionFeeBeforeTax)}</strong>. This uses item price plus buyer shipping. eBay also includes applicable tax and other applicable fees in its fee basis when an attributed sale qualifies. This estimate is separate from other selling fees and is not profit. Promotion never raises the proposed card price.</p>
+      <p>This saves a review setting; verify the rate in eBay before publishing. Local approval does not activate an eBay campaign.</p>
+    </fieldset>
     <dl className="factory-price-summary">
       <div><dt>Verified comp average</dt><dd>{money(result.compValue)}</dd></div>
       <div><dt>8–10% before ending adjustment</dt><dd>{result.lowPrice === null ? "Awaiting verified comps" : `${money(result.lowPrice)}–${money(result.highPrice)}`}</dd></div>
@@ -46,7 +54,7 @@ export default function CardPricingReview({ draft, onChange }: { draft: DraftCar
     {result.warnings.map(warning => <p key={warning} role="note">{warning}</p>)}
     {result.reviewReasons.length > 0 && <div role="status"><strong>Before price approval:</strong><ul>{result.reviewReasons.map(reason => <li key={reason}>{reason}</li>)}</ul></div>}
     <button type="button" disabled={result.reviewReasons.length > 0 || result.approved} onClick={() => { const latest = projectPricing(draft); if (!latest.reviewReasons.length) onChange({ ...pricing, approvedSnapshot: latest.snapshot }); }}>Approve price and shipping for local review</button>
-    <p role="status">{result.approved ? "Price and shipping approved locally." : "Price and shipping awaiting approval."} Changes to comps, premium, shipping, identity or photos require approval again.</p>
+    <p role="status">{result.approved ? "Price, shipping and promotion approved locally." : "Price, shipping and promotion awaiting approval."} Changes to comps, premium, shipping, promotion, identity or photos require approval again.</p>
     <button type="button" disabled>Create eBay draft — integration not connected</button>
     <p>Local approval does not authorize eBay publishing. No postage or marketplace action is performed.</p>
   </section>;

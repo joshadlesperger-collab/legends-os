@@ -7,8 +7,10 @@ import CardPricingReview from "@/components/CardPricingReview";
 import { projectPricing } from "@/lib/card-pricing-review";
 import { emptyPricing, type SoldComp } from "@/lib/card-pricing-review";
 import { recognitionSchema, recognizedIdentity } from "@/lib/card-recognition";
+import { prepareEbayDraftReview } from "@/lib/card-ebay-draft";
+import { blankMarginIssue, previewDimensions, withPhotoSourceReview } from "@/lib/card-photo-source";
 
-type Photo = { id: string; file: File; url: string };
+type Photo = { id: string; file: File; previewUrl: string; originalUrl: string; width: number; height: number; framingIssue?: string };
 const emptyIdentity = (): CardIdentity => ({ sport: "Baseball", player: "", year: new Date().getFullYear(), manufacturer: "", set: "", cardNumber: "" });
 const newCard = (frontImageId?: string, backImageId?: string): PairedCard => ({ id: crypto.randomUUID(), draft: { identity: emptyIdentity(), quantity: 1, verified: false, frontImageId, backImageId } });
 const sports: CardIdentity["sport"][] = ["Baseball", "Football", "Basketball", "Hockey", "Soccer", "Other"];
@@ -17,22 +19,22 @@ const MAX_PHOTOS = 40;
 const MAX_BYTES = 100 * 1024 * 1024;
 
 // Decode sequentially, retain originals, and use small previews to bound decoded browser memory.
-async function preview(file: File): Promise<string> {
+async function preview(file: File) {
   const source = URL.createObjectURL(file);
   try {
     const image = new Image();
     await new Promise<void>((resolve, reject) => {
       image.onload = () => resolve(); image.onerror = () => reject(new Error("Unreadable image")); image.src = source;
     });
-    if (!image.naturalWidth || image.naturalWidth * image.naturalHeight > 32_000_000) throw new Error("Image exceeds 32 megapixels");
-    const scale = Math.min(1, 1200 / Math.max(image.naturalWidth, image.naturalHeight));
+    const dimensions = previewDimensions(image.naturalWidth, image.naturalHeight);
     const canvas = document.createElement("canvas");
-    canvas.width = Math.round(image.naturalWidth * scale); canvas.height = Math.round(image.naturalHeight * scale);
+    canvas.width = dimensions.width; canvas.height = dimensions.height;
     const context = canvas.getContext("2d");
     if (!context) throw new Error("Image preview unavailable");
     context.drawImage(image, 0, 0, canvas.width, canvas.height);
+    const framingIssue = blankMarginIssue(context.getImageData(0, 0, canvas.width, canvas.height).data, canvas.width, canvas.height);
     const blob = await new Promise<Blob>((resolve, reject) => canvas.toBlob(value => value ? resolve(value) : reject(new Error("Image preview failed")), "image/jpeg", 0.85));
-    return URL.createObjectURL(blob);
+    return { previewUrl: URL.createObjectURL(blob), width: image.naturalWidth, height: image.naturalHeight, framingIssue };
   } finally { URL.revokeObjectURL(source); }
 }
 
@@ -66,8 +68,10 @@ export default function CardListingFactory() {
     return () => window.removeEventListener("beforeunload", warn);
   }, [photos.length]);
   const card = cards[selected];
-  const projection = card ? projectListing(card.draft) : undefined;
-  const canApprove = card && !projectListing({ ...card.draft, verified: true }).requiresReview;
+  const reviewedDraft = card ? withPhotoSourceReview(card.draft, photos) : undefined;
+  const projection = reviewedDraft ? projectListing(reviewedDraft) : undefined;
+  const ebayHandoff = reviewedDraft ? prepareEbayDraftReview(reviewedDraft) : undefined;
+  const canApprove = reviewedDraft && !projectListing({ ...reviewedDraft, verified: true }).requiresReview;
   const findPhoto = (id?: string) => photos.find(p => p.id === id);
   function updateDraft(change: (draft: PairedCard["draft"]) => PairedCard["draft"]) {
     setCards(current => current.map(c => c.id === card.id ? { ...c, draft: change(c.draft) } : c));
@@ -91,7 +95,7 @@ export default function CardListingFactory() {
         setProgress(`Reading card ${index + 1} of ${targets.length}…`);
         try {
           const images = await Promise.all(pair.map(async photo => {
-            const blob = await (await fetch(photo!.url)).blob();
+            const blob = await (await fetch(photo!.previewUrl)).blob();
             return new Promise<string>((resolve, reject) => { const reader = new FileReader(); reader.onload = () => resolve(String(reader.result)); reader.onerror = () => reject(new Error("Preview unavailable")); reader.readAsDataURL(blob); });
           }));
           const response = await fetch("/api/card-listing-factory/recognize", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ images }), signal: controller.signal });
@@ -147,11 +151,11 @@ export default function CardListingFactory() {
     const targetId = card?.id;
     try {
       for (const file of batch) {
-        const url = await preview(file);
-        incoming.push({ id: crypto.randomUUID(), file, url });
+        const prepared = await preview(file);
+        incoming.push({ id: crypto.randomUUID(), file, ...prepared, originalUrl: URL.createObjectURL(file) });
         if (!mounted.current) throw new Error("Session closed");
       }
-      incoming.forEach(p => resources.current.add(p.url));
+      incoming.forEach(p => { resources.current.add(p.previewUrl); resources.current.add(p.originalUrl); });
       setPhotos(current => [...current, ...incoming]);
       if (side && targetId) {
         const changed = assignPhoto(cards, targetId, side, incoming[0].id);
@@ -165,29 +169,30 @@ export default function CardListingFactory() {
         if (automatic) await prepareCards(pairs, [...photos, ...incoming]);
       }
     } catch {
-      incoming.forEach(p => { URL.revokeObjectURL(p.url); resources.current.delete(p.url); });
+      incoming.forEach(p => { for (const url of [p.previewUrl, p.originalUrl]) { URL.revokeObjectURL(url); resources.current.delete(url); } });
       if (mounted.current) setWarning("Could not preview this selection. Use readable JPEG, PNG or WebP images up to 32 megapixels. No photos were added.");
     } finally { importing.current = false; if (mounted.current) setBusy(false); }
   }
-  function release(photo: Photo) { URL.revokeObjectURL(photo.url); resources.current.delete(photo.url); }
+  function release(photo: Photo) { for (const url of [photo.previewUrl, photo.originalUrl]) { URL.revokeObjectURL(url); resources.current.delete(url); } }
   function clear() { photos.forEach(release); setPhotos([]); setCards([]); setSelected(0); setWarning(""); }
   function removeCard() {
     setCards(current => current.filter(c => c.id !== card.id)); setSelected(Math.max(0, selected - 1));
     // Photos remain in the pool so mistaken deletion can be repaired without re-uploading.
   }
   function exportJson() {
-    const output = cards.map(c => ({ id: c.id, identity: c.draft.identity, quantity: c.draft.quantity,
-      approved: !projectListing(c.draft).requiresReview,
-      identityApproved: !projectListing(c.draft).requiresReview,
-      pricingReview: projectPricing(c.draft),
-      readyForLocalDraftReview: !projectListing(c.draft).requiresReview && projectPricing(c.draft).approved,
-      automation: c.draft.automation,
-      frontImageId: c.draft.frontImageId ?? null, backImageId: c.draft.backImageId ?? null,
-      mainImageId: c.draft.frontImageId ?? null,
-      imageIds: [c.draft.frontImageId, c.draft.backImageId].filter((id): id is string => Boolean(id)),
-      frontImageName: findPhoto(c.draft.frontImageId)?.file.name ?? null,
-      backImageName: findPhoto(c.draft.backImageId)?.file.name ?? null, listing: projectListing(c.draft) }));
-    const photoManifest = photos.map(p => ({ id: p.id, name: p.file.name, size: p.file.size, lastModified: p.file.lastModified }));
+    const output = cards.map(c => { const draft = withPhotoSourceReview(c.draft, photos); return ({ id: c.id, identity: draft.identity, quantity: draft.quantity,
+      approved: !projectListing(draft).requiresReview,
+      identityApproved: !projectListing(draft).requiresReview,
+      pricingReview: projectPricing(draft),
+      ebayDraftHandoff: prepareEbayDraftReview(draft),
+      readyForLocalDraftReview: !projectListing(draft).requiresReview && projectPricing(draft).approved,
+      automation: draft.automation,
+      frontImageId: draft.frontImageId ?? null, backImageId: draft.backImageId ?? null,
+      mainImageId: draft.frontImageId ?? null,
+      imageIds: [draft.frontImageId, draft.backImageId].filter((id): id is string => Boolean(id)),
+      frontImageName: findPhoto(draft.frontImageId)?.file.name ?? null,
+      backImageName: findPhoto(draft.backImageId)?.file.name ?? null, listing: projectListing(draft) }); });
+    const photoManifest = photos.map(p => ({ id: p.id, name: p.file.name, size: p.file.size, lastModified: p.file.lastModified, width: p.width, height: p.height, listingSource: "original-file-only", framingIssue: p.framingIssue, previewPurpose: "display-and-recognition-only" }));
     const url = URL.createObjectURL(new Blob([JSON.stringify({ schema: "legends-card-listing-review-v1", destination: "local-review-only", photos: photoManifest, cards: output }, null, 2)], { type: "application/json" }));
     const link = document.createElement("a"); link.href = url; link.download = "legends-listing-review.json"; link.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
@@ -226,7 +231,9 @@ export default function CardListingFactory() {
         <div className="factory-photos">{(["front", "back"] as const).map(side => {
           const photo = findPhoto(side === "front" ? card.draft.frontImageId : card.draft.backImageId);
           return <div key={side}><h3>{side === "front" ? "Front · Main image #1" : "Back · Image #2"}</h3>
-            {photo ? <a href={photo.url} target="_blank" rel="noreferrer" aria-label={`Open ${side} preview`}><img src={photo.url} alt={`${side}: ${photo.file.name}`} /></a> : <p>Missing photo</p>}
+            {photo ? <><a href={photo.previewUrl} target="_blank" rel="noreferrer" aria-label={`Open ${side} preview`}><img src={photo.previewUrl} alt={`${side}: ${photo.file.name}`} /></a>
+              <p><a href={photo.originalUrl} download={photo.file.name}>Download original {side} photo</a> · {photo.width} × {photo.height}</p>
+              {photo.framingIssue && <p role="alert">{photo.framingIssue}</p>}</> : <p>Missing photo</p>}
             {photo && <small>{photo.file.name}</small>}
             <label>Assign {side} photo<select disabled={busy} value={photo?.id ?? ""} onChange={e => setCards(current => assignPhoto(current, card.id, side, e.target.value || undefined))}><option value="">No photo</option>{photos.map((p, i) => <option key={p.id} value={p.id}>{i + 1}. {p.file.name}</option>)}</select></label>
             <label>Add {side} photo<input disabled={busy} type="file" accept="image/jpeg,image/png,image/webp" onChange={e => { void ingest(e.target.files, side); e.target.value = ""; }} /></label>
@@ -247,7 +254,13 @@ export default function CardListingFactory() {
         {projection.reviewReasons.length > 0 && <div role="status"><strong>Review required:</strong><ul>{projection.reviewReasons.map(reason => <li key={reason}>{reason}</li>)}</ul></div>}
         <button disabled={busy || !canApprove || card.draft.verified} onClick={() => updateDraft(draft => projectListing({ ...draft, verified: true }).requiresReview ? draft : { ...draft, verified: true })}>Confirm identity and photo pair for local review</button>
         <p>This confirmation does not approve an eBay publish. Any identity or photo change requires confirmation again.</p>
-        <CardPricingReview draft={card.draft} onChange={pricing => updateDraft(draft => ({ ...draft, pricing }))} />
+        <CardPricingReview draft={reviewedDraft!} onChange={pricing => updateDraft(draft => ({ ...draft, pricing }))} />
+        <details><summary>eBay draft preparation · imaydit58</summary>
+          <p>The intended seller is imaydit58. This prepares a local handoff, not an eBay offer or a listing.</p>
+          <p>{ebayHandoff?.localReviewReady ? "Local review is approved and ready for the connection checks below." : "Finish identity, photo and price approvals before preparing the handoff."}</p>
+          <ul>{ebayHandoff?.connectionRequirements.map(reason => <li key={reason}>{reason}</li>)}</ul>
+          <p>Export review data includes this handoff and its outstanding checks. Creating an unpublished offer and publishing remain disabled.</p>
+        </details>
         </fieldset>
       </section>}
     </div>}

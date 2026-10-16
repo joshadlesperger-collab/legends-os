@@ -20,6 +20,29 @@ test("Goodman displayed-sale example uses mean and rounds after the premium",()=
  assert.equal(result.shippingCharge,1.49);assert.equal(result.buyerTotal,8.44);
 });
 
+test("General promotion defaults to 3%, remains separate from price and binds approval",()=>{
+ const original=draft({comps:[comp(4.99,"a"),comp(8,"b"),comp(5.5,"c")]});
+ const result=project(original);
+ assert.equal(result.generalPromotionPercent,3);
+ assert.equal(result.estimatedPromotionFeeBeforeTax,0.25);
+ const approved={...original,pricing:{...original.pricing!,approvedSnapshot:result.snapshot}};
+ assert.equal(project(approved).approved,true);
+ const increased=project({...approved,pricing:{...approved.pricing,generalPromotionPercent:5}});
+ assert.equal(increased.estimatedPromotionFeeBeforeTax,0.42);
+ assert.equal(increased.listingPrice,6.95);
+ assert.equal(increased.shippingCharge,1.49);
+ assert.equal(increased.approved,false);
+ const off=project({...original,pricing:{...original.pricing!,generalPromotionPercent:0}});
+ assert.equal(off.estimatedPromotionFeeBeforeTax,0);
+ assert.deepEqual(off.reviewReasons,[]);
+ for(const rate of [-1,2,5.1,Infinity,NaN]) {
+  const invalid=project({...approved,pricing:{...approved.pricing,generalPromotionPercent:rate}});
+  assert.equal(invalid.approved,false);
+  assert.equal(invalid.estimatedPromotionFeeBeforeTax,null);
+  assert.ok(invalid.reviewReasons.some(reason=>reason.includes("General promotion")));
+ }
+});
+
 test("price endings always round up, retaining exact endings and crossing dollars",()=>{
  for(const [input,expected] of [[0.01,0.49],[6.49,6.49],[6.4901,6.95],[6.72,6.95],[6.95,6.95],[6.9501,7.49],[6.99,7.49],[100.1,100.49]]) assert.equal(roundUpListingPrice(input),expected);
  // Do not round the premium to cents before selecting the ending.
