@@ -49,7 +49,7 @@ export function generateTitle(c: CardIdentity): string {
   let result = trim([...prefix,...suffix]);
   if (result.length <= 80) return result;
   // Trim optional team, then promotional shorthand, then manufacturer, without truncating the identifier.
-  for (const index of [5,8,2,1]) {
+  for (const index of [9,8,1]) {
     const combined=[...prefix,...suffix]; combined[index]="";
     const candidate=trim(combined);
     if(candidate.length<=80) return candidate;
