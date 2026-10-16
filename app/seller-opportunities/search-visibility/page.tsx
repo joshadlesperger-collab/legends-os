@@ -8,7 +8,8 @@ export const dynamic="force-dynamic";
 const PAGE_SIZE=50;
 const money=(value:string|number|null|undefined)=>value==null?"Unavailable":`$${Number(value).toFixed(2)}`;
 
-export default async function SearchVisibility({searchParams}:{searchParams?:{item?:string;q?:string}}){
+export default async function SearchVisibility({searchParams: pendingSearchParams}: {searchParams?: Promise<{item?:string;q?:string}>}) {
+ const searchParams = await pendingSearchParams;
   const item=(searchParams?.item??"").trim(),query=(searchParams?.q??"").trim().slice(0,100);
   const listing=item&&/^\d{8,15}$/.test(item)?await prisma.listing.findFirst({where:{ebayItemId:item,listingStatus:"active"},select:{ebayItemId:true,title:true,currentPrice:true,store:{select:{id:true,oauthAccessToken:true,oauthRefreshToken:true,tokenExpiresAt:true,connectionStatus:true}}}}):null;
   let results:Awaited<ReturnType<typeof searchBestMatchSample>>["items"]=[],total:number|null=null,position:number|null=null,error:string|null=null,traffic:Awaited<ReturnType<typeof getTrafficReport>>|null=null;

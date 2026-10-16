@@ -7,7 +7,8 @@ import { prisma } from "@/lib/prisma";
 export const dynamic = "force-dynamic";
 const usd = (value: number | null) => value == null ? "Not available" : new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(value);
 
-export default async function ReviewSessionPage({ searchParams }: { searchParams?: { issue?: string } }) {
+export default async function ReviewSessionPage({searchParams: pendingSearchParams}: {searchParams?: Promise<{ issue?: string }>}) {
+ const searchParams = await pendingSearchParams;
   const now = new Date();
   const today = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
   const issue = searchParams?.issue ?? "";

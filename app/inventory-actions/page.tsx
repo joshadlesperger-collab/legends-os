@@ -14,7 +14,8 @@ const ACTION_ORDER=["HEALTHY_LEAVE_ALONE","OPTIMIZE_TITLE","LOWER_PRICE","RAISE_
 const actionCategory=(value:string)=>value==="LEAVE_ALONE"?"HEALTHY_LEAVE_ALONE":value==="EXIT_REVIEW"?"END_DONT_RELIST":value==="OFFER_CONVERSION"?"OFFER_OPPORTUNITY":value==="LEARNING"?"LEARNING_UNKNOWN":value;
 const categoryLabel=(value:string)=>({HEALTHY_LEAVE_ALONE:"Healthy / Leave Alone",END_DONT_RELIST:"End / Don't Relist",OFFER_OPPORTUNITY:"Offer Opportunity",LEARNING_UNKNOWN:"Learning / Unknown",END_SELL_SIMILAR:"End & Sell Similar",ENDED_BIN_CLEANUP:"Ended BIN Cleanup",OPTIMIZE_TITLE:"Optimize Title",LOWER_PRICE:"Lower Price",RAISE_PRICE:"Raise Price",MORE_EVIDENCE:"More Evidence"}[value]??actionLabel(value));
 
-export default async function InventoryActionCenter({searchParams}:{searchParams?:{execution?:string}}){
+export default async function InventoryActionCenter({searchParams: pendingSearchParams}: {searchParams?: Promise<{execution?:string}>}) {
+ const searchParams = await pendingSearchParams;
   const endedCleanupWhere={listingStatus:"ended",listingFormat:{contains:"Fixed",mode:"insensitive" as const},relistedToEbayItemId:null,endTime:{lte:new Date(Date.now()-30*86_400_000)},ebayActionExecutions:{none:{action:"ENDED_BIN_CLEANUP",status:"verified"}}};
   const [actionCenter,data,recovered,unavailable,pending,latestJob,execution,endedCleanup,endedCleanupSummary,recentExecutions,pricingPlan]=await Promise.all([
     loadSellActionCenter(),

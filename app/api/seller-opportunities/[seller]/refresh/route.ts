@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { collectSellerOpportunities, IncompleteSellerRunError } from "@/lib/seller-opportunities";
 
-export async function POST(request: NextRequest, { params }: { params: { seller: string } }) {
+export async function POST(request: NextRequest, { params }: { params: Promise<{ seller: string }> }) {
   try {
-    await collectSellerOpportunities(params.seller);
+    await collectSellerOpportunities((await params).seller);
     return NextResponse.redirect(new URL(`/seller-opportunities?refresh=success`, request.url), 303);
   } catch (error) {
     const message = error instanceof Error ? error.message : "Collection failed";

@@ -3,9 +3,9 @@ import { prisma } from "@/lib/prisma";
 import { getEbayOAuthUrl } from "@/lib/ebay";
 import { issueEbayOAuthState } from "@/lib/ebay-oauth-state";
 
-export async function POST(_request: Request, { params }: { params: { id: string } }) {
+export async function POST(_request: Request, { params }: { params: Promise<{ id: string }> }) {
   const store = await prisma.store.findUnique({
-    where: { id: params.id },
+    where: { id: (await params).id },
     select: { id: true, connectionStatus: true },
   });
 

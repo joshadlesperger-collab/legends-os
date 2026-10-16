@@ -16,7 +16,8 @@ function searchText(title:string,root:Record<string,any>,valuation:Record<string
   return [title,...parsed,...aspects].filter(value=>value!=null&&value!=="").join(" ").toLocaleLowerCase();
 }
 
-export default async function SellerOpportunitiesPage({searchParams}:{searchParams?:{refresh?:string;message?:string;view?:string;healthDays?:string;audit?:string;reported?:string;retrieved?:string;unique?:string;duplicates?:string;outside?:string;singles?:string;lots?:string;earliest?:string;latest?:string}}){
+export default async function SellerOpportunitiesPage({searchParams: pendingSearchParams}: {searchParams?: Promise<{refresh?:string;message?:string;view?:string;healthDays?:string;audit?:string;reported?:string;retrieved?:string;unique?:string;duplicates?:string;outside?:string;singles?:string;lots?:string;earliest?:string;latest?:string}>}) {
+ const searchParams = await pendingSearchParams;
   const seller=MONITORED_SELLERS[0];
   const defaultSnipeOffsetSeconds=Math.max(5,Math.min(300,Number(process.env.SELLER_OPPORTUNITY_DEFAULT_SNIPE_SECONDS)||7));
   const view:OpportunityView=searchParams?.view==="lots"?"lots":searchParams?.view==="all"?"all":"singles";

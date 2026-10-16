@@ -60,7 +60,7 @@ async function isListingInValidationCohort(listingId: string): Promise<boolean> 
 
 export async function POST(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const provider = getProviderStatus();
   if (provider.mode !== "live" || !provider.liveReady) {
@@ -75,7 +75,7 @@ export async function POST(
 
   telemetry.dbReads += 1;
   const row = await prisma.listing.findUnique({
-    where: { id: params.id },
+    where: { id: (await params).id },
     select: {
       id: true,
       storeId: true,

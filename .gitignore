@@ -20,3 +20,4 @@ tsconfig.tsbuildinfo
 # Local diagnostic and visual-verification artifacts
 .forensics-readonly/
 artifacts/
+.env*
