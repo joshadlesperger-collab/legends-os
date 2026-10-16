@@ -1,92 +1,257 @@
 "use client";
 
-import { useState } from "react";
-import { applyIdentityCorrection, projectListing, type CardIdentity, type DraftCard } from "@/lib/card-listing-factory";
+import { useEffect, useRef, useState } from "react";
+import { applyIdentityCorrection, generateTitle, projectListing, type CardIdentity } from "@/lib/card-listing-factory";
+import { assignPhoto, pairPhotoIds, type PairedCard, type PairOrder, type PhotoSide } from "@/lib/card-photo-pairing";
+import CardPricingReview from "@/components/CardPricingReview";
+import { projectPricing } from "@/lib/card-pricing-review";
+import { emptyPricing, type SoldComp } from "@/lib/card-pricing-review";
+import { recognitionSchema, recognizedIdentity } from "@/lib/card-recognition";
 
 type Photo = { id: string; file: File; url: string };
-type ReviewCard = { id: string; draft: DraftCard; front?: Photo; back?: Photo };
-const emptyIdentity = (): CardIdentity => ({ sport:"Baseball", player:"", year:new Date().getFullYear(), manufacturer:"", set:"", cardNumber:"" });
-const newCard = (front?:Photo,back?:Photo):ReviewCard => ({ id:crypto.randomUUID(),front,back,draft:{identity:emptyIdentity(),quantity:1,verified:false,frontImageId:front?.id,backImageId:back?.id} });
-const fieldStyle = { width:"100%", padding:"10px",borderRadius:6,border:"1px solid #999", background:"transparent",color:"inherit" } as const;
-const sports:CardIdentity["sport"][]=["Baseball","Football","Basketball","Hockey","Soccer","Other"];
+const emptyIdentity = (): CardIdentity => ({ sport: "Baseball", player: "", year: new Date().getFullYear(), manufacturer: "", set: "", cardNumber: "" });
+const newCard = (frontImageId?: string, backImageId?: string): PairedCard => ({ id: crypto.randomUUID(), draft: { identity: emptyIdentity(), quantity: 1, verified: false, frontImageId, backImageId } });
+const sports: CardIdentity["sport"][] = ["Baseball", "Football", "Basketball", "Hockey", "Soccer", "Other"];
+const textFields = { player: "Player", manufacturer: "Manufacturer", set: "Set", cardNumber: "Card number", team: "Team", parallel: "Parallel / variety", serialNumber: "Serial number (e.g. 30 or 30/50)", grade: "Grade / grading company", condition: "Observed condition" } as const;
+const MAX_PHOTOS = 40;
+const MAX_BYTES = 100 * 1024 * 1024;
 
-export default function CardListingFactory(){
- const [mode,setMode]=useState<"single"|"bulk">("single");
- const [cards,setCards]=useState<ReviewCard[]>([]);
- const [selected,setSelected]=useState(0);
- const [warning,setWarning]=useState("");
+// Decode sequentially, retain originals, and use small previews to bound decoded browser memory.
+async function preview(file: File): Promise<string> {
+  const source = URL.createObjectURL(file);
+  try {
+    const image = new Image();
+    await new Promise<void>((resolve, reject) => {
+      image.onload = () => resolve(); image.onerror = () => reject(new Error("Unreadable image")); image.src = source;
+    });
+    if (!image.naturalWidth || image.naturalWidth * image.naturalHeight > 32_000_000) throw new Error("Image exceeds 32 megapixels");
+    const scale = Math.min(1, 1200 / Math.max(image.naturalWidth, image.naturalHeight));
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.round(image.naturalWidth * scale); canvas.height = Math.round(image.naturalHeight * scale);
+    const context = canvas.getContext("2d");
+    if (!context) throw new Error("Image preview unavailable");
+    context.drawImage(image, 0, 0, canvas.width, canvas.height);
+    const blob = await new Promise<Blob>((resolve, reject) => canvas.toBlob(value => value ? resolve(value) : reject(new Error("Image preview failed")), "image/jpeg", 0.85));
+    return URL.createObjectURL(blob);
+  } finally { URL.revokeObjectURL(source); }
+}
 
- const card=cards[selected];
- function ingest(files:FileList|null){
-  if(!files?.length)return;
-  const accepted=Array.from(files).filter(f=>f.type.startsWith("image/"));
-  if(accepted.length!==files.length){setWarning("Non-image files were skipped.");}
-  const incoming=accepted.map(file=>({id:crypto.randomUUID(),file,url:URL.createObjectURL(file)}));
-  if(mode==="single") {
-    if(incoming.length!==2){setWarning("Single Card mode requires exactly two images, ordered front then back."); incoming.forEach(p=>URL.revokeObjectURL(p.url));return;}
-    setCards(previous=>[...previous,newCard(incoming[0],incoming[1])]);setSelected(cards.length);
-  } else {
-    const pairs:ReviewCard[]=[];
-    for(let i=0;i<incoming.length;i+=2)pairs.push(newCard(incoming[i],incoming[i+1]));
-    setCards(previous=>[...previous,...pairs]);setSelected(cards.length);
-    if(incoming.length%2)setWarning("The final image has no matching back. Assign it before approval.");
+export default function CardListingFactory() {
+  const [mode, setMode] = useState<"single" | "bulk">("single");
+  const [order, setOrder] = useState<PairOrder>("alternating");
+  const [cards, setCards] = useState<PairedCard[]>([]);
+  const [photos, setPhotos] = useState<Photo[]>([]);
+  const [selected, setSelected] = useState(0);
+  const [warning, setWarning] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [dragging, setDragging] = useState(false);
+  const [automatic, setAutomatic] = useState(false);
+  const [progress, setProgress] = useState("");
+  const [capabilities, setCapabilities] = useState<{ recognitionConfigured: boolean; soldCompsConfigured: boolean }>();
+  const pipeline = useRef<AbortController>();
+  const resources = useRef(new Set<string>());
+  const importing = useRef(false);
+  const mounted = useRef(true);
+  useEffect(() => {
+    mounted.current = true;
+    try { setAutomatic(localStorage.getItem("legends-photo-automation-consent-v1") === "enabled"); } catch { /* Session-only mode when storage is unavailable. */ }
+    const urls = resources.current;
+    void fetch("/api/card-listing-factory/recognize").then(response => response.ok ? response.json() : undefined).then(value => { if (mounted.current && value) setCapabilities(value); }).catch(() => {});
+    return () => { mounted.current = false; pipeline.current?.abort(); urls.forEach(url => URL.revokeObjectURL(url)); urls.clear(); };
+  }, []);
+  useEffect(() => {
+    if (!photos.length) return;
+    const warn = (event: BeforeUnloadEvent) => { event.preventDefault(); event.returnValue = ""; };
+    window.addEventListener("beforeunload", warn);
+    return () => window.removeEventListener("beforeunload", warn);
+  }, [photos.length]);
+  const card = cards[selected];
+  const projection = card ? projectListing(card.draft) : undefined;
+  const canApprove = card && !projectListing({ ...card.draft, verified: true }).requiresReview;
+  const findPhoto = (id?: string) => photos.find(p => p.id === id);
+  function updateDraft(change: (draft: PairedCard["draft"]) => PairedCard["draft"]) {
+    setCards(current => current.map(c => c.id === card.id ? { ...c, draft: change(c.draft) } : c));
   }
- }
- function update(index:number,patch:Partial<ReviewCard>){setCards(current=>current.map((c,i)=>i===index?{...c,...patch}:c));}
- function correction(fields:Partial<CardIdentity>){update(selected,{draft:applyIdentityCorrection(card.draft,fields)});}
- function setQuantity(value:number){update(selected,{draft:{...card.draft,quantity:value,verified:false}});}
- function assignPhoto(side:"front"|"back",id:string) {
-  const source=cards.find(c=>c.front?.id===id||c.back?.id===id);
-  const photo=source?.front?.id===id?source.front:source?.back?.id===id?source.back:undefined;
-  if(!photo)return;
-  setCards(current=>current.map((c,index)=>{
-   const matchingSide=c.front?.id===id?"front":c.back?.id===id?"back":null;
-   if(index===selected)return {...c,[side]:photo,draft:{...c.draft,[side==="front"?"frontImageId":"backImageId"]:id,verified:false}};
-   if(matchingSide)return {...c,[matchingSide]:undefined,draft:{...c.draft,[matchingSide==="front"?"frontImageId":"backImageId"]:undefined,verified:false}};
-   return c;
-  }));
- }
- function exportJson(){
-  const output=cards.map(c=>({id:c.id,identity:c.draft.identity,quantity:c.draft.quantity,frontImageName:c.front?.file.name??null,backImageName:c.back?.file.name??null,listing:projectListing(c.draft)}));
-  const blob=new Blob([JSON.stringify({schema:"legends-card-listing-review-v1",cards:output},null,2)],{type:"application/json"});
-  const link=document.createElement("a");link.href=URL.createObjectURL(blob);link.download="legends-listing-review.json";link.click();setTimeout(()=>URL.revokeObjectURL(link.href),1000);
- }
- return <main className="page" style={{maxWidth:1200}}>
-  <div className="eyebrow">Legends OS · Listing Factory</div><h1>Card Listing Factory</h1>
-  <p>Upload one card or a batch from your phone or scanner. Images stay in this browser session; this preview does not upload photos or publish to eBay.</p>
-  <div style={{display:"flex",gap:10,flexWrap:"wrap",marginBottom:16}}>
-   <button type="button" onClick={()=>setMode("single")} aria-pressed={mode==="single"}>Single Card</button>
-   <button type="button" onClick={()=>setMode("bulk")} aria-pressed={mode==="bulk"}>Bulk Upload</button>
-  </div>
-  <label style={{display:"block",border:"2px dashed #999",borderRadius:10,padding:20,marginBottom:16}}>
-   <strong>{mode==="single"?"Add front and back images":"Add images in front, back, front, back order"}</strong>
-   <div style={{marginTop:10}}><input aria-label="Choose card photos" type="file" accept="image/*" multiple onChange={e=>{ingest(e.target.files);e.target.value="";}}/></div>
-  </label>
-  {warning&&<p role="alert" style={{color:"#b76b00"}}>{warning} <button type="button" onClick={()=>setWarning("")}>Dismiss</button></p>}
-  <p>{cards.length} cards in session · {cards.filter(c=>!projectListing(c.draft).requiresReview).length} approved for future draft export</p>
-  {cards.length>0&&<div style={{display:"grid",gridTemplateColumns:"minmax(140px,1fr) minmax(0,3fr)",gap:16}}>
-   <div style={{display:"flex",flexDirection:"column",gap:8}}>{cards.map((c,i)=><button type="button" key={c.id} onClick={()=>setSelected(i)} aria-pressed={selected===i} style={{textAlign:"left",padding:10,border:i===selected?"2px solid currentColor":"1px solid #999",borderRadius:8}}>{i+1}. {c.draft.identity.player||"Unidentified card"}<div style={{fontSize:12}}>{projectListing(c.draft).requiresReview?"Needs review":"Approved"}</div></button>)}</div>
-   {card&&<section style={{minWidth:0}}>
-    <h2>Review card {selected+1}</h2>
-    <div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:10}}>
-     {(["front","back"] as const).map(side=><div key={side}><strong>{side==="front"?"Front":"Back"}</strong><div style={{minHeight:100,border:"1px solid #999",borderRadius:8,overflow:"hidden"}}>{card[side]?<img src={card[side]!.url} alt={side+" card photo"} style={{width:"100%",maxHeight:300,objectFit:"contain"}}/>:<p>Missing photo</p>}</div><select aria-label={"Assign "+side+" image"} value={card[side]?.id??""} onChange={e=>assignPhoto(side,e.target.value)} style={fieldStyle}><option value="">Select a photo</option>{cards.flatMap(c=>[c.front,c.back]).filter((p):p is Photo=>Boolean(p)).map(p=><option key={p.id} value={p.id}>{p.file.name} ({p.id.slice(0,6)})</option>)}</select></div>)}
+  function correction(fields: Partial<CardIdentity>) { updateDraft(draft => applyIdentityCorrection(draft, fields)); }
+  async function requestResearch(draft: PairedCard["draft"], signal: AbortSignal) {
+    const response = await fetch("/api/card-listing-factory/research", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ identity: draft.identity }), signal });
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.error || "Sold research failed.");
+    return result as { status: string; message: string; comps: SoldComp[]; excluded: { title: string; reason: string }[] };
+  }
+  async function prepareCards(targets: PairedCard[], pool: Photo[]) {
+    if (pipeline.current) return;
+    const controller = new AbortController(); pipeline.current = controller; setBusy(true);
+    try {
+      for (let index = 0; index < targets.length; index++) {
+        const target = targets[index];
+        const ids = [target.draft.frontImageId, target.draft.backImageId];
+        const pair = ids.map(id => pool.find(photo => photo.id === id));
+        if (!pair[0] || !pair[1]) continue;
+        setProgress(`Reading card ${index + 1} of ${targets.length}…`);
+        try {
+          const images = await Promise.all(pair.map(async photo => {
+            const blob = await (await fetch(photo!.url)).blob();
+            return new Promise<string>((resolve, reject) => { const reader = new FileReader(); reader.onload = () => resolve(String(reader.result)); reader.onerror = () => reject(new Error("Preview unavailable")); reader.readAsDataURL(blob); });
+          }));
+          const response = await fetch("/api/card-listing-factory/recognize", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ images }), signal: controller.signal });
+          const body = await response.json(); if (!response.ok) throw new Error(body.error || "Recognition failed.");
+          const result = recognitionSchema.parse(body);
+          if (!result.pairMatches || result.frontImageIndex === "unknown") throw new Error("Photos could not be established as a front/back pair of the same card. Check pairing and photo clarity.");
+          let nextDraft: PairedCard["draft"] = { ...target.draft, identity: recognizedIdentity(result), verified: false, manualTitle: undefined,
+            frontImageId: ids[Number(result.frontImageIndex)], backImageId: ids[1 - Number(result.frontImageIndex)],
+            pricing: undefined, automation: { message: "Photo identity prepared. Review before approving.", warnings: result.warnings } };
+          if (!projectListing({ ...nextDraft, verified: true }).requiresReview) {
+            setProgress(`Researching sold comps for card ${index + 1} of ${targets.length}…`);
+            try {
+              const research = await requestResearch(nextDraft, controller.signal);
+              nextDraft = { ...nextDraft, pricing: { ...emptyPricing(), comps: research.comps }, automation: { message: research.message, warnings: [...result.warnings, ...research.excluded.map(row => `${row.title}: ${row.reason}`)] } };
+            } catch (error) { if (controller.signal.aborted) throw error; nextDraft.automation!.message = "Photo identity prepared; sold research failed. No price was invented."; }
+          } else nextDraft.automation!.message = "Photo identity needs corrections before sold research. Missing fields were left blank.";
+          if (controller.signal.aborted || !mounted.current) break;
+          setCards(current => current.map(card => card.id === target.id ? { ...card, draft: nextDraft } : card));
+        } catch (error) {
+          if (controller.signal.aborted || !mounted.current) break;
+          const message = error instanceof Error && error.message.length < 300 ? error.message : "Automatic preparation failed. Existing fields were preserved.";
+          setCards(current => current.map(card => card.id === target.id ? { ...card, draft: { ...card.draft, automation: { message, warnings: [] } } } : card));
+        }
+      }
+    } finally { pipeline.current = undefined; if (mounted.current) { setBusy(false); setProgress(""); } }
+  }
+  async function researchSelected() {
+    if (pipeline.current || !card) return;
+    const controller = new AbortController(); pipeline.current = controller; setBusy(true); setProgress("Researching exact sold comps…");
+    const id = card.id;
+    try {
+      const result = await requestResearch(card.draft, controller.signal);
+      if (!controller.signal.aborted && mounted.current) setCards(current => current.map(value => value.id === id ? { ...value, draft: { ...value.draft,
+        pricing: result.status === "ready" ? { ...(value.draft.pricing ?? emptyPricing()), comps: result.comps, approvedSnapshot: undefined } : value.draft.pricing,
+        automation: { message: result.message, warnings: result.excluded.map(row => `${row.title}: ${row.reason}`) } } } : value));
+    } catch { if (!controller.signal.aborted && mounted.current) setWarning("Sold research failed. Existing evidence was preserved."); }
+    finally { pipeline.current = undefined; if (mounted.current) { setBusy(false); setProgress(""); } }
+  }
+  async function ingest(files: FileList | null, side?: PhotoSide) {
+    if (!files?.length || importing.current) return;
+    const batch = Array.from(files);
+    if ((side && batch.length !== 1) || (!side && mode === "single" && batch.length !== 2)) {
+      setWarning(side ? "Choose one photo for this side." : "Choose exactly two photos, or add a blank card and upload each side separately."); return;
+    }
+    if (batch.some(f => !["image/jpeg", "image/png", "image/webp"].includes(f.type) || f.size === 0 || f.size > 20 * 1024 * 1024)) {
+      setWarning("Choose JPEG, PNG or WebP photos, up to 20 MB each. Export HEIC photos as JPEG first. No files from this selection were added."); return;
+    }
+    if (photos.length + batch.length > MAX_PHOTOS || [...photos.map(p => p.file), ...batch].reduce((n, f) => n + f.size, 0) > MAX_BYTES) {
+      setWarning("Session limit: 40 photos or 100 MB of originals. Remove unused photos or clear the session before adding more."); return;
+    }
+    importing.current = true; setBusy(true); setWarning("");
+    const incoming: Photo[] = [];
+    const targetId = card?.id;
+    try {
+      for (const file of batch) {
+        const url = await preview(file);
+        incoming.push({ id: crypto.randomUUID(), file, url });
+        if (!mounted.current) throw new Error("Session closed");
+      }
+      incoming.forEach(p => resources.current.add(p.url));
+      setPhotos(current => [...current, ...incoming]);
+      if (side && targetId) {
+        const changed = assignPhoto(cards, targetId, side, incoming[0].id);
+        setCards(current => assignPhoto(current, targetId, side, incoming[0].id));
+        if (automatic) await prepareCards(changed.filter(value => value.id === targetId), [...photos, ...incoming]);
+      }
+      else {
+        const pairs = pairPhotoIds(incoming.map(p => p.id), order).map(([front, back]) => newCard(front, back));
+        setCards(current => [...current, ...pairs]); setSelected(cards.length);
+        if (incoming.length % 2) setWarning("Last card needs a back photo. Use Add back photo to complete it.");
+        if (automatic) await prepareCards(pairs, [...photos, ...incoming]);
+      }
+    } catch {
+      incoming.forEach(p => { URL.revokeObjectURL(p.url); resources.current.delete(p.url); });
+      if (mounted.current) setWarning("Could not preview this selection. Use readable JPEG, PNG or WebP images up to 32 megapixels. No photos were added.");
+    } finally { importing.current = false; if (mounted.current) setBusy(false); }
+  }
+  function release(photo: Photo) { URL.revokeObjectURL(photo.url); resources.current.delete(photo.url); }
+  function clear() { photos.forEach(release); setPhotos([]); setCards([]); setSelected(0); setWarning(""); }
+  function removeCard() {
+    setCards(current => current.filter(c => c.id !== card.id)); setSelected(Math.max(0, selected - 1));
+    // Photos remain in the pool so mistaken deletion can be repaired without re-uploading.
+  }
+  function exportJson() {
+    const output = cards.map(c => ({ id: c.id, identity: c.draft.identity, quantity: c.draft.quantity,
+      approved: !projectListing(c.draft).requiresReview,
+      identityApproved: !projectListing(c.draft).requiresReview,
+      pricingReview: projectPricing(c.draft),
+      readyForLocalDraftReview: !projectListing(c.draft).requiresReview && projectPricing(c.draft).approved,
+      automation: c.draft.automation,
+      frontImageId: c.draft.frontImageId ?? null, backImageId: c.draft.backImageId ?? null,
+      mainImageId: c.draft.frontImageId ?? null,
+      imageIds: [c.draft.frontImageId, c.draft.backImageId].filter((id): id is string => Boolean(id)),
+      frontImageName: findPhoto(c.draft.frontImageId)?.file.name ?? null,
+      backImageName: findPhoto(c.draft.backImageId)?.file.name ?? null, listing: projectListing(c.draft) }));
+    const photoManifest = photos.map(p => ({ id: p.id, name: p.file.name, size: p.file.size, lastModified: p.file.lastModified }));
+    const url = URL.createObjectURL(new Blob([JSON.stringify({ schema: "legends-card-listing-review-v1", destination: "local-review-only", photos: photoManifest, cards: output }, null, 2)], { type: "application/json" }));
+    const link = document.createElement("a"); link.href = url; link.download = "legends-listing-review.json"; link.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+  return <main className="page factory-page">
+    <div className="eyebrow">Legends OS · Listing Factory</div><h1>Card Listing Factory</h1>
+    <p>Upload photos → automatic identity and front/main-photo assignment → exact sold-comp research → your review. Ambiguous cards and unavailable evidence stop for correction. eBay draft creation and publishing are not connected.</p>
+    <label><span><input type="checkbox" disabled={busy} checked={automatic} onChange={event => { setAutomatic(event.target.checked); try { localStorage.setItem("legends-photo-automation-consent-v1", event.target.checked ? "enabled" : "disabled"); } catch { /* Preserve current session choice. */ } }} /> Automatically prepare new photo pairs (send previews to OpenAI)</span></label>
+    <p>With automatic preparation on, photo previews are sent to OpenAI for recognition. Fields remain unapproved until reviewed. {capabilities ? `Photo recognition: ${capabilities.recognitionConfigured ? "configured" : "not configured"}. Provider lookup: ${capabilities.soldCompsConfigured ? "configured" : "not configured"}. eBay browser-assisted research remains available without a provider connection.` : "Checking automation connections…"}</p>
+    <p role="note">Photos and edits last only until you leave or refresh this page. Export review data before leaving; the export contains field data and filenames, not the photos.</p>
+    <div className="factory-actions">
+      <button disabled={busy} onClick={() => setMode("single")} aria-pressed={mode === "single"}>Single Card</button>
+      <button disabled={busy} onClick={() => setMode("bulk")} aria-pressed={mode === "bulk"}>Bulk Upload</button>
+      <button disabled={busy || cards.length >= 40} onClick={() => { setCards(current => [...current, newCard()]); setSelected(cards.length); }}>Add blank card</button>
+      <button disabled={busy || !photos.length && !cards.length} onClick={clear}>Clear session</button>
     </div>
-    <p style={{fontSize:13}}>Confirm the front/back match, then enter or correct the identity. Automatic AI recognition and photo persistence are not yet connected.</p>
-    <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(170px,1fr))",gap:12}}>
-     <label>Sport<select style={fieldStyle} value={card.draft.identity.sport} onChange={e=>correction({sport:e.target.value as CardIdentity["sport"]})}>{sports.map(s=><option key={s}>{s}</option>)}</select></label>
-     {(["player","manufacturer","set","cardNumber","team","parallel","serialNumber"] as const).map(key=><label key={key}>{key}<input style={fieldStyle} value={card.draft.identity[key]??""} onChange={e=>correction({[key]:e.target.value})}/></label>)}
-     <label>Year<input style={fieldStyle} type="number" value={card.draft.identity.year} onChange={e=>correction({year:Number(e.target.value)})}/></label>
-     <label>Print run (/N)<input style={fieldStyle} type="number" value={card.draft.identity.numberedTo??""} onChange={e=>correction({numberedTo:e.target.value?Number(e.target.value):undefined})}/></label>
-     <label>Quantity<input style={fieldStyle} type="number" min={1} value={card.draft.quantity} onChange={e=>setQuantity(Number(e.target.value))}/></label>
-    </div>
-    <p><strong>Storage:</strong> {projectListing(card.draft).storageLocation}</p>
-    <p><strong>Proposed title:</strong> {projectListing(card.draft).title}</p>
-    <p><strong>Item specifics:</strong> {Object.entries(projectListing(card.draft).specifics).map(([k,v])=>k+": "+v).join(" · ")}</p>
-    <p style={{whiteSpace:"pre-line"}}><strong>Description:</strong> {projectListing(card.draft).description}</p>
-    {projectListing(card.draft).reviewReasons.length>0&&<div role="status"><strong>Review required:</strong><ul>{projectListing(card.draft).reviewReasons.map(x=><li key={x}>{x}</li>)}</ul></div>}
-    <button type="button" disabled={!card.front||!card.back||!card.draft.identity.player||!card.draft.identity.set||!card.draft.identity.manufacturer||!card.draft.identity.cardNumber||card.draft.quantity<1} onClick={()=>update(selected,{draft:{...card.draft,verified:true}})}>Confirm card identity</button>
-   </section>}
-  </div>}
-  {cards.length>0&&<p><button type="button" onClick={exportJson}>Export review data (JSON)</button> <small>Exports field data and image filenames only; original image files remain on your device.</small></p>}
- </main>;
+    {mode === "bulk" && <label>Photo order<select disabled={busy} value={order} onChange={e => setOrder(e.target.value as PairOrder)}><option value="alternating">Front, back, front, back</option><option value="fronts-first">All fronts, then all backs (same card order)</option></select></label>}
+    <label className="factory-upload" style={dragging ? { borderColor: "var(--gold)", background: "var(--surface-2)" } : undefined}
+      onDragOver={event => { event.preventDefault(); event.dataTransfer.dropEffect = busy ? "none" : "copy"; setDragging(!busy); }}
+      onDragLeave={event => { if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setDragging(false); }}
+      onDrop={event => { event.preventDefault(); setDragging(false); if (!busy) void ingest(event.dataTransfer.files); }}>
+      <strong>{mode === "single" ? "Drop front and back photos here, or choose files" : "Drop multiple photos here, or choose files"}</strong>
+      <input disabled={busy} aria-label="Choose card photos" type="file" accept="image/jpeg,image/png,image/webp" multiple onChange={e => { void ingest(e.target.files); e.target.value = ""; }} />
+    </label>
+    <p>For multiple cards, choose Bulk Upload and select the photo order before dropping files. Check every pair: the photo assigned to Front is always the main image, followed by Back. JPEG, PNG, WebP · 20 MB per photo · 40 photos / 100 MB per session.</p>
+    {busy && <p role="status">{progress || "Preparing photo previews…"} {pipeline.current && <button type="button" onClick={() => pipeline.current?.abort()}>Stop preparation</button>}</p>}
+    {warning && <p role="alert">{warning} <button onClick={() => setWarning("")}>Dismiss</button></p>}
+    <p>{cards.length} cards · {photos.length} photos · {cards.filter(c => !projectListing(c.draft).requiresReview).length} approved for local review</p>
+    {cards.length > 0 && <div className="factory-review">
+      <nav aria-label="Cards to review">{cards.map((c, i) => <button disabled={busy} key={c.id} onClick={() => setSelected(i)} aria-pressed={selected === i}>{i + 1}. {c.draft.identity.player || "Unidentified card"}<small>{projectListing(c.draft).requiresReview ? "Needs review" : "Approved locally"}</small></button>)}</nav>
+      {card && projection && <section>
+        <fieldset disabled={busy} style={{ border: 0, padding: 0, minWidth: 0 }}>
+        <h2>Review card {selected + 1}</h2>
+        <div className="factory-actions"><button type="button" onClick={() => void prepareCards([card], photos)} disabled={!card.draft.frontImageId || !card.draft.backImageId}>Prepare this card automatically</button><a href={`https://www.ebay.com/sch/i.html?${new URLSearchParams({ _nkw: generateTitle(card.draft.identity), LH_Sold: "1", LH_Complete: "1" })}`} target="_blank" rel="noreferrer">Research eBay sold listings</a><button type="button" onClick={() => void researchSelected()} disabled={!capabilities?.soldCompsConfigured || projectListing({ ...card.draft, verified: true }).requiresReview}>Sold comps (connected provider)</button></div>
+        <p>Preparing again replaces identity suggestions and price evidence, then requires review again.</p>
+        {card.draft.automation && <div role="status"><strong>{card.draft.automation.message}</strong>{card.draft.automation.warnings.length > 0 && <details><summary>Recognition / evidence exceptions</summary><ul>{card.draft.automation.warnings.map((message,index) => <li key={index}>{message}</li>)}</ul></details>}</div>}
+        <div className="factory-photos">{(["front", "back"] as const).map(side => {
+          const photo = findPhoto(side === "front" ? card.draft.frontImageId : card.draft.backImageId);
+          return <div key={side}><h3>{side === "front" ? "Front · Main image #1" : "Back · Image #2"}</h3>
+            {photo ? <a href={photo.url} target="_blank" rel="noreferrer" aria-label={`Open ${side} preview`}><img src={photo.url} alt={`${side}: ${photo.file.name}`} /></a> : <p>Missing photo</p>}
+            {photo && <small>{photo.file.name}</small>}
+            <label>Assign {side} photo<select disabled={busy} value={photo?.id ?? ""} onChange={e => setCards(current => assignPhoto(current, card.id, side, e.target.value || undefined))}><option value="">No photo</option>{photos.map((p, i) => <option key={p.id} value={p.id}>{i + 1}. {p.file.name}</option>)}</select></label>
+            <label>Add {side} photo<input disabled={busy} type="file" accept="image/jpeg,image/png,image/webp" onChange={e => { void ingest(e.target.files, side); e.target.value = ""; }} /></label>
+          </div>;
+        })}</div>
+        <div className="factory-actions"><button disabled={busy} onClick={() => setCards(current => current.map(c => c.id === card.id ? { ...c, draft: { ...c.draft, frontImageId: c.draft.backImageId, backImageId: c.draft.frontImageId, verified: false } } : c))}>Swap front / back</button><button disabled={busy} onClick={removeCard}>Remove card (keep photos)</button></div>
+        <div className="factory-fields">
+          <label>Sport<select value={card.draft.identity.sport} onChange={e => correction({ sport: e.target.value as CardIdentity["sport"] })}>{sports.map(s => <option key={s}>{s}</option>)}</select></label>
+          {Object.entries(textFields).map(([key, label]) => <label key={key}>{label}<input value={card.draft.identity[key as keyof typeof textFields] ?? ""} onChange={e => correction({ [key]: e.target.value })} /></label>)}
+          <label>Year<input type="number" value={card.draft.identity.year || ""} onChange={e => correction({ year: Number(e.target.value) })} /></label>
+          <label>Print run (/N)<input type="number" min={1} step={1} value={card.draft.identity.numberedTo ?? ""} onChange={e => correction({ numberedTo: e.target.value ? Number(e.target.value) : undefined })} /></label>
+          {(["rookie", "autograph", "graded"] as const).map(key => <label key={key}><span><input type="checkbox" checked={!!card.draft.identity[key]} onChange={e => correction({ [key]: e.target.checked })} /> {key}</span></label>)}
+        </div>
+        <p>Quantity: <strong>1</strong> physical card per pair. Add each additional copy as its own card.</p>
+        <p><strong>Storage:</strong> {projection.storageLocation}</p><p><strong>Proposed title ({projection.title.length}/80):</strong> {projection.title}</p>
+        <details><summary>Item specifics</summary>{Object.entries(projection.specifics).map(([key, value]) => <p key={key}>{key}: {value}</p>)}</details>
+        <p className="factory-description"><strong>Description:</strong> {projection.description}</p>
+        {projection.reviewReasons.length > 0 && <div role="status"><strong>Review required:</strong><ul>{projection.reviewReasons.map(reason => <li key={reason}>{reason}</li>)}</ul></div>}
+        <button disabled={busy || !canApprove || card.draft.verified} onClick={() => updateDraft(draft => projectListing({ ...draft, verified: true }).requiresReview ? draft : { ...draft, verified: true })}>Confirm identity and photo pair for local review</button>
+        <p>This confirmation does not approve an eBay publish. Any identity or photo change requires confirmation again.</p>
+        <CardPricingReview draft={card.draft} onChange={pricing => updateDraft(draft => ({ ...draft, pricing }))} />
+        </fieldset>
+      </section>}
+    </div>}
+    {photos.some(p => !cards.some(c => c.draft.frontImageId === p.id || c.draft.backImageId === p.id)) && <details><summary>Unused photos (available for reassignment)</summary>{photos.filter(p => !cards.some(c => c.draft.frontImageId === p.id || c.draft.backImageId === p.id)).map(p => <p key={p.id}>{p.file.name} <button disabled={busy} onClick={() => { release(p); setPhotos(current => current.filter(x => x.id !== p.id)); }}>Remove unused photo</button></p>)}</details>}
+    {cards.length > 0 && <p><button disabled={busy} onClick={exportJson}>Export review data (JSON)</button> Includes approval status and review warnings for each card. Keep your original photos.</p>}
+  </main>;
 }

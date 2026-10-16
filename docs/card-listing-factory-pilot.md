@@ -1,5 +1,5 @@
 # Card Listing Factory — pilot SOP
-Updated: 2026-10-15
+Updated: 2026-10-16
 Status: Proposed workflow; eBay create/publish capability NOT yet verified. Do not claim drafts exist on eBay until confirmed by API.
 
 ## Goal
@@ -10,11 +10,24 @@ User uploads front/back photos via phone or scanner. Legends OS identifies a spo
 2. Identify year, manufacturer, set, player, card number, parallel, serial number, team, grading/slab details. Check image confidence; do not invent attributes or condition grades.
 3. Research recent **sold** comparables, prioritizing exact parallel and /numbering; note comp date, shipping and condition differences. Flag weak comp coverage.
 4. Draft optimized original title, accurate item specifics, concise condition text and description. 'Sell Similar' may provide reference specifics, but never copy unsupported attributes or reuse another seller's images.
-5. Propose Buy It Now approximately 110% of credible fair sold comp, adjusted for competing total cost; target Best Offers around 8–10% off list. Prices require approval.
+5. Use the **arithmetic average of matching sold item prices excluding shipping**, with an **8–10% premium**, default **9%**, applied before rounding. For all cards, round the premium-adjusted amount upward to the smallest price ending in .49 or .95; retain an exact ending. Final effective premium may exceed 10%. See current decision rules below. Display source evidence, base premium and any final rounding adjustment separately. Never invent comps or use asking prices or undisclosed accepted Best Offers as verified sold prices. Prices require approval.
 6. Shipping defaults from seller conversation: under $10 $1.49; $10–$19.99 $1.95 for eligible raw cards; $20+ or slab/thick patch $6.29 tracked. Verify current eBay Standard Envelope eligibility, thickness, weight, order-value and category limits before service selection. Never use envelope when ineligible. Combined shipping pilot: +$0.50 per eligible additional card; prevent untracked over-limit mixed orders; best-offer orders may require manual handling. No existing eBay policy has been changed.
 7. Create an eBay **draft or unpublished offer**, if currently authorized technical capability exists, using verified seller account, marketplace, correct policy IDs and images. Persist draft ID/API response and audit log. Do not publish unless the user explicitly approves that exact listing.
 8. Present a review screen with original photos, card ID, comps with confidence, price, fees/estimated margin, shipping, title, description, and warnings. User may approve/edit/reject.
 9. Only after approval, publish via verified integration and confirm live eBay item ID and listing URL. Handle errors without duplicate listings.
+
+## Current decision rules — source of truth (2026-10-16)
+
+These rules supersede older implementation notes below. Record new user decisions here as they are made, distinguishing confirmed requirements, unresolved scope and implemented behavior. Read this section before resuming in another chat; do not rely on chat history alone.
+
+- **Comp workflow — confirmed and implemented locally:** use recent matching eBay sold listings and the arithmetic average item price excluding shipping. Browser-assisted research needs no sold-data API subscription. Keep source links, sale dates, item prices, shipping and match notes. Exclude asking prices, mismatched cards and undisclosed accepted Best Offer prices. Unattended in-app browser research is not implemented.
+- **Premium — confirmed and implemented locally:** target 8–10% above the unrounded comp average, default 9%. This is distinct from Best Offer settings.
+- **Price endings — confirmed for ALL cards, implemented locally:** after applying the 8–10% base premium (default 9%) to the unrounded comp average, choose the smallest price ending in .49 or .95 that is at least that amount. Retain exact .49/.95 endings; never round down. Examples: $6.20 → $6.49; $6.72 → $6.95; $6.96 → $7.49. This supersedes the earlier undefined "middle" scope. The final effective premium may exceed 10%; display it separately. Recalculate shipping from the final price and invalidate previous financial approvals.
+- **Goodman test:** human-confirmed 2026 Topps Finest Hunter Goodman #155 Gold Geometric Refractor, serial 30/50, Colorado Rockies, raw, quantity 1. Preserve #155; recognition misread #133 is not authoritative. Current sold average $6.163333... gives $6.72 at 9%. The confirmed ending rule gives $6.95 (about 12.8% above average), plus proposed $1.49 shipping = $8.44 before tax. The rule is implemented locally; existing open browser sessions need the updated build to display it. User subsequently confirmed envelope eligibility and approved $6.95 plus $1.49 shipping; local UI approval and exported review were verified on 2026-10-16. This does not authorize eBay publication.
+- **Photos and quantity — confirmed, implemented locally:** support multiple-photo drag/drop and bulk pairing. Front is always main image #1; back is #2. Review ambiguous pairs. Each pair represents one physical card; never merge serial-numbered copies into quantity.
+- **Automation — confirmed goal, partially implemented:** minimize repeated manual steps and preserve corrections/rules. Prepare suggestions for review; do not equate assisted research with unattended automation. Unknown identity or comp evidence remains unresolved rather than invented.
+- **Shipping and approvals:** retain the charge rules in pipeline step 6. User confirmed Goodman packaged-card envelope eligibility on 2026-10-16 for this test. Identity and financial approvals are separate; relevant changes invalidate approval. Neither authorizes publishing.
+- **Release status:** user authorized committing and pushing these changes to draft PR #13 on 2026-10-16. Check Git/PR status for the resulting commit. PR #13 remains unmerged and this workflow is not deployed to production. eBay draft creation/publishing is not connected. Commits/pushes and production deployment require explicit approval; eBay publication requires explicit listing approval.
 
 ## First morning test (2026-10-16; user-initiated)
 Test 3 cards:
@@ -35,3 +48,87 @@ After a fully validated single-card draft and publish-with-approval flow, test 3
 
 ## Persistent assistant instructions
 Treat this file as the source of truth for Card Listing Factory requirements. Keep a changelog in Git. Never claim a listing is live or an automation is installed until verified. Never store eBay credentials in Git.
+## Local implementation and release review — 2026-10-16
+
+PR #13 remains draft on feature/card-listing-factory-v1. This section records local changes; it does not imply a commit, push, merge or deployment.
+
+Implemented the minimum manual photo-review workflow:
+- Separate front/back uploads, blank cards, single-pair and bulk ingestion with alternating or fronts-first order. Browser file order is provisional; each pair needs human confirmation.
+- A retained photo pool with reversible reassignment: occupied slots swap rather than duplicating or losing a displaced image. Clearing a slot makes the photo available for reassignment. Card removal retains its photos; unused photos can be removed explicitly.
+- Sequential image validation and 1200px JPEG previews, with 20 MB/file, 32 megapixel/image, 40-photo and 100 MB/session limits. Original files stay in session memory; URLs are released on removal, clearing and unmount. No photo network upload, database writes, or eBay calls.
+- Local approval requires valid identity, distinct front/back photos, title length and serial-number validation. Changes to identity/photos invalidate approval. Approval means local review only, never permission to publish.
+- Quantity is deliberately one physical card per pair in this MVP. Additional copies require separate pairs. No multi-copy listing can claim every buyer receives the exact pictured card.
+- Identity projects into title, specifics, description and storage. Serial denominators must agree; rookie/autograph/grade/condition are editable and projected. Numbered cards never group automatically.
+- JSON review export includes warnings, local approval, image IDs and a filename/size/last-modified manifest. It contains no image bytes and cannot restore a session. Photos/edits are lost on navigation or reload; the interface warns explicitly and registers a page-unload warning.
+
+Validation:
+- npm run typecheck passed.
+- npm test passed: 217 tests, including 14 factory/pairing tests now included in normal CI.
+- npm run build passed; /card-listing-factory was emitted.
+- prisma validate passed with a local placeholder database URL; no database was contacted or migrated.
+- Additional refresh, image-quality and identity-integrity suites passed: 18 tests.
+- Browser smoke test against an isolated local production build: sign-in, two-file import, both previews, Goodman field entry, synchronized 66-character title, 30/50 serial output, local approval, approval invalidation after swapping, blocking a mismatched 30/99 serial, safe same-card reassignment, and JSON download inspected successfully.
+- Actual Hunter Goodman photos were unavailable in the referenced chat and checkout. Browser images were explicitly labeled synthetic fixtures; this is not photographic identification evidence. Recorded card identity still needs confirmation against the real photos.
+- Disposable PostgreSQL integration suite was not run: the approved local integration database was not configured. This change adds no database or external API access.
+
+Release findings and gates:
+- Existing PR head d58520bb1e26c60ff973fc9e9d7cd210b2fc6619 had successful GitHub Validate CI. That result does not cover these uncommitted local changes.
+- Confirmed Vercel project legends17/legends-os, prj_x6eSQwKAc3n7Fc0PnaeTe8HgDnbH, team_dDuFlWun18GDzHrQAFN45CdV. Connector denied deployment detail access; read-only CLI inspection succeeded. Latest listed READY production deployment was commit a6d37cd1ec778c6b84c4d88552aaaadc7c5677cc, predating this factory. No deployment was created.
+- npm audit reported 5 existing dependency findings (1 critical, 3 high, 1 moderate), including Next.js 14.2.5. Dependency remediation and revalidation are a production-release gate; this PR does not silently perform a framework migration or force an audit fix.
+- Repository AGENTS.md explicitly requires approval to commit/push. Obtain that approval, commit these reviewed changes to the existing feature branch, push, rerun CI, and inspect a branch preview before marking ready.
+- Inspect the final PR diff against current main, resolve drift and confirm the preview's operator login and iPhone flow. Obtain explicit merge/production-deployment approval before merging, because merging may trigger production hosting.
+- After authorized deployment reaches READY, verify its commit and the authenticated factory page, then provide the user the exact deployed URL/navigation. Do not send the PR URL as an app testing destination.
+- Existing eBay Trading listing/migration code is not a verified Card Listing Factory create-draft integration. AI recognition, comps/pricing, persistent image hosting, policy validation and factory-specific idempotent eBay draft creation remain separate work. No eBay draft or listing was created, and no live integration test was performed.
+
+Suggested PR title: Card Listing Factory: safe manual photo pairing and local review
+
+Suggested PR description: Adds the Sell navigation entry and a browser-session photo-review workspace for single cards and bulk batches. Users can correct pairings without losing photos, enter card identity, review synchronized listing fields, and export local review data. Valid identity, distinct images and serial/title checks gate confirmation; every edit resets approval. Quantity is one physical card per pair. Images are bounded, validated and previewed locally, with explicit session-loss and export limitations. No AI recognition or eBay publishing is connected. See validation and remaining release gates above.
+- Responsive browser check at a 390px viewport: both previews remained loaded, photo width was 343px, and document width matched its 375px content viewport (no horizontal overflow). This was browser emulation, not a physical iPhone/HEIC test.
+
+### Drag-and-drop and primary photo follow-up
+- Added multi-file dropping to the upload area, using the same format, size, preview and pairing validation as the file chooser. Bulk mode supports the selected alternating or fronts-first order.
+- Labeled the front slot Main image #1 and the back slot Image #2. Review export now derives mainImageId directly from frontImageId and emits imageIds in front/back order, so a corrected pairing cannot retain a stale primary image.
+- Front/back identity is operator-confirmed; no automatic side recognition is claimed. Existing sessions need the updated screen loaded before drag-and-drop is available.
+
+### Pricing and shipping review — local implementation
+- Added editable sold-comp rows with HTTPS source, sale date, USD sold item price, separate shipping, notes and operator verification. Evidence must match the current card identity, be no more than 90 days old, have valid cent amounts, and not duplicate a source URL. This is manual evidence entry, not automated sold-comp retrieval or source verification.
+- The comp basis is the median sold item price excluding shipping; comp buyer totals are visible separately. Listing premium is 8–10%, default 9%; range, proposed price, shipping charge and buyer total before tax are displayed. Single-comp evidence is flagged as limited.
+- Shipping applies existing seller charges ($1.49 / $1.95 / $6.29). Tracked is required for graded cards, operator-marked thick/slab cards and proposed prices of $20+. Envelope eligibility must be explicitly verified before price approval. These are proposed charges; no carrier label or service is purchased.
+- Economic approval is separate from identity approval and binds to current identity, photo IDs, quantity, comp evidence, premium and shipping settings. Export includes inputs, computed values, warnings, approval and combined local readiness. Editing a comp clears its verification; identity changes require comp verification again.
+- The eBay draft button remains disabled and clearly labeled as unconnected. No eBay writes, schema migrations or production deployment are included.
+- All 221 default tests and typechecks passed, including 18 factory tests. A clean build was required after OneDrive caused Next.js cache cleanup to fail; only the verified workspace .next generated directory was removed.
+- Clean production build passed. Browser check on the updated local screen restored the confirmed Goodman identity with retained preview copies; the original approval/photo tab was left intact. A clearly labeled temporary $10 fixture produced a $10.80–$11.00 range, $10.90 default listing, $6.29 tracked charge and $17.19 buyer total; 11% premium blocked approval. The fixture was removed and shipping reset afterward. Goodman is left awaiting actual verified comps, with no economic approval or eBay draft claimed.
+
+### Automatic preparation — local implementation
+- Added AI SDK 7 and its OpenAI provider, with schema-validated two-photo recognition. Recognition reads visible evidence, distinguishes front/back, leaves unsupported fields blank, rejects unresolved/mismatched pairs, and never grants listing or economic approval. The configured model defaults to gpt-6.1-sol after checking available model IDs and official model documentation; it is server-configurable.
+- Embedded preview validation rejects remote URLs, unsupported/spoofed formats and oversized payloads. Server endpoints require operator authentication and same-origin browser requests. Recognition has bounded output, no automatic SDK retries, a timeout, cancellation, concurrency control, and store:false. API credentials remain server-side; raw provider errors and image bytes are not returned in errors.
+- After an operator enables automatic preparation (the OpenAI image-processing disclosure is visible), the preference is remembered locally. New complete pairs are prepared sequentially; manual corrections remain possible. Existing cards offer Prepare this card automatically and Find sold comps automatically. Re-running preparation explicitly replaces suggestions/evidence and invalidates approvals. Partial pairs and failed requests keep existing fields for correction.
+- Added a factory-specific The Card API sold-sales adapter instead of reusing permissive legacy normalization. It requires explicit price_confirmed:true, USD, source URLs, valid sold date within 90 days, known shipping, exact identity/parallel/print run and matching grading/rookie/autograph status. Structured-field contradictions, lots, reprints, digital/custom cards and duplicate source IDs/URLs are excluded. Missing credentials or weak evidence return an explicit pause; no fixture or active-asking-price fallback is possible.
+- Local credential-presence check found recognition configured but THE_CARD_API_KEY and DATABASE_URL absent. No secret values were printed or copied. The live Goodman recognition request was rejected by automatic approval review before execution because explicit permission to send those two images to OpenAI was required; user approval was requested and remains pending. No live recognition result or live sold-price result is claimed.
+- Official references: https://developers.openai.com/api/docs/guides/images-vision ; https://developers.openai.com/api/docs/guides/structured-outputs ; https://developers.openai.com/api/docs/models/gpt-6.1-sol ; https://www.thecardapi.com/docs . eBay Marketplace Insights is restricted, so an ordinary eBay store connection is not treated as proof of marketplace-wide sold-data access.
+- Final validation: all 226 default tests (23 factory tests), typechecks and production build passed. Browser verification restored Goodman in the same updated tab with external recognition switched off, showed recognition credential presence and missing sold-data status, and confirmed automatic research pauses without changing approved identity or inventing comps. The current review was exported before refresh; original photo review remains in its original tab. No live image recognition or sold API call was performed pending explicit photo permission/provider setup.
+
+### Approved Goodman live recognition test — 2026-10-16
+- After the user selected option 1 approving transmission of the two retained Goodman previews to OpenAI, one live call completed successfully with response storage disabled.
+- It matched Hunter Goodman, Topps Finest, Colorado Rockies, the same front/back card, image 0 as front, ungraded status and a /50 print run.
+- It read the back card number as 133, conflicting with the previously entered and human-confirmed 155. This is a review exception, not an automatic overwrite of the approved identity. The test fixtures using #155 remain synthetic/recorded values and are not photographic ground truth.
+- Release year, exact parallel and individual serial digits were left null. The model flagged that the card occupies only a small portion of each screenshot, with substantial whitespace; it also read an UNCOMMON designation on the back. No unsupported 2026 / Gold Geometric / 30 serial claim was promoted from this run.
+- Live JSON result is retained locally at artifacts/goodman-test/live-recognition-result.json. Original browser review and exports remain intact. No live sold data was retrieved and no eBay mutation occurred. Full-resolution, tightly framed original front/back photos are the next step for reliable automated identification.
+
+### eBay browser-assisted research and average pricing — 2026-10-16
+- User clarified that their normal comp workflow is eBay sold listings and averaging comparable sales, without sold-data API credentials. The local pricing rule now uses the arithmetic mean of included sold item prices, excluding shipping. Apply the chosen 8–10% premium to the unrounded mean, then round the final listing price to cents. This supersedes the earlier median implementation; economic approval snapshots include mean-v1.
+- Added Research eBay sold listings using the current identity, with Sold and Completed filters. Connected-provider lookup is a separate optional action, disabled when unavailable. Browser-assisted research during an agent session does not require a paid data API; the app itself still cannot autonomously read the operator's signed-in browser.
+- A read-only browser search for the confirmed 2026 Topps Finest Hunter Goodman #155 Gold Geometric /50 displayed these matching sales: 820097075154, Sep 11, 2026, $4.99 item + $1.85 shipping (1 bid); 178336585811, Aug 21, 2026, $8.00 + $1.86 (Buy It Now); 147472609994, Aug 6, 2026, $5.50 + $1.65 (4 bids). These are browser-displayed evidence, not independently supplied API transaction records. Excluded 318625718201 ($14.99 displayed) because Best Offer accepted obscures its actual accepted price. Related results with other parallels/print runs were excluded.
+- Preliminary mean is $18.49 / 3 = $6.163333..., with an 8–10% price range of $6.66–$6.78 and 9% default of $6.72. Proposed $1.49 buyer shipping yields $8.21 before tax, subject to packaged-card eligibility verification and price approval.
+- eBay's Product Research documentation says it exposes actual sold prices including accepted Best Offers: https://www.ebay.com/help/selling/selling-tools/terapeak?id=4853 . Browser-assisted price research is distinct from unattended app automation; no scraping service or undocumented backend was added.
+
+Browser QA: updated local factory loaded in existing review tab; restored Goodman #155 front/main and back photos, entered the three browser-observed sold sources/dates/shipping, and verified mean $6.16, range $6.66–$6.78, 9% price $6.72, proposed shipping $1.49 and buyer total $8.21. Envelope eligibility and financial approval remain pending; eBay integration is disabled. Exported review JSON backup. Final build and type checking passed; test suite 227 passed. All changes remain local and uncommitted.
+
+### All-card price-ending rule confirmed — 2026-10-16
+User confirmed .49/.95 upward rounding applies to all cards. Implemented after the unrounded mean premium, with effective final premium displayed, shipping computed from final price and approval version updated. Goodman now calculates $6.95 plus proposed $1.49 shipping ($8.44 before tax). All 228 tests and clean build/typechecks passed. Local changes only; existing open page state is not automatically refreshed.
+
+### Goodman local review approved — 2026-10-16
+User confirmed the offered local-review next step. Loaded the updated build in the same tab and restored saved photos and sold evidence. Verified front/main #1, back #2, human-confirmed #155, final price $6.95, proposed shipping $1.49 and total $8.44. Applied user-confirmed envelope eligibility and local financial approval; UI states Price and shipping approved locally. Export inspected and backed up under ignored artifacts/goodman-test/goodman-approved-review.json. No commit, push, merge, deployment, eBay draft or publication performed. Earlier pending notes are historical.
+
+### Save-to-PR authorization — 2026-10-16
+User explicitly authorized committing and pushing the tested factory changes and saved rules to existing draft PR #13. Latest code validation: 228 tests, clean production build, application and test typechecks passed. This authorization does not include merge, production deployment, or eBay publication. Historical local-only status notes above describe their respective test times.

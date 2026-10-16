@@ -33,7 +33,12 @@ test("invalid photos, quantities and serials fail closed",()=>{
  assert.ok(output.reviewReasons.length>=3);
 });
 test("seller economics match policy",()=>{
- assert.equal(priceFromSoldComp(10),11);
+ assert.equal(priceFromSoldComp(10),10.9);
+ assert.equal(priceFromSoldComp(10,8),10.8);
+ assert.equal(priceFromSoldComp(10,10),11);
+ assert.equal(priceFromSoldComp(5.5,9),6);
+ for(const premium of [7.99,10.01,NaN,Infinity]) assert.throws(()=>priceFromSoldComp(10,premium));
+ for(const comp of [0,-1,NaN,Infinity]) assert.throws(()=>priceFromSoldComp(comp));
  assert.equal(suggestedShipping(9.99,false),1.49);
  assert.equal(suggestedShipping(10,false),1.95);
  assert.equal(suggestedShipping(20,false),6.29);
@@ -41,4 +46,31 @@ test("seller economics match policy",()=>{
 });
 test("sport and last-name initial represent existing storage arrangement",()=>{
  assert.equal(storageLocation({ ...card,sport:"Football",player:"Patrick Mahomes"}),"Football / M");
+});
+
+test("serial denominator must match and cannot be duplicated in description",()=>{
+ const draft={identity:{...card,serialNumber:"30/50"},quantity:1,verified:true,frontImageId:"a",backImageId:"b"};
+ assert.equal(projectListing(draft).requiresReview,false);
+ assert.doesNotMatch(projectListing(draft).description,/30\/50\/50/);
+ assert.equal(projectListing({...draft,identity:{...card,serialNumber:"30/99"}}).requiresReview,true);
+ for(const numberedTo of [0,-1,NaN,Infinity,1.5]) assert.equal(projectListing({...draft,identity:{...card,numberedTo}}).requiresReview,true);
+});
+test("duplicate photos and quantities other than one cannot be approved",()=>{
+ const draft={identity:card,quantity:1,verified:true,frontImageId:"a",backImageId:"b"};
+ for(const quantity of [0,2,1.5,NaN,Infinity]) assert.equal(projectListing({...draft,quantity}).requiresReview,true);
+ assert.equal(projectListing({...draft,backImageId:"a"}).requiresReview,true);
+});
+test("rookie, autograph, condition and grade stay synchronized and distinct",()=>{
+ const base={...card,serialNumber:undefined,numberedTo:undefined};
+ assert.equal(canMergeQuantities(base,{...base,autograph:true}),false);
+ assert.equal(canMergeQuantities(base,{...base,rookie:true}),false);
+ const result=projectListing({identity:{...base,rookie:true,autograph:true,graded:true,grade:"PSA 9",condition:"Surface scratch"},quantity:1,verified:true,frontImageId:"a",backImageId:"b"});
+ assert.match(result.description,/Rookie.*Autographed.*PSA 9.*Surface scratch/);
+ assert.equal(result.specifics.Autographed,"Yes");
+ assert.equal(result.specifics.Grade,"PSA 9");
+ assert.match(result.title,/PSA 9/);
+});
+test("invalid identities never form a quantity group",()=>{
+ const incomplete={...card,player:"",serialNumber:undefined,numberedTo:undefined};
+ assert.equal(canMergeQuantities(incomplete,incomplete),false);
 });
