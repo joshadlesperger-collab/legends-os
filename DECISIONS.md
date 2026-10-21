@@ -32,3 +32,7 @@ Josh confirmed he lists fairly against supported comps and does not use a buffer
 ## 2026-10-21 — price-sensitive rounding (v4)
 
 Josh specified nearest .49/.95 at $3 or below and upward .49/.95 above $3, allowing a small rounding buffer on larger cards. Apply after subtracting buyer shipping, using the unrounded item-price threshold. This supersedes the earlier all-prices-nearest proposal and does not reinstate a percentage premium. See pricing policy for examples and the tie convention. Runtime enforcement remains unverified.
+
+## 2026-10-21 — hard $1.49 minimum (v5)
+
+Josh specified no card ever below $1.49. Record a hard minimum item price with shipping separate; this overrides lower rounding results including the preceding $0.95 example. Apply to proposed draft/export/revision values and inspect offer/promotion execution for compliance before claiming enforcement. Runtime changes remain outstanding.

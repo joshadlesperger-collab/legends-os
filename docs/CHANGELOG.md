@@ -29,3 +29,9 @@ For the rationale and authority of each change, see `../DECISIONS.md`. For exact
 - Replaced general nearest-ending rounding with nearest .49/.95 at or below $3 and upward .49/.95 above $3.
 - Recorded calculation order, boundary examples, and explicit buyer-total adjustment; no percentage buffer reinstated.
 - Runtime implementation remains outstanding.
+
+## 2026-10-21 — hard minimum item price
+
+- Added Josh's $1.49 floor above all pricing and rounding rules.
+- Corrected the prior $1-to-$0.95 example to $1.49.
+- Flagged offer/promotion execution and existing live-price compliance for verification; no live writes performed.
