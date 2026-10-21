@@ -32,3 +32,10 @@ Updated: 2026-10-21.
 - This is a browser-local queue interface, not shared database persistence or a Windows inbox connection. No eBay writes, migrations, recognition calls or production deployment performed.
 - Validation: production build passed; application/test typechecks passed; 7 new domain tests and 203 existing tests passed. Production HTTP smoke passed (auth redirect, authenticated page and navigation). Browser interaction verification blocked: Playwright browser unavailable and download returned invalid archives.
 - Next: connect actual inbox/manifest producer to the documented contract; then add account-scoped shared persistence and verified bulk-upload receipt integration. Existing feature/card-listing-factory-v1 remains separate and unmerged.
+
+## Follow-up: scan folder and identity coverage
+
+- Added browser directory selection and local SHA-256 image-content comparison; candidate-card counts distinguish pairing mode and unmatched images. Existing eBay status remains unverified.
+- Added explicit identityStatus contract and identified / not-identified / needs-review / unknown totals across all imported stages, with clickable filters. Missing statuses are never inferred from filename, title or stage. Empty backlog coverage displays unknown.
+- Actual Windows photo/identity mapping is not connected. No actual backlog count is established by these changes.
+- Application/test typechecks and 11 targeted tests passed. Production build passed before the final empty-count display adjustment; final build validation accompanies the PR. Browser interaction checks remain unavailable in this environment.

@@ -27,3 +27,9 @@ Current stage counts are exclusive per imported card ID. Unit quantity is shown 
 ## Next integration
 
 Produce this contract from the actual Windows inbox/manifest records after inventory and live/draft reconciliation. Move queue persistence to an authenticated account-scoped database model with stage events, evidence references and upload receipts. Keep that schema separate from Markdown handoffs and keep secrets out of imports. Connect the existing bulk upload route only after its image hosting and receipt format are verified. Josh publishes after draft verification; pricing uncertainty alone need not prevent draft preparation.
+
+## Identity coverage and scan folder reading
+
+`identityStatus` is optional and explicitly one of `identified`, `not-identified`, `needs-review`. Missing status is unknown, never inferred from a title, definition ID or workflow stage. Coverage metrics count records across all stages and filter the table on click; quantity is separately displayed. The producer must populate status from saved identification evidence.
+
+Read scan folder uses the browser directory picker and hashes image bytes locally. It shows candidate pairs based on explicit front/back filename suffixes by default, or an operator-selected alternating/front-only convention. Exact duplicate bytes are excluded from candidate counts; they may still represent separate physical copies, so this is not inventory reconciliation. Images are not uploaded or retained. Counts do not prove identity or absence of drafts/live listings. Folder reading remains independent of the imported card queue until a photo-to-record reconciliation producer is connected.
