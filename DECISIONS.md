@@ -28,3 +28,7 @@ Josh directly confirmed exact recent sold comps first, numbered-parallel estimat
 ## 2026-10-21 — initial asking price without an offer buffer (v3)
 
 Josh confirmed he lists fairly against supported comps and does not use a buffer today. No automatic 9% or 10% listing premium; target supported fair buyer-total value. Supersedes earlier buffer proposals. Existing offer settings are unchanged. Documentation is updated; runtime enforcement and recalculation remain unverified.
+
+## 2026-10-21 — price-sensitive rounding (v4)
+
+Josh specified nearest .49/.95 at $3 or below and upward .49/.95 above $3, allowing a small rounding buffer on larger cards. Apply after subtracting buyer shipping, using the unrounded item-price threshold. This supersedes the earlier all-prices-nearest proposal and does not reinstate a percentage premium. See pricing policy for examples and the tie convention. Runtime enforcement remains unverified.

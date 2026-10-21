@@ -1,6 +1,6 @@
 # Pricing policy reconciliation — 2026-10-21
 
-Policy reference: `pricing-fair-market-no-buffer-2026-10-21-v3`. This document distinguishes confirmed workflow instructions from pricing choices still requiring source reconciliation. It is not a claim of runtime enforcement.
+Policy reference: `pricing-tiered-rounding-2026-10-21-v4`. This document distinguishes confirmed workflow instructions from pricing choices still requiring source reconciliation. It is not a claim of runtime enforcement.
 
 ## Current workflow requirements
 
@@ -31,7 +31,7 @@ Authority: Josh's direct clarification in the 2026-10-21 voice conversation, tra
 
 ## Remaining reconciliation
 
-The evidence hierarchy, condition requirement, buyer-total basis, and active-only floor above are now resolved for this workflow. Josh subsequently confirmed that initial listings should target supported fair market value with no automatic offer buffer. Exact rounding treatment, shipping-policy exceptions, and permissions for automatic live repricing still require authoritative scope. Do not introduce a fixed 9% premium or an automatic live write while those questions remain unresolved. Runtime implementation and historical recalculation are not completed by this document.
+The evidence hierarchy, condition requirement, buyer-total basis, and active-only floor above are now resolved for this workflow. Josh subsequently confirmed that initial listings should target supported fair market value with no automatic offer buffer. Tiered rounding is resolved below. Shipping-policy exceptions and permissions for automatic live repricing still require authoritative scope. Do not introduce a fixed 9% premium or an automatic live write while those questions remain unresolved. Runtime implementation and historical recalculation are not completed by this document.
 
 ## Store learning requirements, not yet verified running
 
@@ -40,3 +40,15 @@ Track listing age, eventual price, time to sell, and available demand/exposure m
 ## Initial asking price: no automatic buffer
 
 Authority: Josh's direct 2026-10-21 clarification, voice transcript 00:39:32–00:40:13. When sufficient comparable evidence supports fair value, target that fair buyer-total value; do not add a fixed 9%, approximate 10%, or other automatic premium to create room for offers. This supersedes earlier proposed listing buffers. Keep confidence tied to evidence and do not use a premium to compensate for uncertainty. The credible active-only floor fallback remains as previously specified. Offer acceptance/discount settings are separate and are not changed by this decision. Runtime calculations and legacy valuations still require implementation/recalculation.
+
+## Tiered item-price rounding
+
+Authority: Josh's direct clarification on 2026-10-21, voice transcript 00:41:49–00:42:31. This replaces the preceding general nearest-ending proposal.
+
+- Compute the unrounded item price as supported target buyer total minus the applicable buyer shipping charge. Apply the $3 threshold to this unrounded item amount, consistent with the calculation discussed immediately before Josh's clarification.
+- At $3.00 or below: choose the nearest positive item price ending in .49 or .95, allowing rounding downward or upward. For an exact tie, use the lower ending as a routine implementation convention to avoid unnecessary upward bias.
+- Above $3.00: choose the smallest item price at or above the unrounded amount ending in .49 or .95. An amount already at an allowed ending remains unchanged.
+- Recalculate and display actual buyer total = rounded item price + shipping; retain the original target, rounding adjustment, and policy version. Do not claim rounding preserves the target exactly.
+- Examples: $1.00 becomes $0.95; $3.00 becomes $2.95; $3.01 becomes $3.49; $20.00 becomes $20.49, before adding the separately recorded shipping charge.
+- This permits only the buffer resulting from the approved upward rounding above $3, not an added 9%/10% premium. Do not silently raise low values to a minimum listing price; flag infeasible economics separately.
+- Documentation is updated; runtime calculations and legacy valuations are not yet verified against this rule.
