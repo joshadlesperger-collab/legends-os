@@ -1,6 +1,6 @@
 # Pricing policy reconciliation — 2026-10-21
 
-Policy reference: `pricing-tiered-rounding-2026-10-21-v4`. This document distinguishes confirmed workflow instructions from pricing choices still requiring source reconciliation. It is not a claim of runtime enforcement.
+Policy reference: `pricing-hard-floor-2026-10-21-v5`. This document distinguishes confirmed workflow instructions from pricing choices still requiring source reconciliation. It is not a claim of runtime enforcement.
 
 ## Current workflow requirements
 
@@ -46,9 +46,15 @@ Authority: Josh's direct 2026-10-21 clarification, voice transcript 00:39:32–0
 Authority: Josh's direct clarification on 2026-10-21, voice transcript 00:41:49–00:42:31. This replaces the preceding general nearest-ending proposal.
 
 - Compute the unrounded item price as supported target buyer total minus the applicable buyer shipping charge. Apply the $3 threshold to this unrounded item amount, consistent with the calculation discussed immediately before Josh's clarification.
-- At $3.00 or below: choose the nearest positive item price ending in .49 or .95, allowing rounding downward or upward. For an exact tie, use the lower ending as a routine implementation convention to avoid unnecessary upward bias.
+- At $3.00 or below: choose the nearest item price at or above $1.49 ending in .49 or .95, allowing rounding downward or upward. For an exact tie, use the lower ending as a routine implementation convention to avoid unnecessary upward bias.
 - Above $3.00: choose the smallest item price at or above the unrounded amount ending in .49 or .95. An amount already at an allowed ending remains unchanged.
 - Recalculate and display actual buyer total = rounded item price + shipping; retain the original target, rounding adjustment, and policy version. Do not claim rounding preserves the target exactly.
-- Examples: $1.00 becomes $0.95; $3.00 becomes $2.95; $3.01 becomes $3.49; $20.00 becomes $20.49, before adding the separately recorded shipping charge.
-- This permits only the buffer resulting from the approved upward rounding above $3, not an added 9%/10% premium. Do not silently raise low values to a minimum listing price; flag infeasible economics separately.
+- Examples: $1.00 becomes $1.49 (hard floor overrides nearest-ending rounding); $3.00 becomes $2.95; $3.01 becomes $3.49; $20.00 becomes $20.49, before adding the separately recorded shipping charge.
+- This permits only the buffer resulting from the approved upward rounding above $3, not an added 9%/10% premium. Apply the explicitly approved $1.49 hard item-price floor. If that exceeds evidence-supported buyer total, preserve the discrepancy and flag economics; never silently undercut the floor.
 - Documentation is updated; runtime calculations and legacy valuations are not yet verified against this rule.
+
+## Hard minimum item price — overrides all other pricing rules
+
+Authority: Josh's direct 2026-10-21 clarification, transcript 00:43:04–00:43:16: no card may ever be below $1.49. For this workflow, record $1.49 as the minimum item price, with shipping separate, consistent with the item-price calculation under discussion. This supersedes any earlier example allowing $0.95.
+
+Final proposed item price must be at least $1.49 after all pricing and rounding operations. Reject draft/export/revision price proposals below the floor rather than allowing another stage to overwrite it. Preserve the market estimate separately even if lower. Current offer acceptance and promotion settings need inspection to determine whether they could yield an actual card sale below $1.49; do not claim those execution paths enforce the floor until tested. A buyer-total estimate smaller than shipping plus $1.49 is an economics/review exception, not permission to violate the minimum. Historical live prices are not changed by this documentation update.
