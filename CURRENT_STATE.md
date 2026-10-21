@@ -23,3 +23,12 @@ Updated: 2026-10-21.
 
 - Documentation-only continuity repair; `npm run build` passed on 2026-10-21 (compilation, type validation, and static page generation).
 - Josh authorized commit and push on a separate repair branch on 2026-10-21. No production change, migration, or deployment performed. Consult Git for synchronization status.
+
+## Listing Factory UI — 2026-10-21
+
+- Branch: `feature/listing-factory-workflow`; new authenticated `/listing-factory` route linked under Sell.
+- Implemented real empty state, versioned queue import/export, browser-local refresh recovery, stage/status/search filtering, 50-row pagination, evidence/confidence breakdowns, item/shipping/total display, hold/next-action details, HTTPS photo references, and recorded cost/history metrics.
+- Queue producer contract and limitations: `docs/LISTING_FACTORY_UI.md`. No sample inventory is loaded automatically. Imported verification remains historical, not fresh eBay readback.
+- This is a browser-local queue interface, not shared database persistence or a Windows inbox connection. No eBay writes, migrations, recognition calls or production deployment performed.
+- Validation: production build passed; application/test typechecks passed; 7 new domain tests and 203 existing tests passed. Production HTTP smoke passed (auth redirect, authenticated page and navigation). Browser interaction verification blocked: Playwright browser unavailable and download returned invalid archives.
+- Next: connect actual inbox/manifest producer to the documented contract; then add account-scoped shared persistence and verified bulk-upload receipt integration. Existing feature/card-listing-factory-v1 remains separate and unmerged.
