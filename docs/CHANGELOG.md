@@ -17,3 +17,9 @@ For the rationale and authority of each change, see `../DECISIONS.md`. For exact
 - Replaced unresolved placeholders for comp hierarchy, condition, buyer totals, and active-only fallback with Josh's direct clarifications.
 - Removed automatic 2–3% undercut as the active-only default; inspect the lowest two credible comparable listings instead.
 - Preserved outstanding questions and explicitly separated policy documentation from runtime implementation.
+
+## 2026-10-21 — fair market asking price, no buffer
+
+- Recorded Josh's confirmation to target supported fair value without an automatic offer premium.
+- Superseded the prior 9%/10% buffer proposals; preserved offer settings as a separate question.
+- Pricing implementation and legacy-price recalculation remain outstanding.
