@@ -23,3 +23,9 @@ For the rationale and authority of each change, see `../DECISIONS.md`. For exact
 - Recorded Josh's confirmation to target supported fair value without an automatic offer premium.
 - Superseded the prior 9%/10% buffer proposals; preserved offer settings as a separate question.
 - Pricing implementation and legacy-price recalculation remain outstanding.
+
+## 2026-10-21 — tiered rounding
+
+- Replaced general nearest-ending rounding with nearest .49/.95 at or below $3 and upward .49/.95 above $3.
+- Recorded calculation order, boundary examples, and explicit buyer-total adjustment; no percentage buffer reinstated.
+- Runtime implementation remains outstanding.
