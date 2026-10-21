@@ -11,3 +11,9 @@ Status: documentation repair prepared for a separate Git repair branch with user
 - Established a superseded-decision archive and decision-change format. No historical source documents have been moved or deleted.
 
 For the rationale and authority of each change, see `../DECISIONS.md`. For exact committed revisions, use Git history. Local edits do not become durable remote history until committed and pushed.
+
+## 2026-10-21 — pricing clarification v2
+
+- Replaced unresolved placeholders for comp hierarchy, condition, buyer totals, and active-only fallback with Josh's direct clarifications.
+- Removed automatic 2–3% undercut as the active-only default; inspect the lowest two credible comparable listings instead.
+- Preserved outstanding questions and explicitly separated policy documentation from runtime implementation.
