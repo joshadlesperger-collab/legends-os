@@ -30,9 +30,10 @@ export default function CardPricingReview({ draft, onChange }: { draft: DraftCar
     <div className="factory-fields">
       <label>Premium above comp (%)<input type="number" min="8" max="10" step="0.1" value={Number.isFinite(pricing.premiumPercent) ? pricing.premiumPercent : ""} onChange={event => change({ premiumPercent: event.target.value === "" ? NaN : Number(event.target.value) })} /></label>
       <label><span><input type="checkbox" checked={pricing.needsTracked} onChange={event => change({ needsTracked: event.target.checked })} /> Require tracked shipping (slab, thick card / patch, or operator choice)</span></label>
+      <label><span><input type="checkbox" checked={pricing.patchCard ?? false} onChange={event => change({ patchCard: event.target.checked })} /> Raw patch / jersey card ($1.95 envelope charge when eligible, unless the under-$3 free-envelope rule applies)</span></label>
       <label><span><input type="checkbox" checked={pricing.envelopeEligible} onChange={event => change({ envelopeEligible: event.target.checked })} /> I verified current envelope service eligibility, packaged dimensions, weight and value.</span></label>
     </div>
-    <p>Seller charge rules: under $10 → $1.49; $10–$19.99 → $1.95; $20+ or tracked → $6.29. These are proposed buyer charges, not purchased postage or verified carrier rates. Graded cards require tracked shipping.</p>
+    <p>Seller charge rules: a rounded base under $3 adds exactly $1.49 to the item price with free envelope shipping. Other cards under $10 → $1.49; $10–$19.99 or eligible raw patches → $1.95; $20+ or tracked → $6.29. These are proposed buyer charges, not purchased postage or verified carrier rates. Graded cards require tracked shipping.</p>
     <fieldset>
       <legend>General promotion</legend>
       <label><span><input type="checkbox" checked={result.generalPromotionPercent !== 0} onChange={event => change({ generalPromotionPercent: event.target.checked ? 3 : 0 })} /> Include General promotion (default 3%)</span></label>
@@ -48,7 +49,8 @@ export default function CardPricingReview({ draft, onChange }: { draft: DraftCar
       <div><dt>Buyer shipping charge</dt><dd>{money(result.shippingCharge)}</dd></div>
       <div><dt>Buyer total before tax</dt><dd>{money(result.buyerTotal)}</dd></div>
     </dl>
-    <p>For every card, apply the base premium, then round upward to the next .49 or .95 ending. This may put the final price above 10% over comp.</p>
+    <p>Apply the base premium, then round upward to the next .49 or .95 ending. For an eligible rounded base under $3, add exactly $1.49 and use free shipping without rounding again. This may put the final price above 10% over comp.</p>
+    {result.freeEnvelopeConversion && <p>Rounded base {money(result.roundedBase)} + $1.49 included postage = {money(result.listingPrice)} with free buyer shipping.</p>}
     {result.effectivePremiumPercent !== null && <p>Before ending adjustment: {money(result.premiumPrice)}. Final premium above comp: {result.effectivePremiumPercent.toFixed(1)}%.</p>}
     {result.shippingCharge !== null && <p>{result.shippingMethod}</p>}
     {result.warnings.map(warning => <p key={warning} role="note">{warning}</p>)}

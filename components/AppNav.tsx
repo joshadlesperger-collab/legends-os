@@ -22,6 +22,7 @@ const sections: NavSection[] = [
     { href: "/comp-validation", label: "Comp Validation" },
   ] },
   { label: "Sell", items: [
+    { href: "/listing-factory", label: "Card Backlog" },
     { href: "/card-listing-factory", label: "Card Listing Factory" },
     { href: "/inventory-actions", label: "Action Center" },
     { href: "/seller-opportunities/sales-velocity", label: "Sales Velocity" },

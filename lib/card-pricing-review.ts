@@ -1,17 +1,14 @@
-import { canonicalCardKey, priceFromSoldComp, projectListing, suggestedShipping, type DraftCard } from "./card-listing-factory.ts";
+import { canonicalCardKey, priceFromSoldComp, projectListing, type DraftCard } from "./card-listing-factory.ts";
+import { CARD_POLICY_VERSION, calculateCardPrice, roundUpCardPrice } from "./card-orchestrator-policy.ts";
 
 export type SoldComp = { id: string; sourceUrl: string; soldDate: string; itemPrice: number; shipping: number; notes: string; verified: boolean; identityKey?: string };
-export type PricingReview = { comps: SoldComp[]; premiumPercent: number; needsTracked: boolean; envelopeEligible: boolean; generalPromotionPercent?: number; approvedSnapshot?: string };
+export type PricingReview = { comps: SoldComp[]; premiumPercent: number; needsTracked: boolean; envelopeEligible: boolean; patchCard?: boolean; generalPromotionPercent?: number; approvedSnapshot?: string };
 export const emptyPricing = (): PricingReview => ({ comps: [], premiumPercent: 9, needsTracked: false, envelopeEligible: false, generalPromotionPercent: 3 });
 const cents = (n: number, positive: boolean) => Number.isFinite(n) && (positive ? n > 0 : n >= 0) && n <= 1_000_000 && Math.abs(n * 100 - Math.round(n * 100)) < 0.000001;
 const round = (n: number) => Math.round(n * 100) / 100;
 
 export function roundUpListingPrice(value: number): number {
-  if (!Number.isFinite(value) || value <= 0) throw new Error("Listing price must be positive and finite.");
-  const minimumCents = Math.ceil(value * 100 - 0.0000001);
-  const dollars = Math.floor(minimumCents / 100) * 100;
-  const ending = minimumCents - dollars;
-  return (ending <= 49 ? dollars + 49 : ending <= 95 ? dollars + 95 : dollars + 149) / 100;
+  return roundUpCardPrice(value);
 }
 
 export function projectPricing(draft: DraftCard, today = new Date().toISOString().slice(0, 10)) {
@@ -44,20 +41,22 @@ export function projectPricing(draft: DraftCard, today = new Date().toISOString(
   // Use the seller's arithmetic average; round only the final listing price.
   const compValue = evidenceValid ? pricing.comps.reduce((sum, comp) => sum + comp.itemPrice, 0) / pricing.comps.length : null;
   const premiumPrice = compValue === null ? null : compValue * (1 + pricing.premiumPercent / 100);
-  const listingPrice = premiumPrice === null ? null : roundUpListingPrice(premiumPrice);
-  const tracked = !!draft.identity.graded || pricing.needsTracked || (listingPrice !== null && listingPrice >= 20);
-  const shippingCharge = listingPrice === null ? null : suggestedShipping(listingPrice, tracked);
+  const calculated = compValue === null ? null : calculateCardPrice(compValue, { premiumPercent: pricing.premiumPercent, tracked: !!draft.identity.graded || pricing.needsTracked, patch: pricing.patchCard });
+  const listingPrice = calculated?.item ?? null;
+  const tracked = !!draft.identity.graded || pricing.needsTracked || (calculated !== null && calculated.roundedBase >= 20);
+  const shippingCharge = calculated?.shipping ?? null;
   if (!tracked && listingPrice !== null && !pricing.envelopeEligible) reasons.push("Verify envelope eligibility for the packaged card, or choose tracked shipping.");
   if (projectListing(draft).requiresReview) reasons.push("Confirm card identity and front/back photos first.");
   const { approvedSnapshot: _approval, ...savedInputs } = pricing;
   const inputs = { ...savedInputs, generalPromotionPercent };
   const estimatedPromotionFeeBeforeTax = listingPrice === null || shippingCharge === null || !promotionValid ? null : round((listingPrice + shippingCharge) * generalPromotionPercent / 100);
-  const snapshot = JSON.stringify({ method: "mean-endings-up-general-v3", identity: canonicalCardKey(draft.identity), front: draft.frontImageId, back: draft.backImageId, quantity: draft.quantity, inputs, listingPrice, shippingCharge });
+  const snapshot = JSON.stringify({ method: CARD_POLICY_VERSION, identity: canonicalCardKey(draft.identity), front: draft.frontImageId, back: draft.backImageId, quantity: draft.quantity, inputs, listingPrice, shippingCharge });
   const approved = reasons.length === 0 && pricing.approvedSnapshot === snapshot;
-  return { compValue, premiumPrice, roundingAdjustment: listingPrice === null || premiumPrice === null ? null : listingPrice - premiumPrice,
+  return { compValue, premiumPrice, roundingAdjustment: calculated === null || premiumPrice === null ? null : calculated.roundedBase - premiumPrice,
+    freeEnvelopeConversion: calculated?.freeEnvelopeConversion ?? false, roundedBase: calculated?.roundedBase ?? null,
     effectivePremiumPercent: listingPrice === null || compValue === null ? null : (listingPrice / compValue - 1) * 100,
     listingPrice, shippingCharge, generalPromotionPercent, estimatedPromotionFeeBeforeTax, buyerTotal: listingPrice === null || shippingCharge === null ? null : round(listingPrice + shippingCharge),
     lowPrice: compValue === null ? null : priceFromSoldComp(compValue, 8), highPrice: compValue === null ? null : priceFromSoldComp(compValue, 10),
     shippingMethod: tracked ? "Tracked shipping" : "Envelope (eligibility must be verified)",
-    approved, snapshot, reviewReasons: reasons, inputs, currency: "USD", basis: "Arithmetic average sold item price excluding shipping; apply 8–10% base premium, then round up to next .49 or .95 for all cards; buyer total excludes tax", warnings: pricing.comps.length === 1 ? ["Only one sold comp: limited evidence. Review carefully."] : [] };
+    approved, snapshot, reviewReasons: reasons, inputs, currency: "USD", basis: "Arithmetic average sold item price excluding shipping; apply 8–10% premium, round upward to .49/.95; eligible rounded bases under $3 add exactly $1.49 with free shipping and no second rounding; buyer total excludes tax", warnings: pricing.comps.length === 1 ? ["Only one sold comp: limited evidence. Review carefully."] : [] };
 }

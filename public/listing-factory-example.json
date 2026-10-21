@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "cards": [
+    {
+      "id": "EXAMPLE-001",
+      "definitionId": "example-card-definition",
+      "title": "EXAMPLE ONLY — replace with actual inventory",
+      "quantity": 1,
+      "stage": "scanned",
+      "identityStatus": "not-identified",
+      "status": "queued",
+      "enteredAt": "2026-10-21T12:00:00Z",
+      "nextAction": "Attach original photo references and confirm identity"
+    }
+  ]
+}

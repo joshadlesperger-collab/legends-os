@@ -69,3 +69,13 @@ test("economic approval binds to evidence, price, shipping, identity and photo p
  const changedIdentity={...approved,identity:{...identity,parallel:"Refractor"}};
  assert.ok(project(changedIdentity).reviewReasons.some(x=>x.includes("matching card")));
 });
+
+test("review UI shares the orchestrator's under-three conversion and raw patch shipping",()=>{
+ const result=project(draft({comps:[comp(1.75)]}));
+ assert.equal(result.roundedBase,1.95);assert.equal(result.listingPrice,3.44);assert.equal(result.shippingCharge,0);assert.equal(result.freeEnvelopeConversion,true);
+ assert.ok(Math.abs(result.roundingAdjustment!-(1.95-1.75*1.09))<1e-8);
+ assert.equal(project(draft({comps:[comp(1.75)],needsTracked:true})).listingPrice,1.95);
+ assert.equal(project(draft({comps:[comp(5)],patchCard:true})).shippingCharge,1.95);
+ const original=draft({comps:[comp(5)]}),ready=project(original);
+ assert.equal(project({...original,pricing:{...original.pricing!,approvedSnapshot:ready.snapshot,patchCard:true}}).approved,false);
+});
