@@ -24,3 +24,7 @@ Earlier discussions contain conflicting choices on weak-evidence pricing and aut
 ## 2026-10-21 — confirmed pricing hierarchy (v2)
 
 Josh directly confirmed exact recent sold comps first, numbered-parallel estimates second, active-market comparison/fallback next, and review when evidence is absent. Compare condition and buyer totals; corroborate shipping-heavy sales with multiple observations. Active-only pricing uses the credible floor after inspecting the lowest two comparable listings, replacing the earlier automatic minus-2–3% proposal. See `docs/PRICING_POLICY.md` for source scope and remaining unresolved parameters. Documentation authority is established; runtime enforcement remains unverified.
+
+## 2026-10-21 — initial asking price without an offer buffer (v3)
+
+Josh confirmed he lists fairly against supported comps and does not use a buffer today. No automatic 9% or 10% listing premium; target supported fair buyer-total value. Supersedes earlier buffer proposals. Existing offer settings are unchanged. Documentation is updated; runtime enforcement and recalculation remain unverified.

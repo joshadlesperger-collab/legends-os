@@ -1,6 +1,6 @@
 # Pricing policy reconciliation — 2026-10-21
 
-Policy reference: `pricing-evidence-hierarchy-2026-10-21-v2`. This document distinguishes confirmed workflow instructions from pricing choices still requiring source reconciliation. It is not a claim of runtime enforcement.
+Policy reference: `pricing-fair-market-no-buffer-2026-10-21-v3`. This document distinguishes confirmed workflow instructions from pricing choices still requiring source reconciliation. It is not a claim of runtime enforcement.
 
 ## Current workflow requirements
 
@@ -31,8 +31,12 @@ Authority: Josh's direct clarification in the 2026-10-21 voice conversation, tra
 
 ## Remaining reconciliation
 
-The evidence hierarchy, condition requirement, buyer-total basis, and active-only floor above are now resolved for this workflow. Fixed/approximate listing premiums, exact rounding treatment, shipping-policy exceptions, and permissions for automatic live repricing still require authoritative scope. Do not introduce a fixed 9% premium or an automatic live write while those questions remain unresolved. Runtime implementation and historical recalculation are not completed by this document.
+The evidence hierarchy, condition requirement, buyer-total basis, and active-only floor above are now resolved for this workflow. Josh subsequently confirmed that initial listings should target supported fair market value with no automatic offer buffer. Exact rounding treatment, shipping-policy exceptions, and permissions for automatic live repricing still require authoritative scope. Do not introduce a fixed 9% premium or an automatic live write while those questions remain unresolved. Runtime implementation and historical recalculation are not completed by this document.
 
 ## Store learning requirements, not yet verified running
 
 Track listing age, eventual price, time to sell, and available demand/exposure metrics. Distinguish unsold listings from completed sales when evaluating velocity. Link market signals and refreshed evidence to the affected card definitions. Weekly hot/cold monitoring and daily/weekly repricing are not operational merely because documented here; verify scheduler, input data, and recorded execution before claiming them active.
+
+## Initial asking price: no automatic buffer
+
+Authority: Josh's direct 2026-10-21 clarification, voice transcript 00:39:32–00:40:13. When sufficient comparable evidence supports fair value, target that fair buyer-total value; do not add a fixed 9%, approximate 10%, or other automatic premium to create room for offers. This supersedes earlier proposed listing buffers. Keep confidence tied to evidence and do not use a premium to compensate for uncertainty. The credible active-only floor fallback remains as previously specified. Offer acceptance/discount settings are separate and are not changed by this decision. Runtime calculations and legacy valuations still require implementation/recalculation.
