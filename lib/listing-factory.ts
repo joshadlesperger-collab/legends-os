@@ -2,6 +2,7 @@ export const FACTORY_STAGES = ["scanned", "identified", "priced", "bulk-upload",
 export type FactoryStage = typeof FACTORY_STAGES[number];
 export const STAGE_LABELS: Record<FactoryStage, string> = { scanned: "Scanned", identified: "Identified", priced: "Priced", "bulk-upload": "Bulk upload", "verified-drafts": "Verified drafts" };
 export type FactoryCard = {
+  identityStatus?: "identified" | "not-identified" | "needs-review";
   id: string; definitionId: string; title: string; quantity: number;
   stage: FactoryStage; status: "queued" | "processing" | "held" | "complete";
   enteredAt: string; nextAction: string; holdReason?: string;
@@ -37,6 +38,7 @@ export function parseFactoryManifest(input: unknown): FactoryManifest {
     if (raw.compCount !== undefined && !Number.isInteger(raw.compCount)) throw new Error(`Invalid comp count: ${raw.id}`);
     if (typeof raw.itemPrice === "number" && raw.itemPrice < 1.49) throw new Error(`Item price below $1.49 floor: ${raw.id}`);
     if (typeof raw.rangeLow === "number" && typeof raw.rangeHigh === "number" && raw.rangeLow > raw.rangeHigh) throw new Error(`Invalid estimate range: ${raw.id}`);
+    if (raw.identityStatus !== undefined && !["identified", "not-identified", "needs-review"].includes(String(raw.identityStatus))) throw new Error(`Invalid identity status: ${raw.id}`);
     if (raw.confidence !== undefined && !["low", "medium", "high"].includes(String(raw.confidence))) throw new Error(`Invalid confidence: ${raw.id}`);
     if (raw.evidenceBasis !== undefined && !["exact-sold", "serial-math", "active-only", "saved-estimate"].includes(String(raw.evidenceBasis))) throw new Error(`Invalid evidence basis: ${raw.id}`);
     for (const key of ["evidenceAt", "verifiedAt"]) if (raw[key] !== undefined && !validDate(raw[key])) throw new Error(`Invalid ${key}: ${raw.id}`);
@@ -55,4 +57,11 @@ export function factoryMetrics(cards: FactoryCard[], stage: FactoryStage, now: n
   // One physical-card record per stage/day, even if an imported history repeats an event.
   const completed = cards.filter(c => c.history?.some(e => e.stage === stage && Date.parse(e.completedAt) <= now && Date.parse(e.completedAt) > now - 86400000)).length;
   return { records: current.length, queued: current.filter(c=>c.status === "queued").length, processing: current.filter(c=>c.status === "processing").length, held: current.filter(c=>c.status === "held").length, completed, medianWaitMs, hasHistory: cards.some(c=>c.history !== undefined) };
+}
+
+export function identityCounts(cards: FactoryCard[]) {
+  return { identified: cards.filter(c=>c.identityStatus === "identified").length,
+    notIdentified: cards.filter(c=>c.identityStatus === "not-identified").length,
+    needsReview: cards.filter(c=>c.identityStatus === "needs-review").length,
+    unknown: cards.filter(c=>c.identityStatus === undefined).length };
 }
