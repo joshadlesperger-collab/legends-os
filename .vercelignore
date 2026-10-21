@@ -13,3 +13,13 @@ tsconfig.tsbuildinfo
 .git
 .vercel
 .forensics-readonly
+artifacts
+.codex
+.agents
+vercel_logs*
+*_matches.txt
+*_errors.txt
+*_search.txt
+*_raw_hits.txt
+line14.txt
+*.before-*

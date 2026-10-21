@@ -6,7 +6,8 @@ export const dynamic = "force-dynamic";
 const PAGE_SIZE = 25;
 const date = (value: Date | null) => value ? value.toLocaleDateString() : "unknown";
 
-export default async function ReconciliationPage({ searchParams }: { searchParams?: { page?: string; status?: string } }) {
+export default async function ReconciliationPage({searchParams: pendingSearchParams}: {searchParams?: Promise<{ page?: string; status?: string }>}) {
+ const searchParams = await pendingSearchParams;
   const requestedPage = Number(searchParams?.page ?? "1"); const page = Number.isInteger(requestedPage) && requestedPage > 0 ? requestedPage : 1;
   const status = searchParams?.status === "proposed" || searchParams?.status === "unresolved" ? searchParams.status : "all";
   const queueWhere = { status: { in: status === "all" ? ["proposed", "unresolved"] : [status] } };

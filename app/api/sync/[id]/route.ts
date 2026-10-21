@@ -3,10 +3,10 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET(
   _request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const syncRun = await prisma.syncRun.findUnique({
-    where: { id: params.id },
+    where: { id: (await params).id },
     include: { Store: { select: { ebaySellerUsername: true } } },
   });
 

@@ -8,8 +8,8 @@ import { manualEvidenceToComp, type ManualSoldEvidence } from "@/lib/comp-valida
 import { valueLatestSellerSingles } from "@/lib/seller-single-valuations";
 
 const object=(value:Prisma.JsonValue|null)=>value&&typeof value==="object"&&!Array.isArray(value)?value as Prisma.JsonObject:{};
-export async function POST(request:NextRequest,{params}:{params:{seller:string}}){
-  const auction=await prisma.sellerOpportunityAuction.findUnique({where:{id:params.seller}});if(!auction||auction.kind!=="single")return NextResponse.json({error:"Single opportunity not found"},{status:404});
+export async function POST(request:NextRequest,{params}:{params: Promise<{seller:string}>}){
+  const auction=await prisma.sellerOpportunityAuction.findUnique({where:{id:(await params).seller}});if(!auction||auction.kind!=="single")return NextResponse.json({error:"Single opportunity not found"},{status:404});
   const form=await request.formData();const soldTitle=String(form.get("soldTitle")??"").trim();const soldPrice=Number(form.get("soldPrice"));const shippingRaw=String(form.get("shipping")??"").trim();const shipping=shippingRaw===""?null:Number(shippingRaw);const soldDate=String(form.get("soldDate")??"");const sourceUrl=String(form.get("sourceUrl")??"").trim()||null;const sourceItemId=String(form.get("sourceItemId")??"").trim();const designation=String(form.get("designation")??"") as ManualSoldEvidence["designation"];
   if(!soldTitle||!Number.isFinite(soldPrice)||soldPrice<=0||(shipping!=null&&(!Number.isFinite(shipping)||shipping<0))||!sourceItemId||!["exact","near","proxy"].includes(designation))return NextResponse.json({error:"Complete sold title, positive price, item ID, and evidence designation are required."},{status:400});
   const timestamp=Date.parse(soldDate);if(!Number.isFinite(timestamp)||timestamp>Date.now())return NextResponse.json({error:"Sale date must be valid and not in the future."},{status:400});

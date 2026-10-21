@@ -10,7 +10,7 @@ function optionalMoney(value: unknown) {
   return amount.toFixed(2);
 }
 
-export async function PUT(request: Request, { params }: { params: { id: string } }) {
+export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
   let body: Record<string, unknown>;
   try { body = await request.json() as Record<string, unknown>; }
   catch { return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 }); }
@@ -22,7 +22,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
   } catch (error) {
     return NextResponse.json({ error: error instanceof Error ? error.message : "Invalid cost basis" }, { status: 400 });
   }
-  const listing = await prisma.listing.findUnique({ where: { id: params.id }, select: { id: true } });
+  const listing = await prisma.listing.findUnique({ where: { id: (await params).id }, select: { id: true } });
   if (!listing) return NextResponse.json({ error: "Listing not found" }, { status: 404 });
   const costBasis = await prisma.listingCostBasis.upsert({
     where: { listingId: listing.id },
