@@ -9,6 +9,8 @@ import {createGovernedRefreshExecution,ebayWriteProvider,executeGovernedAction,p
 import {VELOCITY_AUTOPILOT_VERSION,VELOCITY_OFFER_DISCOUNT_PCT,VELOCITY_OFFER_MAX_PER_RUN,VELOCITY_UNKNOWN_COST_OFFER_MAX_PER_DAY,VELOCITY_REFRESH_MAX_PER_RUN,VELOCITY_REFRESH_CANARY,VELOCITY_APPROVAL_TEXT,calculateVelocityOfferPrice} from "./sales-velocity-autopilot-domain.ts";
 export {VELOCITY_AUTOPILOT_VERSION,VELOCITY_OFFER_DISCOUNT_PCT,VELOCITY_OFFER_MAX_PER_RUN,VELOCITY_UNKNOWN_COST_OFFER_MAX_PER_DAY,VELOCITY_REFRESH_MAX_PER_RUN,VELOCITY_REFRESH_CANARY,VELOCITY_APPROVAL_TEXT,calculateVelocityOfferPrice} from "./sales-velocity-autopilot-domain.ts";
 const DAY=86_400_000;
+const shouldStopRefreshBatch=(error:unknown)=>{const message=error instanceof Error?error.message:String(error);return /auth|token|permission|rate.limit|429|manual.reconciliation|uncertain|timeout|provider|connection|buyer interest appeared/i.test(message);};
+
 const ACTIVE=["approved","executing","partial_failure","manual_reconciliation_required"];
 const json=(value:unknown)=>JSON.parse(JSON.stringify(value)) as Prisma.InputJsonValue;
 const cents=(value:number)=>Math.round((value+Number.EPSILON)*100)/100;
@@ -158,7 +160,7 @@ export async function executeVelocityAutopilot(input:{operatorId:string;approval
   if(canary.length===VELOCITY_REFRESH_CANARY&&refreshResults.every((r:any)=>r.status==="verified")){
     for(const candidate of refreshes.slice(VELOCITY_REFRESH_CANARY)){
       try{refreshResults.push(await executeRefresh(candidate,input.operatorId));}
-      catch(error){refreshResults.push({itemId:candidate.itemId,status:"failed",error:error instanceof Error?error.message:String(error)});break;}
+      catch(error){refreshResults.push({itemId:candidate.itemId,status:"failed",error:error instanceof Error?error.message:String(error)});if(shouldStopRefreshBatch(error))break;continue;}
     }
   }
   return{plan,offerResults,refreshResults,refreshStopped:false};
