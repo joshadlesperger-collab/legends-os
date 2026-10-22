@@ -147,7 +147,7 @@ export async function executeVelocityAutopilot(input:{operatorId:string;approval
   const offerResults:unknown[]=[];
   for(let i=0;i<offers.length;i++){
     try{offerResults.push(await executeOffer(offers[i],input.operatorId));}
-    catch(error){offerResults.push({itemId:offers[i].itemId,status:"failed",error:error instanceof Error?error.message:String(error)});break;}
+    catch(error){offerResults.push({itemId:offers[i].itemId,status:"failed",error:error instanceof Error?error.message:String(error)});continue;}
   }
   const refreshResults:unknown[]=[];
   const canary=refreshes.slice(0,VELOCITY_REFRESH_CANARY);
