@@ -1,3 +1,4 @@
+import { scarcityGuard, SCARCITY_GUARD_VERSION, MIN_STRONG_EXACT_SALES } from "./card-scarcity-guard.ts";
 import { createHash, randomUUID } from "node:crypto";
 import { z } from "zod";
 import { CARD_POLICY, CARD_POLICY_VERSION, calculateCardPrice, money } from "./card-orchestrator-policy.ts";
@@ -31,6 +32,7 @@ export type Job = { kind: JobKind; inputKey: string; state: "todo" | "leased" | 
   attempts: number; elapsedMs: number; reason?: string; result?: JobResult;
   lease?: { token: string; owner: string; startedAt: string; expiresAt: string } };
 export type CardRecord = { input: CardInput; createdAt: string; updatedAt: string; jobs: Record<JobKind, Job>;
+  pricingHistory?: JobResult[];
   exclusion?: { disposition: string; itemId: string; evidence: string } };
 export type QueueState = { schemaVersion: 1; revision: number; policyVersion: string; seller: string;
   mode: "local-preparation-only"; externalWriterPossible: boolean; cards: Record<string, CardRecord>;
@@ -51,7 +53,7 @@ function keys(card: CardRecord) {
     photos:fingerprint(i.photos),
     identity:fingerprint([i.identity,i.photos,i.identityIssue??"",i.sourceHold??"",card.jobs.photos?.inputKey]),
     reconcile:fingerprint([CARD_POLICY.seller,identity,card.jobs.identity?.inputKey,i.photos,i.knownLive??null,i.knownDraft??null]),
-    pricing:fingerprint([CARD_POLICY_VERSION,identity,card.jobs.identity?.inputKey,i.candidates,i.override??null]),
+    pricing:fingerprint([CARD_POLICY_VERSION,SCARCITY_GUARD_VERSION,identity,card.jobs.identity?.inputKey,i.candidates,i.override??null]),
     listing:fingerprint(["local-review-v2",CARD_POLICY_VERSION,identity,card.jobs.identity?.inputKey,i.photos,card.jobs.pricing?.state,card.jobs.pricing?.result??null,i.sku]),
   };
 }
@@ -59,7 +61,10 @@ export function refreshJobs(card: CardRecord, now: string) {
   // Dependents see the freshly invalidated identity before their own keys are calculated.
   for (const kind of kinds) {
     const key = keys(card)[kind], old = card.jobs[kind];
-    if (!old || old.inputKey !== key) card.jobs[kind]={kind,inputKey:key,state:"todo",attempts:0,elapsedMs:0};
+    if (!old || old.inputKey !== key) {
+      if(kind==="pricing"&&old?.result) card.pricingHistory=[...(card.pricingHistory??[]),old.result];
+      card.jobs[kind]={kind,inputKey:key,state:"todo",attempts:0,elapsedMs:0};
+    }
     const job = card.jobs[kind];
     if (job.state === "leased" && Date.parse(job.lease!.expiresAt) <= Date.parse(now)) {
       job.state = job.attempts >= CARD_POLICY.maxAttemptsPerInput ? "held" : "todo";
@@ -68,7 +73,9 @@ export function refreshJobs(card: CardRecord, now: string) {
       delete job.lease;
     }
     if(kind==="pricing"&&job.state==="done") {
-      try{validateComps(reviewedIdentity(card)??card.input.identity,job.result?.comps,now,job.result?.basis as CompBasis|undefined);}
+      try{validateComps(reviewedIdentity(card)??card.input.identity,job.result?.comps,now,job.result?.basis as CompBasis|undefined);
+        if(Array.isArray(job.result?.scarcityComps)&&job.result.scarcityComps.length) validateComps(reviewedIdentity(card)??card.input.identity,job.result.scarcityComps,now,"related-print-run");
+      }
       catch{job.state="held";job.reason="Saved comp evidence is no longer valid; fresh evidence required";delete job.result;}
     }
     if(kind==="reconcile"&&job.state==="done"&&job.result?.disposition==="clear"&&Date.parse(now)-Date.parse(String(job.result.checkedAt))>CARD_POLICY.reconciliationMaxAgeMinutes*60000) {
@@ -220,10 +227,23 @@ export function completeJob(s:QueueState,id:string,kind:JobKind,token:string,raw
     if(i.autograph===null)throw new Error("Confirm autograph presence or absence during visual review");
   } else if(kind==="pricing") {
     const payload=z.object({comps:z.unknown(),tracked:z.boolean(),envelopeEligible:z.boolean(),evidence:text,
-      basis:z.enum(["exact","related-print-run"]).default("exact"),exactSearchEvidence:text.optional()}).strict().parse(envelope.data);
+      basis:z.enum(["exact","related-print-run"]).default("exact"),exactSearchEvidence:text.optional(),
+      scarcityComps:z.unknown().optional(),scarcitySearchEvidence:text.optional()}).strict().parse(envelope.data);
     if(payload.basis==="related-print-run"&&!payload.exactSearchEvidence)throw new Error("Related estimates require evidence that usable exact sold comps were unavailable");
     const i=reviewedIdentity(c)!,validated=validateComps(i,payload.comps,now,payload.basis);
-    result={...validated,projection:calculateCardPrice(validated.mean,{patch:i.patch,tracked:payload.tracked,override:c.input.override}),envelopeEligible:payload.envelopeEligible,tracked:payload.tracked,evidence:payload.evidence,exactSearchEvidence:payload.exactSearchEvidence};
+    const related = payload.basis === "related-print-run" ? validated : payload.scarcityComps === undefined ? null : validateComps(i,payload.scarcityComps,now,"related-print-run");
+    if(related && payload.basis==="exact" && related.comps.some(comp=>validated.comps.some(exact=>exact.saleId===comp.saleId||exact.sourceUrl===comp.sourceUrl))) throw new Error("Exact and related evidence must not reuse the same sale");
+    const anchors = related ? related.comps.map(comp => {
+      if(comp.shipping === null || comp.condition !== i.condition || comp.evidenceMode !== "original-sale") throw new Error("Scarcity anchors need known shipping and verified comparable condition");
+      return {saleId:comp.saleId,sourceUrl:comp.sourceUrl,soldDate:comp.soldDate,buyerTotal:comp.itemPrice+comp.shipping,sourcePrintRun:comp.identity.printRun!};
+    }) : [];
+    const projection=calculateCardPrice(validated.mean,{patch:i.patch,tracked:payload.tracked,override:c.input.override});
+    const exactSoldCount=payload.basis==="exact" ? validated.comps.filter(comp=>comp.shipping!==null&&comp.condition===i.condition&&comp.evidenceMode==="original-sale").length : 0;
+    const sanity=scarcityGuard({targetPrintRun:i.printRun,proposedBuyerTotal:projection.buyerTotal,exactSoldCount,anchors,searchEvidence:payload.scarcitySearchEvidence,
+      existingBuyerTotal:c.input.pricingHandoff?.item!=null&&c.input.pricingHandoff.shipping!=null ? c.input.pricingHandoff.item+c.input.pricingHandoff.shipping : undefined,
+      exactSupportedBuyerTotal:exactSoldCount>=MIN_STRONG_EXACT_SALES ? validated.comps.filter(comp=>comp.shipping!==null&&comp.condition===i.condition&&comp.evidenceMode==="original-sale").reduce((sum,comp)=>sum+comp.itemPrice+comp.shipping!,0)/exactSoldCount : undefined});
+    result={...validated,reviewEstimate:validated.reviewEstimate||exactSoldCount<MIN_STRONG_EXACT_SALES,projection:sanity.passed?projection:null,rejectedProjection:sanity.passed?null:projection,sanity,scarcityComps:related?.comps??[],scarcitySearchEvidence:payload.scarcitySearchEvidence,envelopeEligible:payload.envelopeEligible,tracked:payload.tracked,evidence:payload.evidence,exactSearchEvidence:payload.exactSearchEvidence};
+    if(!sanity.passed) { envelope.outcome="held"; envelope.reason=sanity.reasons.join("; ")+"; preserve existing asking price and continue other cards"; }
   } else if(kind==="reconcile") {
     const payload=z.object({seller:z.literal("imaydit58"),disposition:z.enum(["clear","live","draft","scheduled","sold","ambiguous"]),
       checkedAt:z.string().datetime(),scopes:z.array(z.enum(["active","drafts","scheduled","sold"])),

@@ -18,7 +18,7 @@ export function pricingContext(state:QueueState,id:string,now=new Date().toISOSt
     } catch {return [];}
   });
   return {cardId:id,researchGroup:matchKey(identity),handoff:card.input.pricingHandoff??null,
-    savedCandidates:card.input.candidates,completedPricing:card.jobs.pricing.state==="done"?card.jobs.pricing.result:null,
+    savedCandidates:card.input.candidates,retainedPricingEvidence:card.pricingHistory??[],completedPricing:card.jobs.pricing.state==="done"?card.jobs.pricing.result:null,
     reusableEvidence:reusable,relatedHolds:related.filter(c=>c.jobs.pricing.state==="held").map(c=>({cardId:c.input.id,reason:c.jobs.pricing.reason})),
     instruction:"Read saved handoff and evidence first. Reuse validated evidence through claim/complete; confirm language/condition and exclude this physical copy. Do not repeat unchanged holds or restart completed research. Never copy another card's final price or override."};
 }
@@ -36,7 +36,7 @@ export function flowPacket(state:QueueState,ids:string[],now=new Date().toISOStr
     const age=handoff?Date.parse(now)-Date.parse(handoff.updatedAt):NaN;
     const sourceFresh=Number.isFinite(age)&&age>=0&&age<=90*86400000;
     const sourcePolicyCurrent=handoff?.policyVersion===CARD_POLICY_VERSION||handoff?.policyVersion==="item-only-9pct-49-95-under3-exact149-free";
-    const approval=sourceProposal&&sourceFresh&&sourcePolicyCurrent&&!c.input.override?approvals.find(a=>a.cardId===id&&a.item===sourceProposal.item&&a.shipping===sourceProposal.shipping&&a.sourceUpdatedAt===handoff?.updatedAt&&a.policyVersion===handoff?.policyVersion&&a.sourceIdentityKey===fingerprint(c.input.identity)&&fingerprint([...a.photoHashes].sort())===fingerprint(c.input.photos.map(p=>p.sha256).sort())&&Number.isFinite(Date.parse(a.approvedAt))&&Date.parse(a.approvedAt)<=Date.parse(now)):undefined;
+    const approval=sourceProposal&&sourceFresh&&sourcePolicyCurrent&&!identity?.printRun&&!c.input.identity.printRun&&!c.input.override?approvals.find(a=>a.cardId===id&&a.item===sourceProposal.item&&a.shipping===sourceProposal.shipping&&a.sourceUpdatedAt===handoff?.updatedAt&&a.policyVersion===handoff?.policyVersion&&a.sourceIdentityKey===fingerprint(c.input.identity)&&fingerprint([...a.photoHashes].sort())===fingerprint(c.input.photos.map(p=>p.sha256).sort())&&Number.isFinite(Date.parse(a.approvedAt))&&Date.parse(a.approvedAt)<=Date.parse(now)):undefined;
     let nextOwner="pricing",nextAction="Read pricing context and resolve only the missing evidence";
     if(receipt&&receipt.disposition!=="draft") {nextOwner="reconciliation";nextAction="Existing live/scheduled/sold or ambiguous record: exclude from Add";}
     else if(blockedBy.some(reason=>/conflict|also belongs|Same original/i.test(reason))) {nextOwner="reconciliation";nextAction="Resolve the recorded identity/receipt conflict; no new draft";}
@@ -49,6 +49,7 @@ export function flowPacket(state:QueueState,ids:string[],now=new Date().toISOStr
     const blockers=[...blockedBy];
     if(!proposal) blockers.push(sourceProposal?"Pricing-agent proposal has not passed evidence validation":"No validated price");
     if(handoff&&!sourceFresh)blockers.push("Pricing handoff date is missing, future or older than 90 days");
+    if(sourceProposal&&c.input.identity.printRun)blockers.push("Numbered source proposal requires current scarcity validation; historical approval cannot bypass it");
     if(sourceProposal&&!sourcePolicyCurrent)blockers.push("Source proposal policy needs reconciliation");
     blockers.push(approval?"Asking price approved; shipping/policy checks remain required":"Price approval and shipping/policy checks are not recorded by this local queue","Final save/reopen audit and publication handoff remain required");
     return {id,sku:c.input.sku,identity:identity??c.input.identity,originals:c.input.photos,
