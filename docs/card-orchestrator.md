@@ -1,5 +1,7 @@
 # Card listing orchestrator
 
+Pricing completion now enforces the [scarcity sanity check](card-scarcity-guard.md). Numbered cards require five verified exact sales, validated related anchors, or documented related-search results. Historical numbered asking-price approvals cannot bypass this gate.
+
 This is a working local preparation queue for seller **imaydit58**, using the existing Legends OS card records. Codex performs the visual and research work; the runner assigns jobs, validates results, calculates prices and writes local listing drafts. No paid model service, new hosting service or eBay write connection was added.
 
 The operator can say **“Run the card orchestrator and show me only the exceptions.”** The agent should execute the workflow, not ask the operator to run commands.

@@ -16,9 +16,12 @@ const now="2026-10-18T08:00:00.000Z";
 const identity:Identity={player:"Payton Pritchard",season:"2024-25",set:"Panini Prizm Black",manufacturer:"Panini",cardNumber:"212",sport:"Basketball",team:"Boston Celtics",parallel:"Purple Prizm",serial:"25/99",printRun:99,condition:"Near mint or better",autograph:false,patch:false};
 const input=(id="card-1",serial="25/99"):CardInput=>({id,sku:id,identity:{...identity,serial},photos:[{side:"front",path:"front.jpg",sha256:(id==="card-1"?"a":"c").repeat(64)},{side:"back",path:"back.jpg",sha256:(id==="card-1"?"b":"d").repeat(64)}],candidates:[],source:"test"});
 const seeded=()=>{const s=newQueue();upsertCard(s,input(),now);return s;};
-function finish(s:QueueState,kind:JobKind,data:unknown,id="card-1") {const c=claimJob(s,"worker",kind,id,now)!;assert.ok(c);completeJob(s,id,kind,c.job.lease!.token,{outcome:"done",data},now);}
+function finish(s:QueueState,kind:JobKind,data:unknown,id="card-1") {const c=claimJob(s,"worker",kind,id,now)!;assert.ok(c);completeJob(s,id,kind,c.job.lease!.token,{outcome:"done",data:kind==="pricing"?{scarcitySearchEvidence:"Test search verified no additional comparable numbered sales",...(data as object)}:data},now);}
 function identified(){const s=seeded();finish(s,"photos",{hashes:s.cards["card-1"].input.photos.map(({side,sha256})=>({side,sha256})),evidence:"original files"});finish(s,"identity",{identity,pairMatches:true,frontFirst:true,serialInspected:true,evidence:"both originals read"});return s;}
 const comp=(changes:Record<string,unknown>={})=>({saleId:"407092203088",sourceUrl:"https://www.ebay.com/itm/407092203088",soldDate:"2026-07-27",itemPrice:1.75,shipping:null,currency:"USD",identity:{...identity,serial:"9/99"},serialObserved:true,priceDisclosed:true,ownAcquisition:false,graded:false,lot:false,condition:"Near mint or better",evidenceMode:"original-sale",evidence:"Original sale verified",...changes});
+
+// Independent synthetic sales for sample-size regression coverage.
+const threeSales=(c:ReturnType<typeof comp>)=>[c,...[1,2].map(n=>({...c,saleId:c.saleId+String(n),sourceUrl:c.sourceUrl+String(n)}))];
 
 test("current price rule converts under-three base once, excluding comp postage",()=>{
   const p=calculateCardPrice(1.75);assert.equal(p.roundedBase,1.95);assert.equal(p.item,3.44);assert.equal(p.shipping,0);assert.equal(p.minimumOffer,2.76);assert.equal(p.autoAccept,3.10);
@@ -109,11 +112,11 @@ test("comp safeguards reject own acquisition, wrong player, duplicate sale and s
 
 test("related numbered-parallel estimates scale item amounts and remain labeled for review",()=>{
   const s=identified();
-  const related=comp({identity:{...identity,parallel:"Blue Prizm",serial:"14/198",printRun:198},shipping:99});
-  finish(s,"pricing",{comps:[related],basis:"related-print-run",exactSearchEvidence:"Focused exact sold search found no usable independent sale",tracked:false,envelopeEligible:true,evidence:"Independent related original sale and physical serial reviewed"});
+  const related=comp({identity:{...identity,parallel:"Blue Prizm",serial:"14/198",printRun:198},shipping:0});
+  finish(s,"pricing",{comps:threeSales(related),basis:"related-print-run",exactSearchEvidence:"Focused exact sold search found no usable independent sale",tracked:false,envelopeEligible:true,evidence:"Independent related original sale and physical serial reviewed"});
   const result=s.cards["card-1"].jobs.pricing.result!;
   assert.equal(result.mean,3.5);assert.equal(result.reviewEstimate,true);
-  assert.deepEqual(result.basisDetails,[{saleId:"407092203088",sourceUrl:"https://www.ebay.com/itm/407092203088",itemPrice:1.75,sourcePrintRun:198,targetPrintRun:99,multiplier:2,adjustedItemPrice:3.5}]);
+  assert.equal((result.basisDetails as object[]).length,3);assert.deepEqual((result.basisDetails as object[])[0],{saleId:"407092203088",sourceUrl:"https://www.ebay.com/itm/407092203088",itemPrice:1.75,sourcePrintRun:198,targetPrintRun:99,multiplier:2,adjustedItemPrice:3.5});
   assert.equal((result.projection as {item:number}).item,3.95);
   finish(s,"listing",{prepare:true});
   const row=localReviewListings(s,now)[0];
@@ -142,14 +145,14 @@ test("related estimate fallback requires exact-search evidence and retains acqui
 });
 
 test("related arithmetic preserves unrounded means, exact low-price conversion and user overrides",()=>{
-  const related=(id:string,price:number)=>comp({saleId:id,sourceUrl:`https://www.ebay.com/itm/${id}`,itemPrice:price,identity:{...identity,parallel:"White Prizm",serial:"7/50",printRun:50},shipping:500});
+  const related=(id:string,price:number)=>comp({saleId:id,sourceUrl:`https://www.ebay.com/itm/${id}`,itemPrice:price,identity:{...identity,parallel:"White Prizm",serial:"7/50",printRun:50},shipping:0});
   const v=validateComps(identity,[related("100",1.01),related("101",2)],now,"related-print-run");
   assert.equal(v.mean,(1.01*50/99+2*50/99)/2);
-  const s=identified();finish(s,"pricing",{comps:[comp({identity:{...identity,parallel:"Other Prizm",serial:"7/99"}})],basis:"related-print-run",exactSearchEvidence:"No exact parallel sale",tracked:false,envelopeEligible:true,evidence:"Independent related parallel"});
+  const s=identified();finish(s,"pricing",{comps:threeSales(comp({identity:{...identity,parallel:"Other Prizm",serial:"7/99"},shipping:0})),basis:"related-print-run",exactSearchEvidence:"No exact parallel sale",tracked:false,envelopeEligible:true,evidence:"Independent related parallel"});
   assert.equal((s.cards["card-1"].jobs.pricing.result!.projection as {item:number}).item,3.44);
   const override={item:7.11,shipping:2.22,evidence:"Direct user override"};
   upsertCard(s,{...input(),override},now);
-  finish(s,"pricing",{comps:[related("102",2)],basis:"related-print-run",exactSearchEvidence:"No usable exact sold comp",tracked:false,envelopeEligible:true,evidence:"Related original reviewed"});
+  finish(s,"pricing",{comps:threeSales(related("102",2)),basis:"related-print-run",exactSearchEvidence:"No usable exact sold comp",tracked:false,envelopeEligible:true,evidence:"Related original reviewed"});
   const p=s.cards["card-1"].jobs.pricing.result!.projection as {item:number;shipping:number;overridden:boolean};
   assert.deepEqual({item:p.item,shipping:p.shipping,overridden:p.overridden},{item:7.11,shipping:2.22,overridden:true});
 });
@@ -169,7 +172,7 @@ test("CLI review report preserves a related estimate and its source arithmetic a
       };
       done("photos",{hashes:input().photos.map(({side,sha256})=>({side,sha256})),evidence:"Test fixture hashes"});
       done("identity",{identity,pairMatches:true,frontFirst:true,serialInspected:true,evidence:"Test fixture identity"});
-      done("pricing",{basis:"related-print-run",exactSearchEvidence:"No usable exact sale in test fixture",tracked:false,envelopeEligible:true,evidence:"Test fixture related sale",comps:[comp({soldDate:checkedAt.slice(0,10),identity:{...identity,parallel:"Blue Prizm",printRun:198,serial:"14/198"}})]});
+      done("pricing",{basis:"related-print-run",exactSearchEvidence:"No usable exact sale in test fixture",tracked:false,envelopeEligible:true,evidence:"Test fixture related sale",comps:threeSales(comp({shipping:0,soldDate:checkedAt.slice(0,10),identity:{...identity,parallel:"Blue Prizm",printRun:198,serial:"14/198"}}))});
       done("listing",{prepare:true});
     });
     const script=fileURLToPath(new URL("../scripts/card-orchestrator.ts",import.meta.url));
@@ -357,11 +360,11 @@ test("asking-price approval is exact and never grants publication or validates c
   upsertCard(s,{...input(),pricingHandoff:handoff},now);
   const a={cardId:"card-1",item:6.49,shipping:1.49,sourceUpdatedAt:now,policyVersion:handoff.policyVersion,photoHashes:input().photos.map(p=>p.sha256),sourceIdentityKey:fingerprint(input().identity),approvedAt:now};
   const packet=flowPacket(s,["card-1"],now,[a]);
-  assert.equal(packet.cards[0].pricing.approved,true);
-  assert.equal(packet.cards[0].nextOwner,"listing-review");
+  assert.equal(packet.cards[0].pricing.approved,false);
+  assert.equal(packet.cards[0].nextOwner,"pricing-review");
   assert.equal(packet.cards[0].pricing.validatedProposal,null);
   assert.equal(packet.cards[0].canPublish,false);
-  assert.match(flowHtml(packet),/Seller-approved asking price/);
+  assert.match(flowHtml(packet),/Numbered source proposal requires current scarcity validation/);
   for(const changed of [{...a,item:6.95},{...a,shipping:0},{...a,sourceUpdatedAt:"2026-10-17T00:00:00Z"},{...a,photoHashes:[]},{...a,sourceIdentityKey:"changed"}])assert.equal(flowPacket(s,["card-1"],now,[changed]).cards[0].pricing.approved,false);
   s.cards["card-1"].input.override={item:5,shipping:0,evidence:"Individual seller override"};
   assert.equal(flowPacket(s,["card-1"],now,[a]).cards[0].pricing.approved,false);
@@ -373,10 +376,21 @@ test("matching copies share research context but cannot research concurrently or
   finish(s,"identity",{identity:{...identity,serial:"26/99"},pairMatches:true,frontFirst:true,serialInspected:true,evidence:"Original pair"},"card-2");
   const first=claimJob(s,"pricing-A","pricing","card-1",now)!;assert.ok(first);
   assert.equal(claimJob(s,"pricing-B","pricing","card-2",now),null);
-  completeJob(s,"card-1","pricing",first.job.lease!.token,{outcome:"done",data:{comps:[comp({shipping:1})],tracked:false,envelopeEligible:true,evidence:"Shared source"}},now);
+  completeJob(s,"card-1","pricing",first.job.lease!.token,{outcome:"done",data:{scarcitySearchEvidence:"No additional related sold evidence found",comps:[comp({shipping:1})],tracked:false,envelopeEligible:true,evidence:"Shared source"}},now);
   assert.equal(pricingContext(s,"card-2",now).reusableEvidence.length,1);
   const result=s.cards["card-1"].jobs.pricing.result!;
   result.comps=[comp({shipping:1,identity:{...identity,serial:"26/99"}})];
   assert.equal(pricingContext(s,"card-2",now).reusableEvidence.length,0);
   assert.ok(claimJob(s,"pricing-B","pricing","card-2",now));
 });
+
+ test("scarcity contradiction holds only this card and preserves seller override",()=>{
+ const s=identified();
+ const own=input();own.override={item:3,shipping:0,evidence:"Historical proposed price"};upsertCard(s,own,now);
+ const related=comp({saleId:"111222333",sourceUrl:"https://www.ebay.com/itm/111222333",identity:{...identity,parallel:"Blue Prizm",printRun:199,serial:"9/199"},itemPrice:5,shipping:0});
+ finish(s,"pricing",{comps:[comp({itemPrice:1,shipping:0})],scarcityComps:[related],tracked:false,envelopeEligible:true,evidence:"Exact and related sales inspected"});
+ assert.equal(s.cards["card-1"].jobs.pricing.state,"held");assert.equal(s.cards["card-1"].jobs.pricing.result!.projection,null);
+ assert.equal(s.cards["card-1"].input.override!.item,3);
+ assert.match(s.cards["card-1"].jobs.pricing.reason!,/preserve existing/);
+ upsertCard(s,input("independent","30/99"),now);assert.ok(claimJob(s,"worker","photos","independent",now));
+ });

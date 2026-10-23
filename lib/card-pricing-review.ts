@@ -1,3 +1,4 @@
+import { SCARCITY_GUARD_VERSION, MIN_STRONG_EXACT_SALES } from "./card-scarcity-guard.ts";
 import { canonicalCardKey, priceFromSoldComp, projectListing, type DraftCard } from "./card-listing-factory.ts";
 import { CARD_POLICY_VERSION, calculateCardPrice, roundUpCardPrice } from "./card-orchestrator-policy.ts";
 
@@ -35,6 +36,7 @@ export function projectPricing(draft: DraftCard, today = new Date().toISOString(
   });
   if (!Number.isFinite(pricing.premiumPercent) || pricing.premiumPercent < 8 || pricing.premiumPercent > 10) reasons.push("Premium must be between 8% and 10%.");
   const evidenceValid = reasons.length === 0;
+  if (draft.identity.numberedTo && pricing.comps.filter(comp => comp.verified && comp.identityKey === canonicalCardKey(draft.identity)).length < MIN_STRONG_EXACT_SALES) reasons.push("Numbered card needs five verified exact sales or the orchestrator scarcity review; a thin comp cannot bypass the scarcity guard.");
   const generalPromotionPercent = pricing.generalPromotionPercent ?? 3;
   const promotionValid = Number.isFinite(generalPromotionPercent) && (generalPromotionPercent === 0 || (generalPromotionPercent >= 3 && generalPromotionPercent <= 5));
   if (!promotionValid) reasons.push("General promotion must be off (0%) or between 3% and 5%; review any increase above the 3% default.");
@@ -50,7 +52,7 @@ export function projectPricing(draft: DraftCard, today = new Date().toISOString(
   const { approvedSnapshot: _approval, ...savedInputs } = pricing;
   const inputs = { ...savedInputs, generalPromotionPercent };
   const estimatedPromotionFeeBeforeTax = listingPrice === null || shippingCharge === null || !promotionValid ? null : round((listingPrice + shippingCharge) * generalPromotionPercent / 100);
-  const snapshot = JSON.stringify({ method: CARD_POLICY_VERSION, identity: canonicalCardKey(draft.identity), front: draft.frontImageId, back: draft.backImageId, quantity: draft.quantity, inputs, listingPrice, shippingCharge });
+  const snapshot = JSON.stringify({ method: CARD_POLICY_VERSION, sanityVersion: SCARCITY_GUARD_VERSION, identity: canonicalCardKey(draft.identity), front: draft.frontImageId, back: draft.backImageId, quantity: draft.quantity, inputs, listingPrice, shippingCharge });
   const approved = reasons.length === 0 && pricing.approvedSnapshot === snapshot;
   return { compValue, premiumPrice, roundingAdjustment: calculated === null || premiumPrice === null ? null : calculated.roundedBase - premiumPrice,
     freeEnvelopeConversion: calculated?.freeEnvelopeConversion ?? false, roundedBase: calculated?.roundedBase ?? null,
