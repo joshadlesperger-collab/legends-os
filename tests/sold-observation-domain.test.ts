@@ -1,0 +1,5 @@
+import test from "node:test";import assert from "node:assert/strict";import{deduplicateSoldObservations,eligibleSoldObservations,validateSoldObservation,type SoldObservation}from"../lib/sold-observation-domain.ts";
+const base:SoldObservation={provider:"eBay",sourceItemId:"123",soldAt:"2026-10-01T00:00:00Z",observedAt:"2026-10-02T00:00:00Z",title:"Test /25",price:19.95,shipping:null,currency:"USD",verified:true};
+test("reuses latest provider observation without inventing shipping",()=>{const rows=deduplicateSoldObservations([base,{...base,observedAt:"2026-10-03T00:00:00Z",price:21}]);assert.equal(rows.length,1);assert.equal(rows[0].price,21);assert.equal(rows[0].shipping,null);});
+test("excludes unverified and stale observations",()=>{assert.equal(eligibleSoldObservations([base,{...base,sourceItemId:"2",verified:false},{...base,sourceItemId:"3",soldAt:"2025-01-01T00:00:00Z"}],new Date("2026-10-23T00:00:00Z")).length,1);});
+test("rejects missing provenance and invalid sale dates",()=>{assert.deepEqual(validateSoldObservation({...base,sourceItemId:"",soldAt:"unknown"}),["missing-source-id","invalid-sold-date"]);});
