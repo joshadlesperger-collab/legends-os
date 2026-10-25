@@ -20,9 +20,9 @@ function finish(s:QueueState,kind:JobKind,data:unknown,id="card-1") {const c=cla
 function identified(){const s=seeded();finish(s,"photos",{hashes:s.cards["card-1"].input.photos.map(({side,sha256})=>({side,sha256})),evidence:"original files"});finish(s,"identity",{identity,pairMatches:true,frontFirst:true,serialInspected:true,evidence:"both originals read"});return s;}
 const comp=(changes:Record<string,unknown>={})=>({saleId:"407092203088",sourceUrl:"https://www.ebay.com/itm/407092203088",soldDate:"2026-07-27",itemPrice:1.75,shipping:null,currency:"USD",identity:{...identity,serial:"9/99"},serialObserved:true,priceDisclosed:true,ownAcquisition:false,graded:false,lot:false,condition:"Near mint or better",evidenceMode:"original-sale",evidence:"Original sale verified",...changes});
 
-test("current price rule converts under-three base once, excluding comp postage",()=>{
-  const p=calculateCardPrice(1.75);assert.equal(p.roundedBase,1.95);assert.equal(p.item,3.44);assert.equal(p.shipping,0);assert.equal(p.minimumOffer,2.76);assert.equal(p.autoAccept,3.10);
-  assert.equal(calculateCardPrice(2).item,3.98);assert.equal(calculateCardPrice(3).item,3.49);assert.equal(calculateCardPrice(3).shipping,1.49);
+test("current price rule has no premium or under-three conversion",()=>{
+  const p=calculateCardPrice(1.75);assert.equal(p.roundedBase,1.95);assert.equal(p.item,1.95);assert.equal(p.shipping,1.49);assert.equal(p.minimumOffer,1.56);assert.equal(p.autoAccept,1.76);
+  assert.equal(calculateCardPrice(2).item,2.49);assert.equal(calculateCardPrice(3).item,3.49);assert.equal(calculateCardPrice(3).shipping,1.49);
   assert.equal(roundUpCardPrice(6.95),6.95);assert.equal(roundUpCardPrice(6.96),7.49);
 });
 test("shipping tiers, patch rule, tracked exceptions and explicit overrides",()=>{
@@ -48,7 +48,7 @@ test("a reviewed draft can finish pricing while Add and conflicting receipts sta
   const s=identified();upsertCard(s,{...input(),knownDraft:"456"},now);
   assert.equal(claimJob(s,"worker","listing","card-1",now),null);
   finish(s,"pricing",{comps:[comp({shipping:1.49})],tracked:false,envelopeEligible:true,evidence:"Reused pricing agent evidence"});
-  assert.equal((s.cards["card-1"].jobs.pricing.result!.projection as {item:number}).item,3.44);
+  assert.equal((s.cards["card-1"].jobs.pricing.result!.projection as {item:number}).item,1.95);
   assert.deepEqual(localReviewListings(s,now),[]);assert.equal(queueSummary(s,now).counts.readyForUpload,0);
   const conflict=identified();upsertCard(conflict,{...input(),knownDraft:"456"},now);
   upsertCard(conflict,{...input("card-2","26/99"),knownDraft:"456"},now);
@@ -114,7 +114,7 @@ test("related numbered-parallel estimates scale item amounts and remain labeled 
   const result=s.cards["card-1"].jobs.pricing.result!;
   assert.equal(result.mean,3.5);assert.equal(result.reviewEstimate,true);
   assert.deepEqual(result.basisDetails,[{saleId:"407092203088",sourceUrl:"https://www.ebay.com/itm/407092203088",itemPrice:1.75,sourcePrintRun:198,targetPrintRun:99,multiplier:2,adjustedItemPrice:3.5}]);
-  assert.equal((result.projection as {item:number}).item,3.95);
+  assert.equal((result.projection as {item:number}).item,3.49);
   finish(s,"listing",{prepare:true});
   const row=localReviewListings(s,now)[0];
   assert.equal(row.priceBasis,"related-print-run");assert.equal(row.reviewEstimate,true);assert.equal(row.priceNeedsReview,true);
@@ -146,7 +146,7 @@ test("related arithmetic preserves unrounded means, exact low-price conversion a
   const v=validateComps(identity,[related("100",1.01),related("101",2)],now,"related-print-run");
   assert.equal(v.mean,(1.01*50/99+2*50/99)/2);
   const s=identified();finish(s,"pricing",{comps:[comp({identity:{...identity,parallel:"Other Prizm",serial:"7/99"}})],basis:"related-print-run",exactSearchEvidence:"No exact parallel sale",tracked:false,envelopeEligible:true,evidence:"Independent related parallel"});
-  assert.equal((s.cards["card-1"].jobs.pricing.result!.projection as {item:number}).item,3.44);
+  assert.equal((s.cards["card-1"].jobs.pricing.result!.projection as {item:number}).item,1.95);
   const override={item:7.11,shipping:2.22,evidence:"Direct user override"};
   upsertCard(s,{...input(),override},now);
   finish(s,"pricing",{comps:[related("102",2)],basis:"related-print-run",exactSearchEvidence:"No usable exact sold comp",tracked:false,envelopeEligible:true,evidence:"Related original reviewed"});
@@ -176,7 +176,7 @@ test("CLI review report preserves a related estimate and its source arithmetic a
     execFileSync(process.execPath,["--experimental-strip-types",script,"status"],{cwd:dir,stdio:["ignore","pipe","pipe"]});
     const html=await fs.readFile(path.join(dir,"artifacts/card-orchestrator/status.html"),"utf8");
     assert.match(html,/Related numbered-parallel estimate; price approval required/);
-    assert.match(html,/Source sold item \$1\.75 × 198\/99 = \$3\.5000 before premium and rounding/);
+    assert.match(html,/Source sold item \$1\.75 × 198\/99 = \$3\.5000 before rounding/);
     assert.match(html,/https:\/\/www\.ebay\.com\/itm\/407092203088/);
     const saved=await readQueue(path.join(dir,"artifacts/card-orchestrator"));
     assert.equal(saved.cards["card-1"].jobs.pricing.state,"done");
