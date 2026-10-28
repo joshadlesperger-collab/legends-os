@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { applyCardEvent, replayCardEvents, type CardEvent } from "../lib/card-checkpoints";
+import { applyCardEvent, replayCardEvents, type CardEvent } from "../lib/card-checkpoints.ts";
 const make=(eventId:string,stage:CardEvent["stage"],status:CardEvent["status"]="complete"):CardEvent=>({cardId:"card-1",eventId,stage,status,at:"2026-10-28T12:00:00Z"});
 test("restart replay restores stage and skips duplicate events",()=>{
  const events=[make("scan","scanned"),make("identify","identified"),make("price","priced")];
