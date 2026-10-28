@@ -620,3 +620,39 @@ model ScheduledBidEvent {
 
   @@index([scheduledBidId, occurredAt])
 }
+
+model CardProcessingJob {
+  id          String   @id @default(cuid())
+  accountId   String
+  cardId      String
+  stage       String
+  status      String
+  version     Int      @default(0)
+  evidenceRef String?
+  draftId     String?
+  verifiedAt  DateTime?
+  holdReason  String?
+  updatedAt   DateTime @updatedAt
+  createdAt   DateTime @default(now())
+  events      CardProcessingEvent[]
+
+  @@unique([accountId, cardId])
+  @@index([accountId, status, stage])
+}
+
+model CardProcessingEvent {
+  id        String   @id @default(cuid())
+  jobId     String
+  eventId   String
+  stage     String
+  status    String
+  occurredAt DateTime
+  evidenceRef String?
+  draftId   String?
+  verifiedAt DateTime?
+  holdReason String?
+  job       CardProcessingJob @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@unique([jobId, eventId])
+  @@index([jobId, occurredAt])
+}
