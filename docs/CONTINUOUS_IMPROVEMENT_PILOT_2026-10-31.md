@@ -11,7 +11,7 @@ Reconcile deployed revision, Windows runner, eBay draft IDs, card/photo manifest
 ## Controlled experiments
 A. Existing browser flow vs supported bulk upload/API draft flow, same representative mix. Only run write experiments in an authorized environment after verifying seller, policy IDs, idempotency, and draft-only permission.
 B. Cached sold comps + deterministic pricing vs existing research path. Keep source, sold date, print run, condition, shipping, confidence and policy version. Do not overwrite historical evidence.
-C. Grok vs GPT-6 on 20–30 identical hard pricing cases with identical permitted evidence access, independent reference adjudication, latency, total cost, and price error. No model promoted on subjective preference alone.
+C. Grok-only pricing benchmark on 20–30 representative cards, independently reviewing evidence quality, latency, cost, policy adherence, and valuation error. OpenAI must not produce competing card valuations.
 
 ## Pricing guardrails
 Use docs/PRICING_POLICY.md as the current documented reconciliation baseline; review more recent approved decisions before implementation. Never restore old 9–10% premium. Preserve $1.49 minimum, buyer-total comparisons, 90-day exact sold priority, serial-number analogs, confidence and approved rounding. Weak-evidence review handling must be reconciled with the latest user decisions; do not silently publish or automatically reprice live listings.
@@ -36,3 +36,10 @@ Daily summarize queue throughput, p50/p90 time, cost/card, exceptions, top three
 3. Reconcile latest pricing decisions with current code and policy.
 4. Run shadow pricing benchmark without eBay writes.
 5. Pilot batch adapter on a small controlled set, verify actual drafts, then compare and recommend promotion.
+
+## Binding model responsibilities — user decision 2026-10-31
+- Grok is the EXCLUSIVE card pricing agent. Only Grok may research pricing comps, reason about market value, calculate proposed price, and revise valuations.
+- OpenAI handles card identification, listing content, bulk draft preparation, eBay draft execution, and readback verification. It must copy Grok's approved price without independently repricing, adjusting, or suggesting an alternate value.
+- Orchestrator routes identified card records to Grok, enforces schema and policy gates, retries Grok on failures, and routes unresolved cases to a pricing hold while independent cards proceed. Schema checks and numeric invariant checks are allowed; valuation judgments are Grok-only.
+- Persist Grok price, item/shipping/buyer total, confidence, source evidence, model/version, policy version and timestamp as immutable handoff fields. Never use a fallback OpenAI pricing model.
+- Do not publish. Do not modify active drafts. This document is a specification; runtime routing remains unverified until implemented and tested.
