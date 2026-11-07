@@ -8,11 +8,14 @@ type Draft={draftId:string;title:string;quantity?:number;currentItemCents:number
 type Receipt={requestId?:string;status?:string;message?:string;error?:string;job?:{id:string;status:string;phase?:string;result?:{published?:unknown[];exceptions?:unknown[]}}};
 const dollars=(cents:number|null|undefined)=>typeof cents==='number'?new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(cents/100):'Unknown';
 
-export default function CardDraftPublishPanel({reportId,rows,manualPrices,onClear}:{reportId:string;rows:Draft[];manualPrices:Record<string,string>;onClear:()=>void}){
+export default function CardDraftPublishPanel({reportId,rows,manualPrices,onClear,onPendingChange}:{reportId:string;rows:Draft[];manualPrices:Record<string,string>;onClear:()=>void;onPendingChange?:(pending:boolean)=>void}){
  const [connection,setConnection]=useState<{transportReady:boolean;reason:string}>({transportReady:false,reason:'Checking publishing connection…'});
  const [review,setReview]=useState(false),[submitting,setSubmitting]=useState(false),[message,setMessage]=useState('');
  const [activeRequest,setActiveRequest]=useState<string|null>(null);
- const requestId=useRef<string|null>(null),frozen=useRef<{rows:Draft[];prices:Record<string,string>}|null>(null);
+ const requestId=useRef<string|null>(null),frozen=useRef<{rows:Draft[];prices:Record<string,string>;signature:string}|null>(null);
+ const signature=JSON.stringify(rows.map(row=>({id:row.draftId,price:manualPrices[row.draftId]??''})));
+ useEffect(()=>{onPendingChange?.(submitting||Boolean(activeRequest));return()=>onPendingChange?.(false);},[submitting,activeRequest,onPendingChange]);
+ useEffect(()=>{if(review&&frozen.current?.signature!==signature){setReview(false);frozen.current=null;requestId.current=null;setMessage('Selection or prices changed. Review the current selection before publishing.');}},[signature,review]);
  useEffect(()=>{const c=new AbortController(),timeout=setTimeout(()=>c.abort(),12000);let mounted=true;void fetch('/api/card-processing-v2/publication',{cache:'no-store',signal:c.signal}).then(async r=>{if(!r.ok)throw Error();const x=await r.json();if(!mounted)return;setConnection({transportReady:x.transportReady===true,reason:typeof x.reason==='string'?x.reason:'Publishing connection unavailable.'});if(x.job&&['QUEUED','RUNNING'].includes(x.job.status)&&typeof x.job.id==='string')setActiveRequest(x.job.id);}).catch(()=>{if(mounted)setConnection({transportReady:false,reason:'Publishing connection unavailable. Selection and price previews remain available.'});}).finally(()=>clearTimeout(timeout));return()=>{mounted=false;clearTimeout(timeout);c.abort();};},[]);
  useEffect(()=>{
   if(!activeRequest)return;const controller=new AbortController();let timer:ReturnType<typeof setTimeout>|undefined;
@@ -29,10 +32,11 @@ export default function CardDraftPublishPanel({reportId,rows,manualPrices,onClea
  },[activeRequest]);
  const invalid=rows.some(row=>Boolean(manualDraftPrice(manualPrices[row.draftId]??'').error));
  const incomplete=rows.filter(row=>row.currentItemCents===null||row.shippingCents===null||!Number.isSafeInteger(row.quantity)||!row.quantity).length;
- function openReview(){requestId.current=crypto.randomUUID();frozen.current={rows:rows.map(row=>({...row})),prices:{...manualPrices}};setMessage('');setReview(true);}
+ function openReview(){requestId.current=crypto.randomUUID();frozen.current={rows:rows.map(row=>({...row})),prices:{...manualPrices},signature};setMessage('');setReview(true);}
  async function publish(){
   if(submitting||!frozen.current||!requestId.current)return;
-  setSubmitting(true);setMessage('');const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),20000);let answered=false;
+  if(frozen.current.signature!==signature){setReview(false);setMessage('Selection or prices changed. Review the current selection before publishing.');return;}
+  onPendingChange?.(true);setSubmitting(true);setMessage('');const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),20000);let answered=false;
   try{const response=await fetch('/api/card-processing-v2/publication',{method:'POST',headers:{'Content-Type':'application/json'},signal:controller.signal,body:JSON.stringify({action:'publish-selected',requestId:requestId.current,reportId,rows:frozen.current.rows.map(row=>{const cents=manualDraftPrice(frozen.current!.prices[row.draftId]??'').itemCents;return{draftId:row.draftId,...(cents===undefined?{}:{manualItemCents:cents})};}),reviewAcknowledged:true})});const data=await response.json() as Receipt;answered=true;if(!response.ok)throw Error(data.error||'Publishing request was not accepted.');setReview(false);const acceptedId=data.requestId??data.job?.id??requestId.current;setActiveRequest(acceptedId);setMessage(data.message||`Request ${acceptedId} accepted. Publication is pending the runner’s result; this is not a completed listing.`);}
   catch(error){if(!answered){setReview(false);setActiveRequest(requestId.current);setMessage('Request outcome is unknown. Checking the original request; no replacement will be submitted.');}else setMessage(error instanceof Error?error.message:'Publishing request was not accepted.');}
   finally{clearTimeout(timeout);setSubmitting(false);}

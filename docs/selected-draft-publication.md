@@ -62,3 +62,18 @@ The status API reports queued/running/review/complete outcomes explicitly. An
 accepted request or connected heartbeat is not evidence of completed listings.
 No auto-publishing schedule, automatic price decrease, active-inventory duplicate
 scan, paid pricing request, or card re-identification is introduced.
+
+## Review controls
+
+Per-row8percentoff discounts the lowest matching delivered total once, rounds
+in cents, and subtracts unchanged shipping into Manual BIN. It is not a watcher
+offer and does not select a row for publication. Unchecking restores the prior
+manual proposal; user edits override the checkbox. The existing149c minimum
+item price remains enforced. Filtered and selected subtotals use proposed prices
+and report known-value coverage across pages, one unit per draft row.
+
+Ignore clears proposals and selection for the row, restores its saved price in
+the view, and skips it in SelectAll/discountFill. Only report-scoped draft IDs are
+remembered in this browser. No draft or price is edited remotely. It affects
+future selections, not an already accepted publication request. Pending requests
+lock these controls; changing a review's selection/prices invalidates that review.
