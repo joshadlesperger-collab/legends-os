@@ -1,3 +1,4 @@
+require('./lib/card-processing-v2-runtime-root.cjs').assertV2RuntimeRoot(__dirname);
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,

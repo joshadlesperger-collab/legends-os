@@ -1,0 +1,7 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {summarizeLearningEvidence,baselineExecutionPolicy,type LearningObservation} from '../lib/learning-evidence.ts';
+const row=(id:string,sale:boolean|null,windowDays=30,version='v1'):LearningObservation=>({decisionId:id,windowDays,observedAt:new Date('2026-10-25'),saleOccurred:sale,viewsChange:null,watchersChange:null,decision:{recommendedAction:'OFFER',doctrineVersion:version}});
+test('unknown outcomes remain unknown and snapshots do not add trials',()=>{const r=summarizeLearningEvidence([row('a',true),row('a',true),row('b',null),row('c',false)])[0];assert.equal(r.observations,3);assert.equal(r.knownOutcomes,2);assert.equal(r.saleRatePct,50);assert.equal(r.unknownOutcomes,1);assert.equal(summarizeLearningEvidence([row('x',null)])[0].saleRatePct,null);});
+test('windows and doctrine versions stay separate',()=>{assert.equal(summarizeLearningEvidence([row('a',true,7),row('a',true,30),row('b',false,30,'v2')]).length,3);});
+test('even 100 observed sales cannot authorize causal adaptation',()=>{const r=summarizeLearningEvidence(Array.from({length:100},(_,i)=>row(String(i),true)))[0];assert.equal(r.saleRatePct,100);assert.equal(r.adaptationEligible,false);assert.equal(r.posture,'INSUFFICIENT DATA');const p=baselineExecutionPolicy('2026-10-25');assert.equal(p.adaptationEnabled,false);assert.equal(p.sellerOffer.maxPerRun,25);assert.equal(p.sellerOffer.discountPct,8);assert.equal(p.refresh.maxPerRun,10);});

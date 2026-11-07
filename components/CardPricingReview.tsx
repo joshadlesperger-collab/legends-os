@@ -12,7 +12,7 @@ export default function CardPricingReview({ draft, onChange }: { draft: DraftCar
   return <section className="factory-pricing" aria-label="Pricing and shipping review">
     <h2>Pricing and shipping</h2>
     <p>Use eBay sold listings above for browser-assisted research; an API subscription is not needed for that workflow. The app does not automatically read your signed-in eBay tab. Connected-provider lookup is a separate option. All amounts are USD.</p>
-    <p>We use the arithmetic average sold <strong>item price excluding shipping</strong>, applying the premium before rounding the final price. Record shipping separately to compare buyer totals. Verify exact year, set, player, parallel, print run and comparable condition; asking prices and hidden Best Offer prices are not verified sales.</p>
+    <p>We use the arithmetic average comparable <strong>buyer total including known shipping</strong>, with no automatic buffer. Subtract the proposed buyer shipping once, then apply tiered rounding and the $1.49 item floor. Verify exact year, set, player, parallel, print run and comparable condition; asking prices and hidden Best Offer prices are not verified sales.</p>
     {pricing.comps.map((comp, index) => <fieldset key={comp.id}>
       <legend>Sold comp {index + 1}</legend>
       <div className="factory-fields">
@@ -28,7 +28,7 @@ export default function CardPricingReview({ draft, onChange }: { draft: DraftCar
     </fieldset>)}
     <p><button type="button" disabled={pricing.comps.length >= 20} onClick={() => change({ comps: [...pricing.comps, { id: crypto.randomUUID(), sourceUrl: "", soldDate: "", itemPrice: NaN, shipping: NaN, notes: "", verified: false }] })}>Add sold comp</button></p>
     <div className="factory-fields">
-      <label>Premium above comp (%)<input type="number" min="8" max="10" step="0.1" value={Number.isFinite(pricing.premiumPercent) ? pricing.premiumPercent : ""} onChange={event => change({ premiumPercent: event.target.value === "" ? NaN : Number(event.target.value) })} /></label>
+      <p>No automatic price buffer. Buyer-total pricing applies.</p>{pricing.premiumPercent !== 0 && <button type="button" onClick={() => change({premiumPercent:0})}>Review using current pricing rules</button>}
       <label><span><input type="checkbox" checked={pricing.needsTracked} onChange={event => change({ needsTracked: event.target.checked })} /> Require tracked shipping (slab, thick card / patch, or operator choice)</span></label>
       <label><span><input type="checkbox" checked={pricing.patchCard ?? false} onChange={event => change({ patchCard: event.target.checked })} /> Raw patch / jersey card ($1.95 envelope charge when eligible, unless the under-$3 free-envelope rule applies)</span></label>
       <label><span><input type="checkbox" checked={pricing.envelopeEligible} onChange={event => change({ envelopeEligible: event.target.checked })} /> I verified current envelope service eligibility, packaged dimensions, weight and value.</span></label>
@@ -44,7 +44,7 @@ export default function CardPricingReview({ draft, onChange }: { draft: DraftCar
     </fieldset>
     <dl className="factory-price-summary">
       <div><dt>Verified comp average</dt><dd>{money(result.compValue)}</dd></div>
-      <div><dt>8–10% before ending adjustment</dt><dd>{result.lowPrice === null ? "Awaiting verified comps" : `${money(result.lowPrice)}–${money(result.highPrice)}`}</dd></div>
+      <div><dt>Buyer-total target before rounding</dt><dd>{result.lowPrice === null ? "Awaiting verified comps" : `${money(result.lowPrice)}–${money(result.highPrice)}`}</dd></div>
       <div><dt>Proposed listing price</dt><dd>{money(result.listingPrice)}</dd></div>
       <div><dt>Buyer shipping charge</dt><dd>{money(result.shippingCharge)}</dd></div>
       <div><dt>Buyer total before tax</dt><dd>{money(result.buyerTotal)}</dd></div>

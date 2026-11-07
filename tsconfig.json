@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -14,11 +18,38 @@
     "allowImportingTsExtensions": true,
     "jsx": "preserve",
     "incremental": true,
-    "plugins": [{ "name": "next" }],
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
     "paths": {
-      "@/*": ["./*"]
+      "@/*": [
+        "./*"
+      ]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules", "tests", ".next-backlog"]
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    ".next-batch-speed-validation/types/**/*.ts",
+    ".next-bulk-approved/types/**/*.ts",
+    ".next-bulk-grouped/types/**/*.ts",
+    ".next-inventory-review-live/types/**/*.ts",
+    ".next-inventory-review/types/**/*.ts",
+    ".next-pricing-validated/types/**/*.ts",
+    ".next-receipt-resolution/types/**/*.ts",
+    ".next/types/**/*.ts",
+    "next-env.d.ts"
+  ],
+  "exclude": [
+    "artifacts",
+    "node_modules",
+    "tests",
+    ".next-backlog",
+    ".next-speed-check",
+    ".next-preparation-build",
+    ".next-preparation-review",
+    ".next-bulk-validation"
+  ]
 }

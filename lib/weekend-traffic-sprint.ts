@@ -21,7 +21,7 @@ const economicsWarning = (row: SalesVelocityEvidence) => row.costComplete ? row.
 function matchControls(treatments: WeekendSprintRow[], candidates: Candidate[], matchedFor: "A_COMPLETENESS" | "B_AD_TEST", used: Set<string>) {
   const controls: WeekendSprintRow[] = [];
   for (const treatment of treatments) {
-    const pool = candidates.filter((candidate) => !used.has(candidate.row.listingId));
+    const pool = candidates.filter((candidate) => !used.has(candidate.row.listingId) && candidate.categoryId === treatment.categoryId && priceBand(candidate.row.currentPrice) === priceBand(treatment.currentPrice));
     pool.sort((left, right) => Number(left.categoryId !== treatment.categoryId) - Number(right.categoryId !== treatment.categoryId) || Math.abs(priceBand(left.row.currentPrice) - priceBand(treatment.currentPrice)) - Math.abs(priceBand(right.row.currentPrice) - priceBand(treatment.currentPrice)) || Math.abs(left.impressions - treatment.impressions) - Math.abs(right.impressions - treatment.impressions) || left.row.ebayItemId.localeCompare(right.row.ebayItemId));
     const selected = pool[0]; if (!selected) continue; used.add(selected.row.listingId);
     controls.push({ cohort: "C_CONTROL", matchedFor, listingId: selected.row.listingId, ebayItemId: selected.row.ebayItemId, title: selected.row.title, currentPrice: selected.row.currentPrice, currentAdRate: selected.row.advertising?.adRate ?? null, impressions: selected.impressions, views: selected.views, clickThroughRate: selected.row.traffic?.clickThroughRate ?? null, proposedAction: "NO INTERVENTION — CONTROL", why: `Matched ${matchedFor === "A_COMPLETENESS" ? "metadata" : "low-exposure ad"} control by category, price band, and traffic proximity.`, confidence: 99, economicsWarning: economicsWarning(selected.row), categoryId: selected.categoryId });
@@ -62,5 +62,6 @@ export function buildWeekendTrafficSprint(rows: SalesVelocityEvidence[], assessm
   const used = new Set([...cohortA, ...cohortB].map((row) => row.listingId));
   const aControls = matchControls(cohortA, base.filter(({ assessment }) => assessment.proposedPatch.length === 0), "A_COMPLETENESS", used);
   const bControls = matchControls(cohortB, bControlCandidates, "B_AD_TEST", used);
+  excluded.unmatchedTreatment = cohortA.length + cohortB.length - aControls.length - bControls.length;
   return { cohortA, cohortB, cohortC: [...aControls, ...bControls], excluded };
 }

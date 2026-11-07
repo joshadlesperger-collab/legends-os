@@ -1,0 +1,4 @@
+import fs from "node:fs/promises";
+import {beginV2BrowserTiming,endV2BrowserTiming,recoverV2BrowserTimings} from "../lib/card-processing-v2-browser-timing.ts";
+async function main(){const[command,file]=process.argv.slice(2);if(command==="recover"){console.log(JSON.stringify(await recoverV2BrowserTimings(process.cwd())));return;}if(!["begin","end"].includes(command)||!file)throw Error("Use begin/end PACKET_FILE or recover");const stat=await fs.stat(file);if(!stat.isFile()||stat.size>100000)throw Error("Invalid bounded timing packet");const packet=JSON.parse(await fs.readFile(file,"utf8"));console.log(JSON.stringify(command==="begin"?await beginV2BrowserTiming(process.cwd(),packet):await endV2BrowserTiming(process.cwd(),packet)));}
+main().catch(()=>{console.error("Browser timing checkpoint rejected; inspect the exact batch, ownership and actual action timestamps.");process.exitCode=1;});

@@ -1,0 +1,7 @@
+import {NextRequest,NextResponse} from 'next/server';
+import {OPERATOR_SESSION_COOKIE,readOperatorSession} from '@/lib/operator-auth';
+import {getSpendSummary,saveSpendSnapshot} from '@/lib/spend-dashboard';
+export const runtime='nodejs';export const dynamic='force-dynamic';
+const headers={'Cache-Control':'private, no-store'};
+export async function GET(req:NextRequest){if(!await readOperatorSession(req.cookies.get(OPERATOR_SESSION_COOKIE)?.value))return NextResponse.json({error:'Sign in to view spending.'},{status:401,headers});try{return NextResponse.json(await getSpendSummary(),{headers});}catch{return NextResponse.json({error:'Spending summary is unavailable.'},{status:503,headers});}}
+export async function POST(req:NextRequest){if(!await readOperatorSession(req.cookies.get(OPERATOR_SESSION_COOKIE)?.value))return NextResponse.json({error:'Sign in to update a balance snapshot.'},{status:401,headers});if(req.headers.get('origin')!==req.nextUrl.origin)return NextResponse.json({error:'Update balances from Legends OS.'},{status:403,headers});const body=await req.text();if(body.length>8192)return NextResponse.json({error:'Snapshot is too large.'},{status:413,headers});try{return NextResponse.json(await saveSpendSnapshot(process.cwd(),JSON.parse(body)),{headers});}catch{return NextResponse.json({error:'Enter a valid manually verified balance and observation time. Spending limits cannot be changed here.'},{status:400,headers});}}

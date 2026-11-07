@@ -1,5 +1,78 @@
 # Card Listing Factory — pilot SOP
 
+## Latest seller decision — price review in drafts, 2026-10-24
+
+The seller said: “you don't need to ask me about approving prices here. I check
+them when they're in draft.” This supersedes the previous “keep price approval”
+requirement for drafting. Use current validated pricing rules and retained
+seller-set prices without asking for individual or grouped pre-draft approval.
+The seller reviews and adjusts prices in the saved eBay drafts. Keep evidence and
+estimate labels; missing evidence, unknown shipping, explicit holds and identity
+conflicts still block the affected card. Do not mark proposals seller-approved or
+invent approval history. No publication authority is added. The separate pending
+twenty-file source-removal decision is unchanged.
+
+## Current reliability instruction and result — October 24, 2026
+
+Seller authorized reconciling existing drafts, tracking IDs and verification in
+the queue, consolidating one listing writer, retaining price approval, proving
+restart/resume and adding nothing else. Seller expects routine sequencing and
+previously settled decisions to be handled by the orchestrator. No publishing.
+
+The legacy Card Inbox writer was explicitly paused; the pricing-readiness writer
+was already paused. One queue owner now dispatches the fixed eight-capture scope
+in `artifacts/draft-reliability-20261024/scope.json`. Tucker 5434032084413, Mack
+5434036336713, Bettis 5433771726011, Dack 5433367654513 and Codie 5433367682413
+remain the same saved drafts. All five passed the current saved-field comparison,
+explicit issue audit and original-photo review. Dack/Codie $1.49 offers were
+disabled; approved asking/shipping prices were retained. Lich 128154591962,
+Memnarch 128154591949 and Loyal 128154591959 were already live, positively matched
+by SKU/title and excluded from further draft edits. This worker published nothing.
+
+An actual stopped/resumed Tucker operation retained its original ID and completed
+through save/reopen evidence. A fresh process reuses completed results. The
+feedback record counts failed checks and confirmed repairs; it does not change
+seller policy or price approval by itself. No performance target is claimed.
+
+After an automatic approval-review rejection of source removal, the seller
+explicitly approved “Finish the four-file move”: only Card0011B210833.jpg,
+Card0011F210833.jpg, Card0014B210833.jpg and Card0014F210833.jpg from C:\CardScans.
+Those sources are now absent; all four original-byte copies are retained with
+matching hashes under Drafted and the same draft IDs. Other archive mappings and
+capture IDs remain intact. The five draft pairs have completed archive records.
+General promotion remains off under the existing restriction; standing 3% and
+the final publication handoff remain open. Saved/verified is not publication-ready.
+
+## Whole-inventory saved-price audit — 2026-10-21
+
+Seller requested checking everything in Listing Factory with the latest rules and updating as required. Audit: `artifacts/pricing-all-20261021/audit.html` and `audit.json`; original full-scan snapshot: `before.json`. All 1,544 physical captures and 58 unmapped records are accounted for. Of the physical cards, 207 completed-evidence prices recalculate unchanged under the current policy, two explicit overrides are preserved, 723 saved prices need evidence review, and 612 have no usable saved price. These are mutually exclusive audit categories, separate from workflow stages.
+
+No price amounts changed in this pass and no eBay writes occurred. The legacy selected comp set contains 299 expired rows across 269 source IDs; after excluding cards with newer validated evidence or manual overrides, 174 physical-card records still have expired selected-source evidence. Do not equate historical source-row counts with current-price failures. Color match remains unreviewed on all 1,042 identified records, including the 207 arithmetic passes; those passes do not certify unknown premium attributes.
+
+Two conditional premium changes remain unapplied: Koby Brea 001/299 would move $3.98 to $4.44/free if its $2 ordinary independent comp is established; Rodrigue Beaubois 25/25 would move $4.49 to $4.95 plus $1.49 shipping if the retained Red09/99 sold result passes its remaining evidence checks. Beaubois received one evidence-specific retry after locating the full retained result row; the original source remained inaccessible, and the hold was retained. Do not reset unchanged holds or invent source serial/grade/sale flags. Resume from the audit's per-card causes and saved evidence, grouped by player/product/year/variant. This audit is not a fresh sold-market or visual-color review of every card.
+
+## Listing-review bulk draft progress — 2026-10-21
+
+The seller requested progressing cards in Listing review to eBay drafts through bulk upload. A bounded browser-assisted native-photo batch saved and reopened three Pandora Prizm cards: Fiske298/400 and Adams110/400 and174/400. Exact original-pair receipt manifest: `artifacts/bulk-photo-pilot-20261021/manifest.json`. Resume those IDs; never re-upload the same captures. Saved asking prices are $1.98/$2.44/$2.44 with free shipping. All six hosted originals and physical serials, corrected details, SKU, condition and quantity were checked after saving. This separate authorized browser operation does not enable upload/publication in the local runner. No cards were published.
+
+After the automatic approval review rejection, the seller explicitly answered “Enable these settings” for these three saved drafts. Best Offer80%minimum/90%auto-accept and General3% are now saved and reopened-verified: Fiske $1.59/$1.79; each Adams $1.96/$2.20. Priorityoff. Evidence: `artifacts/draft-progress-20261021/settings-verification.json`. This approval covers these three drafts; publication remains a separate handoff. Preserve this hold and the final publication/envelope eligibility handoff. Listing review remains184:23 local draft receipts and161 without receipts. Current SellerHub has21 drafts; historical local receipts are not a fresh inventory count.
+
+## Manual asking prices — seller requested 2026-10-21
+
+The card workbench now supports an exact seller-entered item price and editable buyer shipping. Saving explicitly approves that amount and advances the card from Price to Listing review. Do not apply a premium, rounding or postage conversion to this item override. Retain it across refreshed automated estimates; invalidate its use when the original capture/pair or reviewed identity changes. Keep prior decisions and source research in history. Unfinished pricing research is not asserted complete, but a pricing-job hold no longer blocks the manual-price route. Inventory, shipping, identity conflicts, seller holds and listing checks remain visible. No eBay edit is performed by this local action.
+
+The existing workflow review store binds the manual value to the capture and identity. `pricing-context` and `preflight` consume the current decision and show it separately from validated evidence and imported proposals. Follow the packet's approved manual amount instead of an older estimate. The source pricing queue is not rewritten to manufacture evidence completion.
+
+## Price correction authority and special premiums — seller confirmed 2026-10-21
+
+The seller authorized correcting any prices using the latest pricing rules and specified **15%** for first-on-print, last-on-print and color match. Use the inspected full serial for first/last detection; color match requires original-photo evidence, not a guessed team-color lookup. Apply one 15% adjustment when needed, then the standing 9%, upward .49/.95 rounding and shipping rules. Preserve explicit individual overrides. This authority covers local asking-price corrections; it does not waive evidence checks or authorize new publication. Record the old/new projection and the exact identity, originals and evidence binding. Existing draft/live IDs remain unchanged; an approved local price is not an eBay save.
+
+The seller clarified: **color match should already comp correctly when enough sold listings match; the premium applies when using the mathematical method.** Direct matching color-match sales therefore receive no extra color-match markup. The initial implementation uses two independent eligible exact sales as the sufficient-direct-evidence threshold (an implementation choice, not a seller-specified count). Sparse ordinary evidence or related-print-run estimates receive the 15% adjustment for a verified target color match. A source already documenting the applicable premium does not receive a second markup. Premium source serials must not price an ordinary copy. Mixed features do not stack multiple 15% additions. Keep estimate and condition caveats visible.
+
+Process related cards together by player, product, year, card number, parallel, print run and condition. Preserve draft/ready-work priority, each original capture, individual serial and override. Reuse validated research through per-copy claim/complete; grouping does not merge inventory. Re-read pricing context after identity completion because the matching group can change.
+
+Use the bounded `correct-prices --cards ID,ID --authority "recorded seller instruction"` command for a preview, and add `--apply` for an authorized correction. It revalidates existing completed evidence, records bound asking-price approval and refreshes existing local listing text. It does not restart unchanged holds, invent comps, replace overrides, or write to eBay. Missing color-match review remains visible. Policy version: `item-only-9pct-special15-49-95-under3-plus149-v2`.
+
 ## Seller approval of current pricing-agent proposals — 2026-10-19T00:14:30.622Z
 
 The seller answered “Yes—use the current pricing-agent proposals” to the explicit asking-price approval question. Current proposals are approved asking prices, including review-estimates. Do not ask again for unchanged approved proposals. Receipt: artifacts/card-orchestrator/asking-price-approvals.json; full source snapshot: artifacts/card-orchestrator/approved-pricing-source-snapshot.json. Bind approval to card identity, original photo pair, exact amount/shipping, policy and source timestamp. Preserve individual seller overrides. This does not turn estimates into verified sold evidence or waive identity, duplicate, shipping, listing-accuracy and final saved-field checks. Changed future proposals are outside this snapshot approval.
@@ -598,3 +671,85 @@ Before another upload of Joel Embiid094/125, Dyson Daniels085/125, Donovan Cling
 
 ### Prizm recovery confirmed — 2026-10-18T22:17:25.199Z
 The five previously failed draft attempts were reconciled absent before regeneration. Seller paused simultaneous edits. Successfully saved new IDs 5414292292213, 5414093268012, 5414292346313, 5414022053711, 5412270050710. Manifest: artifacts/batch-202610182210/manifest.json. Seller Hub verified five correct prices, SKUs, quantity 1 and $1.49 shipping after save. These are Add exclusions; resume these IDs for remaining review, never regenerate. Pricing proposals remain review-required. Final individual specifics/description, offer/promotion and photo orientation audit remains. No publication.
+
+
+### Evidence recovery 2026-10-22T02:10:03.046Z
+Partial progress: four of174 stale-basis records resolved;170 remain, both conditional premium adjustments still held. Fresh approved local prices: Carroll2.98/free(10sales),Chourio2.98/free(21),Edgecombe3.44/free(22),Nabers118/400 4.49+1.49(2). Corbin/Nabers asking amounts unchanged; Chourio/Edgecombe previously withheld and now usable after insert identity review. Nabers source serials independently observed in full sold titles with matching raw front previews; physical back-stamps/condition remain unverified sold-result estimates. Removed expired/graded/different-parallel data; ProductResearch corrected several asking-vs-sold amounts. Listingreview184→187,pricing583→580. Koby001/299 verified/no color match but comp unresolved. Wilkins,Lenoir,Odell specific research holds retained;Beaubois unchanged priorhold. No eBay writes.68 tests passed; npm run build failed existing PrismaDLL EPERM. Report:artifacts/pricing-all-20261021/recovery-audit.html; exacthandoff fresh. Backlog unfinished.
+
+## Pricing evidence continuation — 2026-10-21 evening
+
+Resolved 20 additional stale records (Spears 3, Gannon 3, Stone 2, Spurrier 3, Gesicki 3, Winfield 3, Baker 3) and applied the Koby Brea 001/299 first-print adjustment using the authorized 15% math premium. Current-rule asking prices are approved locally for 21 cards this pass. The original stale cohort is now 24/174 resolved, 150 remaining; one premium adjustment remains (Beaubois 25/25). No eBay changes were made.
+
+Retained raw sold research, full-serial attribution and individual original-photo reviews in artifacts/pricing-all-20261021. Source serials observed only in titles are explicitly distinguished from photographed stamps; sold-result condition uncertainty remains in the evidence. Lattimore and Otton research stayed filtered to Very Good after one recovery attempt: prices unchanged and exact condition blockers retained. Beaubois still lacks verified independent raw-card evidence. Do not repeat unchanged holds.
+
+Added validated pricing-evidence intake for genuinely new evidence after a held job; prior attempts remain in history and a fresh claim/complete is required. 69 relevant tests passed; TypeScript passed. Required npm run build was attempted and blocked by Prisma Windows DLL rename EPERM. The working preview was preserved.
+
+Fresh handoff.json/html records proposals, approval status, next owner and blockers. Approved records proceed to listing-review; shipping/policy verification and final save/reopen/publication handoff remain required. Recovery audit and build checkpoint updated; backlog remains unfinished.
+2026-10-21 continuation: seller reiterated standing authority, no repeat pricing questions. Two Chris Jones Pandora copies172/400 and387/400 reviewed against original pairs, related Purple Ice30/225 sold September13 USD3 source117346595624 raw front/title serial verified; exact Pandora source lacks full serial. Local current-rule prices approved, estimate evidence retained. Stale cohort148 remaining, Beaubois premium1 remaining. No eBay writes. Labels clarified in source; build still Prisma DLL EPERM, preview not restarted. Fresh Jones preflight saved. Unmapped examples are marketplace receipts without scan links; reconciliation is processing work, not automatically seller review.
+
+## 2026-10-21 RCCA rule correction: local maintenance vs Add
+Existing live, draft, and scheduled receipts exclude new listing creation, but no longer block local photo, identity, or pricing evidence maintenance. Sold receipts, conflicting receipt ownership, duplicate capture/SKU/serial guards, and required stage dependencies remain blockers. This does not revise prices on eBay or grant publication authority. Prior statements that all live/scheduled records block local pricing are superseded. Stage-prefixed reconciliation/listing holds stay retained but do not block earlier local work in dashboard attention classification. Unchanged holds still require documented new evidence to retry.
+
+## Seller serial-comp rule — 2026-10-21
+An observed denominator such as /225 is sufficient for a sold comparable when card identity/parallel and print run match. Missing source numerator does not block exact or related pricing. Record serial as /225, serialObserved:false and printRunObserved:true; retain review-estimate status and unknown source first/last-print status. Never invent a numerator. Known own purchases, known matching full serial, graded/lot/undisclosed sales, wrong identity and stale evidence remain excluded. Owned inventory still requires its full serial. Known first/last print retains the approved premium logic. This explicitly supersedes older requirements for every comp to have a complete serial. Raw cards over $20 use Ground under standing shipping instructions.
+2026-10-21 denominator-rule recovery: implemented explicitly observed /denominator comp support for exact and related estimates, serialObserved:false/printRunObserved:true; owned full serial, known own-acquisition, identity, date, grade and disclosed-price safeguards retained.61 tests and TypeScript passed; required build still Prisma DLL EPERM. Fresh Product Research raw photos/sold amounts verified.4 Odell Pandora copies approved locally3.49+1.49 using2exact comps;2Wilkins copies1.98free using relatedPurpleNoHuddle75;3Lenoir copies4.44free using2exact comps.9stale resolved,139remain plusBeaubois premium. Fresh exact9preflight saved; no eBay writes. Original condition and source numerators remain explicitly unknown, no fabricated independent-copy proof. Remaining listing shipping/policy/save-reopen handoff retained.
+
+## 2026-10-22 continuous pricing recovery
+Continued across multiple player groups: 18 stale records resolved (Hall2, Strange3, EricAllen2, HinesAllen2, Iverson2, Davis1, Bird2, Magic1, Kmet3). Original174 stale cohort now53 resolved/121 remaining; Beaubois premium still pending. Current audit independently reports121 expired-basis cards. Local approved prices only; no eBay persistence/publication. Refreshed exact sold research and per-copy claim/complete; Magic uses non-color-match Red299 related-run evidence instead of purple color-match sales. Five CameronJordan original pairs and all three Kmet pairs visually verified. Simmons, Quickley and CameronJordan limited by VeryGood-only research; one standing seller decision requested on lower-condition conservative estimates, not yet granted. Beaubois also awaits that decision plus raw source validation. Build attempted, blocked by existing Prisma DLL EPERM; preview/auth untouched. Archived an orphan queue.lock only after local PID20808 confirmed absent and token rechecked; transient active locks respected. Fresh preflight and recovery audit saved. Continue remaining actionable records; do not rework unchanged holds or assume condition permission from silence.
+
+## Seller condition normalization — 2026-10-22
+Seller explicitly permits lower-condition raw comps when comparable-condition evidence is unavailable: Excellent to Near mint or better +10%; Very good to Near mint or better +25%. Normalize each source item amount before averaging, multiplying separately with any related print-run ratio and applicable single15% first/last/color premium; ordinary9%markup and existing rounding/shipping follow. Unknown source condition receives no inferred condition premium. Keep actual source condition, per-comp adjustment and review-estimate label; no invented NM grading. Other condition conversions remain unsupported. This supersedes prior condition-mismatch holds for these two conversions only. No external listing-write authority added.
+
+## 2026-10-23 Drafted archive authority
+Seller explicitly requested automatic Drafted moves after saved-draft verification, with Listed reserved for verified live listings. Preserve originals and capture identities, keep price approval, never publish. Implemented validated receipt-triggered moves under the original configured source root; Drafted can advance to Listed. Saved IDs alone do not authorize archival. 97 orchestrator/preparation tests and TypeScript passed; build remains blocked by existing Prisma DLL EPERM. Omaha draft 5428177568011 reopened and photo pair/price/shipping/quantity/offers inspected; originals moved and hash-verified under C:\CardScans\Drafted\5428177568011. Other eight require current reconciliation: Kobe exact SKU now observed live as 128152408964, not published by this worker; photo audit pending.
+
+2026-10-23 seller correction: seller does not believe the nine proposed matching captures are extra physical inventory and asked to archive them. Distinct-file inference is suspended for these nine; supported seller holds recorded in possible-rescan-holds.json. No quantity changes or duplicate drafts. Earlier194641 run confirmed10live; original photo pairs inspected. Eight earlier pairs moved to Listed; Capela/Clowney retained pending pricing holds. Original current-nine fully reconciled1draft8live and archived. No publication by this worker.
+
+
+## 2026-10-23 confirmed buyer-total pricing integration
+Seller explicitly confirmed buyer total with no automatic 9% buffer, retaining Excellent +10% / Very good +25% normalization to Near mint. This supersedes earlier repeated 9% and item-only formula instructions. New orchestrator pricing completions and explicit corrections use adjusted comparable item plus known source shipping; related-run ratio scales that adjusted source total. Unknown shipping blocks calculation. Subtract proposed seller shipping once, round nearest .49/.95 at or below $3 (ties down), upward above $3, enforce $1.49 item floor. Existing shipping tiers remain proposals requiring eligibility review. Retain the original comps and estimate labels. Historical approvals do not transfer to recalculated evidence. Source-bound manual approvals remain separate; no live edits or publishing authority is added. Preserve grouped receipt lineage and archive recovery fixes.
+
+
+## 2026-10-24 policy repair and RCCA
+Seller reported submitting the batch except Capsakid5431448553011 and Paldean Wooper5431409596312. Both lacked return policy and country origin. Reused established No Return Accepted248164940010 and standing United States default; saved/reopened both and verified persisted fields, with issue summary cleared. No publishing, recreation, price changes or photo moves. Added mandatory submission-readiness audit to orchestrator docs/skill. Historical saved/photo verification remains distinct from current live state and readiness. Seller report explains earlier observed publication; live-ID reconciliation still requires actual receipts.
+
+## Seller clarification — 2026-10-25
+Keep Jac Caglianone listing128113464539 on hold until seller checks actual contents. https://www.ebay.com/itm/128113464539 . For listing-specific questions, always include a clickable direct listing link. Ohtani128142933608 remains unresolved; request for a link is not confirmation of contents or edit authority: https://www.ebay.com/itm/128142933608 .
+
+## 2026-10-25 seller instruction: pricing sources first
+Before external pricing research, check (1) saved active listings, (2) all available seller sold history, and (3) the local knowledge graph/validated evidence. Record each source's match/evidence, no match, stale, or unavailable outcome. Use targeted refreshes when needed; an unavailable database is not proof of an empty graph and does not stop independent work.
+Reuse a matching current seller-set asking price or sufficient validated fresh evidence and stop further research. Active asking prices are not sold comps. Exact variant, condition, language, single-card/lot, serial exclusions and known shipping still matter; model agreement does not validate a bad comp. Preserve approved pricing mathematics and seller holds.
+Use the existing 90-day sold-evidence window for current calculations; keep last-year/all-time sales as identity and historical context. Knowledge evidence retains the dates of its original sales, not its cache refresh date. Active snapshots use the existing 60-minute freshness check before relying on current listing state. Only stale, missing or conflicting evidence justifies additional research. Total pricing effort remains capped at 30 seconds, then use the supported unpriced-draft route.
+The pricing-context and pricing-claim handoffs expose this worker contract as sourceFirst. This is a mandatory worker procedure, not an automatic report download, database connection, or claim that all sources have already been read. Save actual source-check outcomes with the card's evidence.
+
+## Active-listing duplicate authority — 2026-10-25
+Seller standing instruction: whenever a verified additional physical copy exactly matches an active listing, increase that existing listing's available quantity. Do not ask whether to increase quantity or create a separate draft; do not request per-card permission again. This supersedes earlier instructions requiring separate quantity-edit authorization, including the skill's general no-external-write restriction for this narrow action. It does not authorize new listing publication.
+Match product/year/player/card number/parallel/language/condition and single-card contents. Different serials or parallels remain separate; ambiguity requires evidence resolution, not a routine permission question. Use saved active reports to locate candidates, then verify the exact active listing and current available quantity before editing. Preserve its price and other settings.
+Count each distinct original capture once; copied/converted files, retries and captures already represented by stock are not increments. Persist listing ID, capture IDs, starting quantity, intended target and save/reopen result. Reconcile uncertain outcomes or concurrent quantity changes before retrying; never blindly add again. An old live receipt alone does not prove a new copy. Respect explicit item holds and writer ownership; isolate exceptions and continue independent cards. If a separate draft already exists for that copy, reconcile it without publishing or deleting it automatically.
+The local queue exposes this standing worker contract as activeDuplicatePolicy in pricing-context and preflight. It does not itself execute eBay quantity writes. Use the supported scoped seller edit and retained operation evidence; do not claim a live increase from a handoff alone.
+
+## Standing condition default — 2026-10-25
+Default owned raw cards to **Near mint or better**. Do not ask for pack-fresh or condition confirmation for each card or batch. This supersedes earlier routine condition-confirmation requirements. Preserve explicit seller overrides, graded-card status, visible-damage exceptions and existing holds. A default is not evidence of inspection or pack-fresh provenance. Never apply it to unknown sold-comp condition. Use the default in standard and bulk-AI preparation; verify the saved condition along with other required fields. No retroactive inventory-wide condition changes are authorized by this rule update.
+
+
+## Lowest exact active fallback — seller instruction 2026-10-25
+After saved active listings, all available sold history and knowledge evidence are checked, allow up to30 seconds of targeted pricing research. If sold evidence remains insufficient, use the lowest verified exact comparable active Buy It Now total including known shipping, labeled **active-listing estimate** in pricing records/handoffs. Match product/year/card number/parallel, language, raw/graded condition and single-card contents; exclude own listings, auctions, lots, unselected pick-your-card prices, conditional coupons and unknown shipping. Verify the actual listing, not the search headline. Preserve the item floor and eligible shipping; match the total in cents rather than applying sold-price rounding (explicit narrow supersession). Record any floor-limited difference. Keep sold evidence separate and do not manufacture a sale date. No exact verified match means unpriced, not a guessed match. The30-second research limit excludes shared setup, implementation and saving/verification; do not restart searches indefinitely. This supersedes the earlier automatic unpriced fallback when a valid active comparable exists. No publication authority.
+
+
+## Verified sold-photo archive handoff — 2026-10-25
+Seller authorizes automatically moving verified sold original pairs into Sold/<item ID>. Use record-known-inventory with a seller-bound exact SKU/identity/photo-key sold observation: the CLI now completes the two-phase hash-verified archive. Normal run/recover-archives also picks up bounded pending sold receipts. Preserve all seller/source/condition/identity holds and retained pricing holds; no quantity edits or new listings. Changed inputs, unverified sold receipts or corrupt archives remain exceptions. Recovery is invocation-driven, not a continuous watcher. Already archived live pairs stay safely in their existing archive rather than being moved again.
+
+### 2026-10-26 resume actual eBay drafts
+Seller: "I still see nothing in ebay drafts...not a single card. Please resume work, working right to left and get cards into draft ASAP. learn, adapt, improve. don't stop until this pipeline is complete. if a card gets hung up for any reason, proceed."
+This explicitly authorizes creation for eligible current pipeline captures after exact duplicate reconciliation, superseding the earlier no-new-drafts stabilization restriction for those captures only. Use scoped writer creation bindings and draft-begin. Resume every generated ID; never blindly repeat uncertain creation, publish, recount stock or override explicit identity/photo holds. Actual draft creation and saved/reopened evidence must be distinguished from local preparation, formal verification and archival. Capture-to-ID mapping and exception isolation are required; screenshot-service failure does not imply a failed save and must not trigger recreation.
+Copied-template lesson: clear inherited player/team before selecting exact replacement values; eBay suggested specifics can append values. Use current dispatch pricing rather than a stale previously prepared listing payload. Save/reopen checks must inspect SKU, exact identity/serial, both originals, policies/location and price/offers. CAPA draft-template-inheritance-20261026 remains open pending predefined live effectiveness evidence.
+
+
+## Draft-photo archive override — 2026-10-28
+Seller: "move the pictures for anything in draft and ensure our process does this in a timely manner going forward." After saved photo/identity verification, archive all mapped original pairs to Drafted even if price is blank or pricing remains held. Preserve pricing evidence and all source/seller/identity/ownership/hash guards. Successful unpriced verification now emits the normal archive handoff; run/recover-archives includes draft receipts. Check the returned move status in the same invocation. Recovery is invocation-driven, not a continuous service; failed or stale receipts remain explicit exceptions. This supersedes the earlier no-archive rule for unpriced drafts.
+
+
+Future archive approval confirmed, 2026-10-28: seller explicitly replied "Approve future verified-draft moves" to the scoped approval question. Standing draft archive authority is recorded through authorize-draft-archives. It supersedes legacy writer copy-only configuration for verified draft receipts; explicit per-invocation copy-only remains honored. All source, identity, seller-hold, ownership and hash checks remain. Archive during the verification invocation; inspect its result and retain actionable exceptions. Bounded normal-run recovery handles pending receipts; no continuous watcher is claimed.
+
+## Draft model pricing policy — 2026-10-30
+Use OpenAI for identification only; use Grok for draft-price proposals, then Muse and the actual Baxter Dot for independent reviews. No OpenAI pricing fallback or synthetic Baxter review. Both bound reviews are required before the orchestrator authorizes an evidence-backed draft increase without routine seller approval. Preserve seller prices/holds, source-first evidence, current buyer-total/floor/rounding rules, writer ownership and same-ID save/reopen verification. No publication, live repricing or automatic decreases. See docs/draft-model-workflow.md for commands, exact supersession, spending gates, current implementation and pending live prerequisites. This policy supersedes older per-price approval stops only for supported draft increases after both reviews.

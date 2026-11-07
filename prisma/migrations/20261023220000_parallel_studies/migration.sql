@@ -1,0 +1,25 @@
+CREATE TABLE "KnowledgeParallelStudy" (
+  "id" TEXT NOT NULL PRIMARY KEY,
+  "productId" TEXT NOT NULL,
+  "section" TEXT NOT NULL,
+  "baseline" TEXT NOT NULL,
+  "target" TEXT NOT NULL,
+  "condition" TEXT NOT NULL,
+  "currency" VARCHAR(3) NOT NULL,
+  "method" TEXT NOT NULL,
+  "status" TEXT NOT NULL,
+  "playerCount" INTEGER NOT NULL,
+  "saleCount" INTEGER NOT NULL,
+  "multiplier" DOUBLE PRECISION,
+  "ratioLow" DOUBLE PRECISION,
+  "ratioHigh" DOUBLE PRECISION,
+  "confidence" TEXT NOT NULL,
+  "asOf" TIMESTAMP(3) NOT NULL,
+  "expiresAt" TIMESTAMP(3) NOT NULL,
+  "packet" JSONB NOT NULL,
+  "result" JSONB NOT NULL,
+  CONSTRAINT "KnowledgeParallelStudy_productId_fkey" FOREIGN KEY ("productId") REFERENCES "KnowledgeProduct"("id") ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT "KnowledgeParallelStudy_counts" CHECK ("playerCount" >= 0 AND "saleCount" >= 0),
+  CONSTRAINT "KnowledgeParallelStudy_multiplier" CHECK ("multiplier" IS NULL OR ("multiplier" > 0 AND "multiplier" < 'Infinity'::float8))
+);
+CREATE INDEX "KnowledgeParallelStudy_productId_asOf_idx" ON "KnowledgeParallelStudy"("productId", "asOf");

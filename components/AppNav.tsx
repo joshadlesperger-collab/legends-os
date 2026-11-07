@@ -22,8 +22,12 @@ const sections: NavSection[] = [
     { href: "/comp-validation", label: "Comp Validation" },
   ] },
   { label: "Sell", items: [
+    { href: "/card-processing-v2", label: "Card Processing V2" },
+    { href: "/card-processing-v2/price-check", label: "Draft Price Review", match: "exact" },
+    { href: "/inventory-review", label: "Inventory API Review" },
     { href: "/listing-factory", label: "Card Backlog" },
     { href: "/card-listing-factory", label: "Card Listing Factory" },
+    { href: "/card-knowledge", label: "Card Knowledge" },
     { href: "/inventory-actions", label: "Action Center" },
     { href: "/seller-opportunities/sales-velocity", label: "Sales Velocity" },
     { href: "/sales-velocity-autopilot", label: "Velocity Autopilot" },

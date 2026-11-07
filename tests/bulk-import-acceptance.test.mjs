@@ -1,0 +1,6 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {assessBulkImportTrial,requiredImportFields} from '../lib/bulk-import-acceptance.mjs';
+const fixture=()=>({kind:'live-bulk-import',jobId:'job',responseEvidence:'response',browserFieldRepairs:0,published:false,inventoryDuplicated:false,startedAt:'2026-10-25T12:00:00Z',verifiedAt:'2026-10-25T12:02:00Z',timingScope:'source-manifest-through-saved-verification',rows:['1','2'].map(draftId=>({draftId,evidence:'saved',fields:Object.fromEntries(requiredImportFields.map(f=>[f,true]))}))});
+test('accepts complete evidence at ceiling and distinguishes under60 target',()=>{const t=fixture();assert.equal(assessBulkImportTrial(t,()=>true).passed,true);assert.equal(assessBulkImportTrial(t,()=>true).under60,false);t.verifiedAt='2026-10-25T12:01:58Z';assert.equal(assessBulkImportTrial(t,()=>true).under60,true);});
+test('repairs, incomplete fields and absent retained evidence cannot pass',()=>{for(const mutate of [t=>t.browserFieldRepairs=1,t=>t.rows[0].fields.location=false,t=>t.rows[1].draftId='1',t=>t.published=true,t=>t.inventoryDuplicated=true,t=>t.kind='mock',t=>t.timingScope='upload-only',t=>t.verifiedAt='2026-10-25T12:03:01Z']){const t=fixture();mutate(t);assert.equal(assessBulkImportTrial(t,()=>true).passed,false);}assert.equal(assessBulkImportTrial(fixture(),()=>false).passed,false);});

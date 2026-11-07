@@ -1,0 +1,5 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import{projectV2SavedSingletonRow}from'../lib/card-processing-v2-background-browser.ts';
+const target={draftId:'5298894177922',sku:'V2-e8b5e4c1aa5e6e1f2702882f'},row={id:target.draftId,sku:target.sku,title:'Resume draft\nLink. 2024 Bowman Draft Sapphire Edition Jackson Wentworth #BDC-185 Base Sapphire',quantity:'2'};
+test('singleton acknowledgement projects actual observed draft-list fields only',()=>{const original=structuredClone(row);assert.deepEqual(projectV2SavedSingletonRow([row],target),{...target,title:'2024 Bowman Draft Sapphire Edition Jackson Wentworth #BDC-185 Base Sapphire',quantity:'2'});assert.deepEqual(row,original);});
+test('singleton acknowledgement rejects missing or duplicate identity, wrong SKU and invalid quantities',()=>{assert.throws(()=>projectV2SavedSingletonRow([],target));assert.throws(()=>projectV2SavedSingletonRow([row,row],target));for(const bad of[{sku:'foreign'},{id:'999'},{quantity:''},{quantity:'2 units'},{quantity:'0'},{title:'Resume draft\nLink. '}])assert.throws(()=>projectV2SavedSingletonRow([{...row,...bad}],target));});

@@ -1,0 +1,17 @@
+# Overnight market evidence collection
+
+Run `node scripts/market-collection-orchestrator.mjs status` first. State lives in `artifacts/knowledge-graph/collection-orchestrator/state.json`; the old checkpoint seeds it only on initialization.
+
+This is a local evidence workflow, not permission to publish listings, access credentials, spend money or write production data. Use authorized browser tools; stop on login, CAPTCHA or access denial. Do not bypass restrictions.
+
+1. If a job is captured or processing, run `process` to resume. Never start another search while it is pending.
+2. Otherwise run `reserve SEARCH_PAGE_KEY` with a stable unique key. Only a successful reservation permits one browser search/page navigation, within its 30-second `navigateBefore` window. If that window expires, do not navigate: block the job with an explanation. Never reuse the permit to navigate twice. Five-minute spacing is enforced between reservations, conservatively including that window, and again after capture.
+3. Verify Sold, Completed and Auction in visible browser state. Read only listing cards. Save a raw JSON source with `url`, `filtersVerified: true`, `captureKind: "rendered-dom-listing-cards"`, `capturedAt`, and `cards`. Save its SHA-256 and knowledge-graph-relative path as `sourceSha256` and `sourceFilename` in the existing import packet schema. Preserve sale-status/price uncertainty flags, shipping and import-fee flags. Never infer Base from omission or treat an active/product page as a sold item.
+4. Run `capture JOB_ID PACKET_PATH`, then `process`. Raw source hashes and packet fields are checked before checkpointing. The packet is copied into an immutable job file. Processing journals merge, collection rebuild, normalization, backtest and rendering separately. Each unfinished stage may safely rerun after interruption. Existing source paths are always included; no external API calls are made.
+5. Use `block JOB_ID REASON` for access blocks, invalid captures, exhausted or zero-new searches. Blocked/completed keys cannot be reserved again. Never silently skip an unresolved reserved job or revisit its search. A reserved job after interruption requires inspection of its existing tab/files, not another navigation.
+
+All commands use an exclusive filesystem writer lock. A crashed process can leave a lock: `recover-lock` only removes it after its recorded PID is confirmed dead. Live, ambiguous or corrupt locks fail closed. This is a single-host protocol; do not synchronize concurrent writers through OneDrive on another machine. All automated collection writers must use this entry point. It cannot prevent an unrelated legacy script or a human from bypassing it.
+
+The inherited overnight deadline prevents new reservations after October 24, 2026 at 8 a.m. Central. Pending local processing can finish afterward. The scheduled agent performs browser actions; this CLI does not implement a browser scraper. Keep products, seasons, parallels and grades separate. Deduplicate listing IDs without treating repeat snapshots as additional sales. Existing normalization and backtests hold uncertain observations apart and use earlier-date training only. Report actual counts, not a claim of statistically proven pricing.
+
+No production import or deployment is performed. Rebuilds overwrite derived reports, so readers may see an intermediate report during processing; the journal is atomic and processing is retryable, not a multi-file database transaction.

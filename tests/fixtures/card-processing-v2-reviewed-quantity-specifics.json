@@ -1,0 +1,1610 @@
+{
+  "kind": "retained-thirteen-reviewed-optional-specifics-cases",
+  "sourceAudit": "artifacts/card-processing-v2-redwave155-20261105T023917Z/quantity-specifics-audit.json",
+  "groups": [
+    {
+      "name": "Isaiah Collier",
+      "members": [
+        {
+          "id": "V2-581ddaee2c81924f33474b65",
+          "condition": "Near mint or better",
+          "identity": {
+            "name": "Isaiah Collier",
+            "year": "2024-25",
+            "manufacturer": "Panini",
+            "product": "Prizm Black",
+            "number": "32",
+            "categoryId": "261328",
+            "language": "English",
+            "variant": "Ruby Wave Prizm",
+            "artwork": "Isaiah Collier dribbling a basketball in a purple Utah Jazz number 13 uniform",
+            "sportOrGame": "Basketball",
+            "team": "Utah Jazz",
+            "serial": "",
+            "graded": false,
+            "damage": false,
+            "specifics": {
+              "Features": [
+                "Rookie"
+              ],
+              "League": [
+                "National Basketball Association (NBA)"
+              ]
+            }
+          },
+          "photos": [
+            {
+              "hash": "d364b1479fe6d6b7736342b16ae926398012d930f141611de00ac70bca439bc6",
+              "side": "front"
+            },
+            {
+              "hash": "4323c6a874986f72ae7613fe30f17cd6132ed42aa98bff8b57f5b15ad3dd51f9",
+              "side": "back"
+            }
+          ],
+          "identityReview": {
+            "path": "artifacts/card-processing-v2-redwave155-20261105T023917Z/parallel-normalization/review-026.json",
+            "sha256": "af8638b5deba69be269e7f7782375e0dbe0271a88f9a83d17b13bf04d043b02f",
+            "reviewer": "root source-bound shared parallel naming correction; existing exact original review retained",
+            "observedAt": "2026-11-05T03:15:18.651Z"
+          },
+          "reviewText": "{\n  \"kind\": \"original-pair-identity-review\",\n  \"cardId\": \"V2-581ddaee2c81924f33474b65\",\n  \"reviewer\": \"root source-bound shared parallel naming correction; existing exact original review retained\",\n  \"observedAt\": \"2026-11-05T03:15:18.651Z\",\n  \"photoHashes\": [\n    \"d364b1479fe6d6b7736342b16ae926398012d930f141611de00ac70bca439bc6\",\n    \"4323c6a874986f72ae7613fe30f17cd6132ed42aa98bff8b57f5b15ad3dd51f9\"\n  ],\n  \"finding\": {\n    \"pairMatches\": true,\n    \"frontImageIndex\": \"0\",\n    \"upright\": true,\n    \"identity\": {\n      \"name\": \"Isaiah Collier\",\n      \"year\": \"2024-25\",\n      \"manufacturer\": \"Panini\",\n      \"product\": \"Prizm Black\",\n      \"number\": \"32\",\n      \"categoryId\": \"261328\",\n      \"language\": \"English\",\n      \"variant\": \"Ruby Wave Prizm\",\n      \"artwork\": \"Isaiah Collier dribbling a basketball in a purple Utah Jazz number 13 uniform\",\n      \"sportOrGame\": \"Basketball\",\n      \"team\": \"Utah Jazz\",\n      \"serial\": \"\",\n      \"graded\": false,\n      \"damage\": false,\n      \"specifics\": {\n        \"Features\": [\n          \"Rookie\"\n        ],\n        \"League\": [\n          \"National Basketball Association (NBA)\"\n        ]\n      }\n    },\n    \"warnings\": []\n  }\n}"
+        },
+        {
+          "id": "V2-f8a296235c650602254c705f",
+          "condition": "Near mint or better",
+          "identity": {
+            "name": "Isaiah Collier",
+            "year": "2024-25",
+            "manufacturer": "Panini",
+            "product": "Prizm Black",
+            "number": "32",
+            "categoryId": "261328",
+            "language": "English",
+            "variant": "Ruby Wave Prizm",
+            "artwork": "Isaiah Collier dribbling a basketball in a purple Utah Jazz number 13 uniform",
+            "sportOrGame": "Basketball",
+            "team": "Utah Jazz",
+            "serial": "",
+            "graded": false,
+            "damage": false,
+            "specifics": {
+              "Features": [
+                "Rookie"
+              ]
+            }
+          },
+          "photos": [
+            {
+              "hash": "f8d0a81bad72eccccb0f794c4627631a783dfac0216349e334404ed3e873e657",
+              "side": "front"
+            },
+            {
+              "hash": "6dbc786415b1bfefa2902e12e60d2ad43710173db8dcbfc55e64971111f6f19d",
+              "side": "back"
+            }
+          ],
+          "identityReview": {
+            "path": "artifacts/card-processing-v2-redwave155-20261105T023917Z/consolidation-corrections/review-027.json",
+            "sha256": "da55e1d9299f9b7c9f86b83e5ddbcd39ff0e6e751b5f0511dfb0e72b2dfa8bb8",
+            "reviewer": "OpenAI source-bound offline consolidation audit; root/transport/dashboard actual original reviews retained; no new image inspection",
+            "observedAt": "2026-11-05T03:51:51.153Z"
+          },
+          "reviewText": "{\n  \"kind\": \"original-pair-identity-review\",\n  \"cardId\": \"V2-f8a296235c650602254c705f\",\n  \"reviewer\": \"OpenAI source-bound offline consolidation audit; root/transport/dashboard actual original reviews retained; no new image inspection\",\n  \"observedAt\": \"2026-11-05T03:51:51.153Z\",\n  \"photoHashes\": [\n    \"f8d0a81bad72eccccb0f794c4627631a783dfac0216349e334404ed3e873e657\",\n    \"6dbc786415b1bfefa2902e12e60d2ad43710173db8dcbfc55e64971111f6f19d\"\n  ],\n  \"finding\": {\n    \"pairMatches\": true,\n    \"frontImageIndex\": \"0\",\n    \"upright\": true,\n    \"identity\": {\n      \"name\": \"Isaiah Collier\",\n      \"year\": \"2024-25\",\n      \"manufacturer\": \"Panini\",\n      \"product\": \"Prizm Black\",\n      \"number\": \"32\",\n      \"categoryId\": \"261328\",\n      \"language\": \"English\",\n      \"variant\": \"Ruby Wave Prizm\",\n      \"artwork\": \"Isaiah Collier dribbling a basketball in a purple Utah Jazz number 13 uniform\",\n      \"sportOrGame\": \"Basketball\",\n      \"team\": \"Utah Jazz\",\n      \"serial\": \"\",\n      \"graded\": false,\n      \"damage\": false,\n      \"specifics\": {\n        \"Features\": [\n          \"Rookie\"\n        ]\n      }\n    },\n    \"warnings\": [\n      \"Protective holder reflections limit fine surface inspection. No definite card damage is visible.\"\n    ]\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "Rick Barry",
+      "members": [
+        {
+          "id": "V2-20f3e3efae9dae533aaab937",
+          "condition": "Near mint or better",
+          "identity": {
+            "name": "Rick Barry",
+            "year": "2024-25",
+            "manufacturer": "Panini",
+            "product": "Prizm Black",
+            "number": "297",
+            "categoryId": "261328",
+            "language": "English",
+            "variant": "Ruby Wave Prizm",
+            "artwork": "Rick Barry shooting in a yellow Golden State Warriors No. 24 uniform; Legends design.",
+            "sportOrGame": "Basketball",
+            "team": "Golden State Warriors",
+            "serial": "",
+            "graded": false,
+            "damage": false,
+            "specifics": {
+              "Player/Athlete": [
+                "Rick Barry"
+              ],
+              "Season": [
+                "2024-25"
+              ],
+              "Parallel/Variety": [
+                "Ruby Wave Prizm"
+              ],
+              "League": [
+                "National Basketball Association (NBA)"
+              ]
+            }
+          },
+          "photos": [
+            {
+              "hash": "8791d5ce78c29e02b27cbf5c947e85db1c877d4d3f8127a846039befe663807f",
+              "side": "front"
+            },
+            {
+              "hash": "354f333b37288f68a775cf11994bdf985695b25f4f7c2a6cf2a55bc2d5f527a6",
+              "side": "back"
+            }
+          ],
+          "identityReview": {
+            "path": "artifacts/card-processing-v2-redwave155-20261105T023917Z/parallel-normalization/review-033.json",
+            "sha256": "0cfe1c12d6a1b6597338407a797ae293eaec952d6f9a9498d082ab2868f83ea1",
+            "reviewer": "root source-bound shared parallel naming correction; existing exact original review retained",
+            "observedAt": "2026-11-05T03:15:18.651Z"
+          },
+          "reviewText": "{\n  \"kind\": \"original-pair-identity-review\",\n  \"cardId\": \"V2-20f3e3efae9dae533aaab937\",\n  \"reviewer\": \"root source-bound shared parallel naming correction; existing exact original review retained\",\n  \"observedAt\": \"2026-11-05T03:15:18.651Z\",\n  \"photoHashes\": [\n    \"8791d5ce78c29e02b27cbf5c947e85db1c877d4d3f8127a846039befe663807f\",\n    \"354f333b37288f68a775cf11994bdf985695b25f4f7c2a6cf2a55bc2d5f527a6\"\n  ],\n  \"finding\": {\n    \"pairMatches\": true,\n    \"frontImageIndex\": \"0\",\n    \"upright\": true,\n    \"identity\": {\n      \"name\": \"Rick Barry\",\n      \"year\": \"2024-25\",\n      \"manufacturer\": \"Panini\",\n      \"product\": \"Prizm Black\",\n      \"number\": \"297\",\n      \"categoryId\": \"261328\",\n      \"language\": \"English\",\n      \"variant\": \"Ruby Wave Prizm\",\n      \"artwork\": \"Rick Barry shooting in a yellow Golden State Warriors No. 24 uniform; Legends design.\",\n      \"sportOrGame\": \"Basketball\",\n      \"team\": \"Golden State Warriors\",\n      \"serial\": \"\",\n      \"graded\": false,\n      \"damage\": false,\n      \"specifics\": {\n        \"Player/Athlete\": [\n          \"Rick Barry\"\n        ],\n        \"Season\": [\n          \"2024-25\"\n        ],\n        \"Parallel/Variety\": [\n          \"Ruby Wave Prizm\"\n        ],\n        \"League\": [\n          \"National Basketball Association (NBA)\"\n        ]\n      }\n    },\n    \"warnings\": [\n      \"Protective holder reflections limit fine surface inspection. No definite card damage is visible.\"\n    ]\n  }\n}"
+        },
+        {
+          "id": "V2-4ad4d7bf415687e6d340c54c",
+          "condition": "Near mint or better",
+          "identity": {
+            "name": "Rick Barry",
+            "year": "2024-25",
+            "manufacturer": "Panini",
+            "product": "Prizm Black",
+            "number": "297",
+            "categoryId": "261328",
+            "language": "English",
+            "variant": "Ruby Wave Prizm",
+            "artwork": "Rick Barry shooting in a yellow Golden State Warriors No. 24 uniform; Legends design.",
+            "sportOrGame": "Basketball",
+            "team": "Golden State Warriors",
+            "serial": "",
+            "graded": false,
+            "damage": false,
+            "specifics": {
+              "Subset": [
+                "Legends"
+              ]
+            }
+          },
+          "photos": [
+            {
+              "hash": "0d6bee34cc06e3ab6a49934d957857fe5a45ecfbaca6fd8dcf0fffa7fc52c89b",
+              "side": "front"
+            },
+            {
+              "hash": "ae3922b8937df464ce2860fd643ec9934b0fcdac8574fe938903cc11e3ba2de7",
+              "side": "back"
+            }
+          ],
+          "identityReview": {
+            "path": "artifacts/card-processing-v2-redwave155-20261105T023917Z/consolidation-corrections/review-088.json",
+            "sha256": "878efc1db2ad796e44df882efa9f685912418e8cba0dc3871baceda3ef69db5c",
+            "reviewer": "OpenAI source-bound offline consolidation audit; root/transport/dashboard actual original reviews retained; no new image inspection",
+            "observedAt": "2026-11-05T03:51:51.169Z"
+          },
+          "reviewText": "{\n  \"kind\": \"original-pair-identity-review\",\n  \"cardId\": \"V2-4ad4d7bf415687e6d340c54c\",\n  \"reviewer\": \"OpenAI source-bound offline consolidation audit; root/transport/dashboard actual original reviews retained; no new image inspection\",\n  \"observedAt\": \"2026-11-05T03:51:51.169Z\",\n  \"photoHashes\": [\n    \"0d6bee34cc06e3ab6a49934d957857fe5a45ecfbaca6fd8dcf0fffa7fc52c89b\",\n    \"ae3922b8937df464ce2860fd643ec9934b0fcdac8574fe938903cc11e3ba2de7\"\n  ],\n  \"finding\": {\n    \"pairMatches\": true,\n    \"frontImageIndex\": \"0\",\n    \"upright\": true,\n    \"identity\": {\n      \"name\": \"Rick Barry\",\n      \"year\": \"2024-25\",\n      \"manufacturer\": \"Panini\",\n      \"product\": \"Prizm Black\",\n      \"number\": \"297\",\n      \"categoryId\": \"261328\",\n      \"language\": \"English\",\n      \"variant\": \"Ruby Wave Prizm\",\n      \"artwork\": \"Rick Barry shooting in a yellow Golden State Warriors No. 24 uniform; Legends design.\",\n      \"sportOrGame\": \"Basketball\",\n      \"team\": \"Golden State Warriors\",\n      \"serial\": \"\",\n      \"graded\": false,\n      \"damage\": false,\n      \"specifics\": {\n        \"Subset\": [\n          \"Legends\"\n        ]\n      }\n    },\n    \"warnings\": []\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "Bam Adebayo",
+      "members": [
+        {
+          "id": "V2-032cd9763c7fcccc9a1858f9",
+          "condition": "Near mint or better",
+          "identity": {
+            "name": "Bam Adebayo",
+            "year": "2024-25",
+            "manufacturer": "Panini",
+            "product": "Prizm Black",
+            "number": "50",
+            "categoryId": "261328",
+            "language": "English",
+            "variant": "Ruby Wave Prizm",
+            "artwork": "Bam Adebayo holding a basketball in a black Miami Heat number 13 uniform.",
+            "sportOrGame": "Basketball",
+            "team": "Miami Heat",
+            "serial": "",
+            "graded": false,
+            "damage": false,
+            "specifics": {}
+          },
+          "photos": [
+            {
+              "hash": "cb7f441ae5b1dc8a81a6467b0e8f1cba158f9e85f17c20256319a5744c870204",
+              "side": "front"
+            },
+            {
+              "hash": "a37bd8030ec6ed566ef37b95be7c44bbf53a1f67e8e331203c295912907a79c9",
+              "side": "back"
+            }
+          ],
+          "identityReview": {
+            "path": "artifacts/card-processing-v2-redwave155-20261105T023917Z/consolidation-corrections/review-053.json",
+            "sha256": "245af6e0bffe592bb1e3e48ee650fd6bc72e1200f6927a7e39fd4c1b9628c439",
+            "reviewer": "OpenAI source-bound offline consolidation audit; root/transport/dashboard actual original reviews retained; no new image inspection",
+            "observedAt": "2026-11-05T03:51:51.159Z"
+          },
+          "reviewText": "{\n  \"kind\": \"original-pair-identity-review\",\n  \"cardId\": \"V2-032cd9763c7fcccc9a1858f9\",\n  \"reviewer\": \"OpenAI source-bound offline consolidation audit; root/transport/dashboard actual original reviews retained; no new image inspection\",\n  \"observedAt\": \"2026-11-05T03:51:51.159Z\",\n  \"photoHashes\": [\n    \"cb7f441ae5b1dc8a81a6467b0e8f1cba158f9e85f17c20256319a5744c870204\",\n    \"a37bd8030ec6ed566ef37b95be7c44bbf53a1f67e8e331203c295912907a79c9\"\n  ],\n  \"finding\": {\n    \"pairMatches\": true,\n    \"frontImageIndex\": \"0\",\n    \"upright\": true,\n    \"identity\": {\n      \"name\": \"Bam Adebayo\",\n      \"year\": \"2024-25\",\n      \"manufacturer\": \"Panini\",\n      \"product\": \"Prizm Black\",\n      \"number\": \"50\",\n      \"categoryId\": \"261328\",\n      \"language\": \"English\",\n      \"variant\": \"Ruby Wave Prizm\",\n      \"artwork\": \"Bam Adebayo holding a basketball in a black Miami Heat number 13 uniform.\",\n      \"sportOrGame\": \"Basketball\",\n      \"team\": \"Miami Heat\",\n      \"serial\": \"\",\n      \"graded\": false,\n      \"damage\": false,\n      \"specifics\": {}\n    },\n    \"warnings\": []\n  }\n}"
+        },
+        {
+          "id": "V2-f2c69dbf35c395f6db064684",
+          "condition": "Near mint or better",
+          "identity": {
+            "name": "Bam Adebayo",
+            "year": "2024-25",
+            "manufacturer": "Panini",
+            "product": "Prizm Black",
+            "number": "50",
+            "categoryId": "261328",
+            "language": "English",
+            "variant": "Ruby Wave Prizm",
+            "artwork": "Bam Adebayo holding a basketball in a black Miami Heat number 13 uniform.",
+            "sportOrGame": "Basketball",
+            "team": "Miami Heat",
+            "serial": "",
+            "graded": false,
+            "damage": false,
+            "specifics": {
+              "Player/Athlete": [
+                "Bam Adebayo"
+              ],
+              "Season": [
+                "2024-25"
+              ],
+              "League": [
+                "National Basketball Association (NBA)"
+              ],
+              "Parallel/Variety": [
+                "Ruby Wave Prizm"
+              ]
+            }
+          },
+          "photos": [
+            {
+              "hash": "0259a5cda57caec330a2b126f02f69f7b87b1f9f0cd1f62c38720f8086ad157a",
+              "side": "front"
+            },
+            {
+              "hash": "365a87848f210ab7831d6a473388130572db05d85e4bb2ed3314589730a3aff0",
+              "side": "back"
+            }
+          ],
+          "identityReview": {
+            "path": "artifacts/card-processing-v2-redwave155-20261105T023917Z/parallel-normalization/review-148.json",
+            "sha256": "be57149ff3fcc0f295e58eeb8cf192635b01864a1206b1252b55172bdc64946f",
+            "reviewer": "root source-bound shared parallel naming correction; existing exact original review retained",
+            "observedAt": "2026-11-05T03:15:18.651Z"
+          },
+          "reviewText": "{\n  \"kind\": \"original-pair-identity-review\",\n  \"cardId\": \"V2-f2c69dbf35c395f6db064684\",\n  \"reviewer\": \"root source-bound shared parallel naming correction; existing exact original review retained\",\n  \"observedAt\": \"2026-11-05T03:15:18.651Z\",\n  \"photoHashes\": [\n    \"0259a5cda57caec330a2b126f02f69f7b87b1f9f0cd1f62c38720f8086ad157a\",\n    \"365a87848f210ab7831d6a473388130572db05d85e4bb2ed3314589730a3aff0\"\n  ],\n  \"finding\": {\n    \"pairMatches\": true,\n    \"frontImageIndex\": \"0\",\n    \"upright\": true,\n    \"identity\": {\n      \"name\": \"Bam Adebayo\",\n      \"year\": \"2024-25\",\n      \"manufacturer\": \"Panini\",\n      \"product\": \"Prizm Black\",\n      \"number\": \"50\",\n      \"categoryId\": \"261328\",\n      \"language\": \"English\",\n      \"variant\": \"Ruby Wave Prizm\",\n      \"artwork\": \"Bam Adebayo holding a basketball in a black Miami Heat number 13 uniform.\",\n      \"sportOrGame\": \"Basketball\",\n      \"team\": \"Miami Heat\",\n      \"serial\": \"\",\n      \"graded\": false,\n      \"damage\": false,\n      \"specifics\": {\n        \"Player/Athlete\": [\n          \"Bam Adebayo\"\n        ],\n        \"Season\": [\n          \"2024-25\"\n        ],\n        \"League\": [\n          \"National Basketball Association (NBA)\"\n        ],\n        \"Parallel/Variety\": [\n          \"Ruby Wave Prizm\"\n        ]\n      }\n    },\n    \"warnings\": [\n      \"Protective holder reflections limit fine surface inspection. No definite card damage is visible.\"\n    ]\n  }\n}"
+        },
+        {
+          "id": "V2-823221d8abd363c056a3c70f",
+          "condition": "Near mint or better",
+          "identity": {
+            "name": "Bam Adebayo",
+            "year": "2024-25",
+            "manufacturer": "Panini",
+            "product": "Prizm Black",
+            "number": "50",
+            "categoryId": "261328",
+            "language": "English",
+            "variant": "Ruby Wave Prizm",
+            "artwork": "Bam Adebayo holding a basketball in a black Miami Heat number 13 uniform.",
+            "sportOrGame": "Basketball",
+            "team": "Miami Heat",
+            "serial": "",
+            "graded": false,
+            "damage": false,
+            "specifics": {
+              "League": [
+                "National Basketball Association (NBA)"
+              ]
+            }
+          },
+          "photos": [
+            {
+              "hash": "d95cc44bbadf89856a9268c8ad834f870130e5765b6fde7c586b82e96c9361bc",
+              "side": "front"
+            },
+            {
+              "hash": "205322834291c43b5aa8b36ede28595c4a0e2e0be35ea3fdf80e33e81b68fd9b",
+              "side": "back"
+            }
+          ],
+          "identityReview": {
+            "path": "artifacts/card-processing-v2-redwave155-20261105T023917Z/consolidation-corrections/review-150.json",
+            "sha256": "f0e8745f152ab0c0a4e2d135009cd067360e7a7f00662a1ee2a327298cfdfa8a",
+            "reviewer": "OpenAI source-bound offline consolidation audit; root/transport/dashboard actual original reviews retained; no new image inspection",
+            "observedAt": "2026-11-05T03:51:51.183Z"
+          },
+          "reviewText": "{\n  \"kind\": \"original-pair-identity-review\",\n  \"cardId\": \"V2-823221d8abd363c056a3c70f\",\n  \"reviewer\": \"OpenAI source-bound offline consolidation audit; root/transport/dashboard actual original reviews retained; no new image inspection\",\n  \"observedAt\": \"2026-11-05T03:51:51.183Z\",\n  \"photoHashes\": [\n    \"d95cc44bbadf89856a9268c8ad834f870130e5765b6fde7c586b82e96c9361bc\",\n    \"205322834291c43b5aa8b36ede28595c4a0e2e0be35ea3fdf80e33e81b68fd9b\"\n  ],\n  \"finding\": {\n    \"pairMatches\": true,\n    \"frontImageIndex\": \"0\",\n    \"upright\": true,\n    \"identity\": {\n      \"name\": \"Bam Adebayo\",\n      \"year\": \"2024-25\",\n      \"manufacturer\": \"Panini\",\n      \"product\": \"Prizm Black\",\n      \"number\": \"50\",\n      \"categoryId\": \"261328\",\n      \"language\": \"English\",\n      \"variant\": \"Ruby Wave Prizm\",\n      \"artwork\": \"Bam Adebayo holding a basketball in a black Miami Heat number 13 uniform.\",\n      \"sportOrGame\": \"Basketball\",\n      \"team\": \"Miami Heat\",\n      \"serial\": \"\",\n      \"graded\": false,\n      \"damage\": false,\n      \"specifics\": {\n        \"League\": [\n          \"National Basketball Association (NBA)\"\n        ]\n      }\n    },\n    \"warnings\": []\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "Kevin Garnett",
+      "members": [
+        {
+          "id": "V2-dd59d307970c5d351789b7dc",
+          "condition": "Near mint or better",
+          "identity": {
+            "name": "Kevin Garnett",
+            "year": "2024-25",
+            "manufacturer": "Panini",
+            "product": "Prizm Black",
+            "number": "259",
+            "categoryId": "261328",
+            "language": "English",
+            "variant": "Ruby Wave Prizm",
+            "artwork": "Kevin Garnett smiling with his hand across his chest, wearing a white Boston Celtics number 5 uniform; Legends design.",
+            "sportOrGame": "Basketball",
+            "team": "Boston Celtics",
+            "serial": "",
+            "graded": false,
+            "damage": false,
+            "specifics": {
+              "Set": [
+                "2024-25 Panini Prizm Black"
+              ],
+              "Parallel/Variety": [
+                "Ruby Wave Prizm"
+              ],
+              "Card Number": [
+                "259"
+              ],
+              "Player/Athlete": [
+                "Kevin Garnett"
+              ],
+              "League": [
+                "National Basketball Association (NBA)"
+              ]
+            }
+          },
+          "photos": [
+            {
+              "hash": "b113f2eb07eab9e59b82d649dfc70f68096f1fa66258b6683b04cdf551889045",
+              "side": "front"
+            },
+            {
+              "hash": "c04d696a03b7b017fe5a853665f0497c73808990691d89176bf57560053c1a14",
+              "side": "back"
+            }
+          ],
+          "identityReview": {
+            "path": "artifacts/card-processing-v2-redwave155-20261105T023917Z/parallel-normalization/review-058.json",
+            "sha256": "24a12a2a0a920489246e90c2a45716c66d0f6d04003cf56695073485ff3049db",
+            "reviewer": "root source-bound shared parallel naming correction; existing exact original review retained",
+            "observedAt": "2026-11-05T03:15:18.651Z"
+          },
+          "reviewText": "{\n  \"kind\": \"original-pair-identity-review\",\n  \"cardId\": \"V2-dd59d307970c5d351789b7dc\",\n  \"reviewer\": \"root source-bound shared parallel naming correction; existing exact original review retained\",\n  \"observedAt\": \"2026-11-05T03:15:18.651Z\",\n  \"photoHashes\": [\n    \"b113f2eb07eab9e59b82d649dfc70f68096f1fa66258b6683b04cdf551889045\",\n    \"c04d696a03b7b017fe5a853665f0497c73808990691d89176bf57560053c1a14\"\n  ],\n  \"finding\": {\n    \"pairMatches\": true,\n    \"frontImageIndex\": \"0\",\n    \"upright\": true,\n    \"identity\": {\n      \"name\": \"Kevin Garnett\",\n      \"year\": \"2024-25\",\n      \"manufacturer\": \"Panini\",\n      \"product\": \"Prizm Black\",\n      \"number\": \"259\",\n      \"categoryId\": \"261328\",\n      \"language\": \"English\",\n      \"variant\": \"Ruby Wave Prizm\",\n      \"artwork\": \"Kevin Garnett smiling with his hand across his chest, wearing a white Boston Celtics number 5 uniform; Legends design.\",\n      \"sportOrGame\": \"Basketball\",\n      \"team\": \"Boston Celtics\",\n      \"serial\": \"\",\n      \"graded\": false,\n      \"damage\": false,\n      \"specifics\": {\n        \"Set\": [\n          \"2024-25 Panini Prizm Black\"\n        ],\n        \"Parallel/Variety\": [\n          \"Ruby Wave Prizm\"\n        ],\n        \"Card Number\": [\n          \"259\"\n        ],\n        \"Player/Athlete\": [\n          \"Kevin Garnett\"\n        ],\n        \"League\": [\n          \"National Basketball Association (NBA)\"\n        ]\n      }\n    },\n    \"warnings\": []\n  }\n}"
+        },
+        {
+          "id": "V2-d0d256eba3353cbc20e47910",
+          "condition": "Near mint or better",
+          "identity": {
+            "name": "Kevin Garnett",
+            "year": "2024-25",
+            "manufacturer": "Panini",
+            "product": "Prizm Black",
+            "number": "259",
+            "categoryId": "261328",
+            "language": "English",
+            "variant": "Ruby Wave Prizm",
+            "artwork": "Kevin Garnett smiling with his hand across his chest, wearing a white Boston Celtics number 5 uniform; Legends design.",
+            "sportOrGame": "Basketball",
+            "team": "Boston Celtics",
+            "serial": "",
+            "graded": false,
+            "damage": false,
+            "specifics": {
+              "Subset": [
+                "Legends"
+              ]
+            }
+          },
+          "photos": [
+            {
+              "hash": "7b8966b9cd4996a1cedaa5027fd581af86ecec9cec85c97d455c7aa627073a1f",
+              "side": "front"
+            },
+            {
+              "hash": "949df608f58dfce9641e3955b36ada3b0d353a3ad666ec2a2fd002376a341981",
+              "side": "back"
+            }
+          ],
+          "identityReview": {
+            "path": "artifacts/card-processing-v2-redwave155-20261105T023917Z/consolidation-corrections/review-066.json",
+            "sha256": "5753bc71a2a741c49c18080a73068730ccac114d9bfa9870140a4c705be1a3e8",
+            "reviewer": "OpenAI source-bound offline consolidation audit; root/transport/dashboard actual original reviews retained; no new image inspection",
+            "observedAt": "2026-11-05T03:51:51.162Z"
+          },
+          "reviewText": "{\n  \"kind\": \"original-pair-identity-review\",\n  \"cardId\": \"V2-d0d256eba3353cbc20e47910\",\n  \"reviewer\": \"OpenAI source-bound offline consolidation audit; root/transport/dashboard actual original reviews retained; no new image inspection\",\n  \"observedAt\": \"2026-11-05T03:51:51.162Z\",\n  \"photoHashes\": [\n    \"7b8966b9cd4996a1cedaa5027fd581af86ecec9cec85c97d455c7aa627073a1f\",\n    \"949df608f58dfce9641e3955b36ada3b0d353a3ad666ec2a2fd002376a341981\"\n  ],\n  \"finding\": {\n    \"pairMatches\": true,\n    \"frontImageIndex\": \"0\",\n    \"upright\": true,\n    \"identity\": {\n      \"name\": \"Kevin Garnett\",\n      \"year\": \"2024-25\",\n      \"manufacturer\": \"Panini\",\n      \"product\": \"Prizm Black\",\n      \"number\": \"259\",\n      \"categoryId\": \"261328\",\n      \"language\": \"English\",\n      \"variant\": \"Ruby Wave Prizm\",\n      \"artwork\": \"Kevin Garnett smiling with his hand across his chest, wearing a white Boston Celtics number 5 uniform; Legends design.\",\n      \"sportOrGame\": \"Basketball\",\n      \"team\": \"Boston Celtics\",\n      \"serial\": \"\",\n      \"graded\": false,\n      \"damage\": false,\n      \"specifics\": {\n        \"Subset\": [\n          \"Legends\"\n        ]\n      }\n    },\n    \"warnings\": []\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "Gilbert Arenas",
+      "members": [
+        {
+          "id": "V2-268d5d7a450692f9ae04946d",
+          "condition": "Near mint or better",
+          "identity": {
+            "name": "Gilbert Arenas",
+            "year": "2024-25",
+            "manufacturer": "Panini",
+            "product": "Prizm Black",
+            "number": "266",
+            "categoryId": "261328",
+            "language": "English",
+            "variant": "Ruby Wave Prizm",
+            "artwork": "Gilbert Arenas holding a basketball in a white Washington Wizards number 0 uniform; Legends design.",
+            "sportOrGame": "Basketball",
+            "team": "Washington Wizards",
+            "serial": "",
+            "graded": false,
+            "damage": false,
+            "specifics": {
+              "League": [
+                "National Basketball Association (NBA)"
+              ]
+            }
+          },
+          "photos": [
+            {
+              "hash": "019301fc59ac50f130eac6099b6182487903a58f4af9a34670614fd1aac311be",
+              "side": "front"
+            },
+            {
+              "hash": "1718be05d8d4a85756d3a4d2fe3a491709518251452f1917a22d7ec19a2c6c44",
+              "side": "back"
+            }
+          ],
+          "identityReview": {
+            "path": "artifacts/card-processing-v2-redwave155-20261105T023917Z/parallel-normalization/review-060.json",
+            "sha256": "f6fa2e6c08b3dbe3efe2e3ecea09dc4f649fe99d83eada7a23055cc0c8706e2c",
+            "reviewer": "root source-bound shared parallel naming correction; existing exact original review retained",
+            "observedAt": "2026-11-05T03:15:18.651Z"
+          },
+          "reviewText": "{\n  \"kind\": \"original-pair-identity-review\",\n  \"cardId\": \"V2-268d5d7a450692f9ae04946d\",\n  \"reviewer\": \"root source-bound shared parallel naming correction; existing exact original review retained\",\n  \"observedAt\": \"2026-11-05T03:15:18.651Z\",\n  \"photoHashes\": [\n    \"019301fc59ac50f130eac6099b6182487903a58f4af9a34670614fd1aac311be\",\n    \"1718be05d8d4a85756d3a4d2fe3a491709518251452f1917a22d7ec19a2c6c44\"\n  ],\n  \"finding\": {\n    \"pairMatches\": true,\n    \"frontImageIndex\": \"0\",\n    \"upright\": true,\n    \"identity\": {\n      \"name\": \"Gilbert Arenas\",\n      \"year\": \"2024-25\",\n      \"manufacturer\": \"Panini\",\n      \"product\": \"Prizm Black\",\n      \"number\": \"266\",\n      \"categoryId\": \"261328\",\n      \"language\": \"English\",\n      \"variant\": \"Ruby Wave Prizm\",\n      \"artwork\": \"Gilbert Arenas holding a basketball in a white Washington Wizards number 0 uniform; Legends design.\",\n      \"sportOrGame\": \"Basketball\",\n      \"team\": \"Washington Wizards\",\n      \"serial\": \"\",\n      \"graded\": false,\n      \"damage\": false,\n      \"specifics\": {\n        \"League\": [\n          \"National Basketball Association (NBA)\"\n        ]\n      }\n    },\n    \"warnings\": []\n  }\n}"
+        },
+        {
+          "id": "V2-763e5a213e9b1e241036fb53",
+          "condition": "Near mint or better",
+          "identity": {
+            "name": "Gilbert Arenas",
+            "year": "2024-25",
+            "manufacturer": "Panini",
+            "product": "Prizm Black",
+            "number": "266",
+            "categoryId": "261328",
+            "language": "English",
+            "variant": "Ruby Wave Prizm",
+            "artwork": "Gilbert Arenas holding a basketball in a white Washington Wizards number 0 uniform; Legends design.",
+            "sportOrGame": "Basketball",
+            "team": "Washington Wizards",
+            "serial": "",
+            "graded": false,
+            "damage": false,
+            "specifics": {
+              "Features": [
+                "Parallel/Variety"
+              ],
+              "Subset": [
+                "Legends"
+              ]
+            }
+          },
+          "photos": [
+            {
+              "hash": "33064416fc6e14c2c87a8053f9a0647f755db7923e614ae945092dad081ff0ac",
+              "side": "front"
+            },
+            {
+              "hash": "8e8c21009b529f791274c2cbbc32309a13432bb7a3ab02f3396db0c4fd0248bb",
+              "side": "back"
+            }
+          ],
+          "identityReview": {
+            "path": "artifacts/card-processing-v2-redwave155-20261105T023917Z/consolidation-corrections/review-084.json",
+            "sha256": "6c05314a5c59ebc0cd62dbb38543bda16f3a85792520d75df895b51abca73b6d",
+            "reviewer": "OpenAI source-bound offline consolidation audit; root/transport/dashboard actual original reviews retained; no new image inspection",
+            "observedAt": "2026-11-05T03:51:51.164Z"
+          },
+          "reviewText": "{\n  \"kind\": \"original-pair-identity-review\",\n  \"cardId\": \"V2-763e5a213e9b1e241036fb53\",\n  \"reviewer\": \"OpenAI source-bound offline consolidation audit; root/transport/dashboard actual original reviews retained; no new image inspection\",\n  \"observedAt\": \"2026-11-05T03:51:51.164Z\",\n  \"photoHashes\": [\n    \"33064416fc6e14c2c87a8053f9a0647f755db7923e614ae945092dad081ff0ac\",\n    \"8e8c21009b529f791274c2cbbc32309a13432bb7a3ab02f3396db0c4fd0248bb\"\n  ],\n  \"finding\": {\n    \"pairMatches\": true,\n    \"frontImageIndex\": \"0\",\n    \"upright\": true,\n    \"identity\": {\n      \"name\": \"Gilbert Arenas\",\n      \"year\": \"2024-25\",\n      \"manufacturer\": \"Panini\",\n      \"product\": \"Prizm Black\",\n      \"number\": \"266\",\n      \"categoryId\": \"261328\",\n      \"language\": \"English\",\n      \"variant\": \"Ruby Wave Prizm\",\n      \"artwork\": \"Gilbert Arenas holding a basketball in a white Washington Wizards number 0 uniform; Legends design.\",\n      \"sportOrGame\": \"Basketball\",\n      \"team\": \"Washington Wizards\",\n      \"serial\": \"\",\n      \"graded\": false,\n      \"damage\": false,\n      \"specifics\": {\n        \"Features\": [\n          \"Parallel/Variety\"\n        ],\n        \"Subset\": [\n          \"Legends\"\n        ]\n      }\n    },\n    \"warnings\": []\n  }\n}"
+        },
+        {
+          "id": "V2-7a73e93d6d9b469cfe710383",
+          "condition": "Near mint or better",
+          "identity": {
+            "name": "Gilbert Arenas",
+            "year": "2024-25",
+            "manufacturer": "Panini",
+            "product": "Prizm Black",
+            "number": "266",
+            "categoryId": "261328",
+            "language": "English",
+            "variant": "Ruby Wave Prizm",
+            "artwork": "Gilbert Arenas holding a basketball in a white Washington Wizards number 0 uniform; Legends design.",
+            "sportOrGame": "Basketball",
+            "team": "Washington Wizards",
+            "serial": "",
+            "graded": false,
+            "damage": false,
+            "specifics": {
+              "Season": [
+                "2024-25"
+              ],
+              "Parallel/Variety": [
+                "Ruby Wave Prizm"
+              ],
+              "Card Number": [
+                "266"
+              ]
+            }
+          },
+          "photos": [
+            {
+              "hash": "5360ee3ca6d15e7416a8c9b9f6d7286c1c4905e78ea785a122b4beb737ecef99",
+              "side": "front"
+            },
+            {
+              "hash": "9d9e32b5a3bc39f89466f612694958eed18d0d9cc896d04af450cc2f91dc3deb",
+              "side": "back"
+            }
+          ],
+          "identityReview": {
+            "path": "artifacts/card-processing-v2-redwave155-20261105T023917Z/consolidation-corrections/review-154.json",
+            "sha256": "2e6f5c2a306e500227941d969b0404d9aa524cec36e0d05dc9413b9692eb95c7",
+            "reviewer": "OpenAI source-bound offline consolidation audit; root/transport/dashboard actual original reviews retained; no new image inspection",
+            "observedAt": "2026-11-05T03:51:51.185Z"
+          },
+          "reviewText": "{\n  \"kind\": \"original-pair-identity-review\",\n  \"cardId\": \"V2-7a73e93d6d9b469cfe710383\",\n  \"reviewer\": \"OpenAI source-bound offline consolidation audit; root/transport/dashboard actual original reviews retained; no new image inspection\",\n  \"observedAt\": \"2026-11-05T03:51:51.185Z\",\n  \"photoHashes\": [\n    \"5360ee3ca6d15e7416a8c9b9f6d7286c1c4905e78ea785a122b4beb737ecef99\",\n    \"9d9e32b5a3bc39f89466f612694958eed18d0d9cc896d04af450cc2f91dc3deb\"\n  ],\n  \"finding\": {\n    \"pairMatches\": true,\n    \"frontImageIndex\": \"0\",\n    \"upright\": true,\n    \"identity\": {\n      \"name\": \"Gilbert Arenas\",\n      \"year\": \"2024-25\",\n      \"manufacturer\": \"Panini\",\n      \"product\": \"Prizm Black\",\n      \"number\": \"266\",\n      \"categoryId\": \"261328\",\n      \"language\": \"English\",\n      \"variant\": \"Ruby Wave Prizm\",\n      \"artwork\": \"Gilbert Arenas holding a basketball in a white Washington Wizards number 0 uniform; Legends design.\",\n      \"sportOrGame\": \"Basketball\",\n      \"team\": \"Washington Wizards\",\n      \"serial\": \"\",\n      \"graded\": false,\n      \"damage\": false,\n      \"specifics\": {\n        \"Season\": [\n          \"2024-25\"\n        ],\n        \"Parallel/Variety\": [\n          \"Ruby Wave Prizm\"\n        ],\n        \"Card Number\": [\n          \"266\"\n        ]\n      }\n    },\n    \"warnings\": [\n      \"Protective holder reflections limit fine surface inspection. No definite card damage is visible.\"\n    ]\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "Scotty Pippen Jr.",
+      "members": [
+        {
+          "id": "V2-0d27427b76ba584fb0534894",
+          "condition": "Near mint or better",
+          "identity": {
+            "name": "Scotty Pippen Jr.",
+            "year": "2024-25",
+            "manufacturer": "Panini",
+            "product": "Prizm Black",
+            "number": "221",
+            "categoryId": "261328",
+            "language": "English",
+            "variant": "Ruby Wave Prizm",
+            "artwork": "Scotty Pippen Jr. dribbling a basketball in a light blue Memphis Grizzlies uniform.",
+            "sportOrGame": "Basketball",
+            "team": "Memphis Grizzlies",
+            "serial": "",
+            "graded": false,
+            "damage": false,
+            "specifics": {
+              "Player/Athlete": [
+                "Scotty Pippen Jr."
+              ],
+              "Season": [
+                "2024-25"
+              ],
+              "League": [
+                "National Basketball Association (NBA)"
+              ],
+              "Parallel/Variety": [
+                "Ruby Wave Prizm"
+              ]
+            }
+          },
+          "photos": [
+            {
+              "hash": "906955874f5511b767f76e19f691e9745bdf97bc32d599faa96a506f3cdcc26a",
+              "side": "front"
+            },
+            {
+              "hash": "c13c3435fe9af6fcba005adfa85dcf6af90f48545b4e174dc310419618d7844b",
+              "side": "back"
+            }
+          ],
+          "identityReview": {
+            "path": "artifacts/card-processing-v2-redwave155-20261105T023917Z/parallel-normalization/review-065.json",
+            "sha256": "c20b1c7ad457fff06a8ec845e150e15c741e6ebc80d14d608f2dd706c9a3e03f",
+            "reviewer": "root source-bound shared parallel naming correction; existing exact original review retained",
+            "observedAt": "2026-11-05T03:15:18.651Z"
+          },
+          "reviewText": "{\n  \"kind\": \"original-pair-identity-review\",\n  \"cardId\": \"V2-0d27427b76ba584fb0534894\",\n  \"reviewer\": \"root source-bound shared parallel naming correction; existing exact original review retained\",\n  \"observedAt\": \"2026-11-05T03:15:18.651Z\",\n  \"photoHashes\": [\n    \"906955874f5511b767f76e19f691e9745bdf97bc32d599faa96a506f3cdcc26a\",\n    \"c13c3435fe9af6fcba005adfa85dcf6af90f48545b4e174dc310419618d7844b\"\n  ],\n  \"finding\": {\n    \"pairMatches\": true,\n    \"frontImageIndex\": \"0\",\n    \"upright\": true,\n    \"identity\": {\n      \"name\": \"Scotty Pippen Jr.\",\n      \"year\": \"2024-25\",\n      \"manufacturer\": \"Panini\",\n      \"product\": \"Prizm Black\",\n      \"number\": \"221\",\n      \"categoryId\": \"261328\",\n      \"language\": \"English\",\n      \"variant\": \"Ruby Wave Prizm\",\n      \"artwork\": \"Scotty Pippen Jr. dribbling a basketball in a light blue Memphis Grizzlies uniform.\",\n      \"sportOrGame\": \"Basketball\",\n      \"team\": \"Memphis Grizzlies\",\n      \"serial\": \"\",\n      \"graded\": false,\n      \"damage\": false,\n      \"specifics\": {\n        \"Player/Athlete\": [\n          \"Scotty Pippen Jr.\"\n        ],\n        \"Season\": [\n          \"2024-25\"\n        ],\n        \"League\": [\n          \"National Basketball Association (NBA)\"\n        ],\n        \"Parallel/Variety\": [\n          \"Ruby Wave Prizm\"\n        ]\n      }\n    },\n    \"warnings\": [\n      \"Protective holder reflections limit fine surface inspection. No definite card damage is visible.\"\n    ]\n  }\n}"
+        },
+        {
+          "id": "V2-c0aafa158961fb66fcb005b4",
+          "condition": "Near mint or better",
+          "identity": {
+            "name": "Scotty Pippen Jr.",
+            "year": "2024-25",
+            "manufacturer": "Panini",
+            "product": "Prizm Black",
+            "number": "221",
+            "categoryId": "261328",
+            "language": "English",
+            "variant": "Ruby Wave Prizm",
+            "artwork": "Scotty Pippen Jr. dribbling a basketball in a light blue Memphis Grizzlies uniform.",
+            "sportOrGame": "Basketball",
+            "team": "Memphis Grizzlies",
+            "serial": "",
+            "graded": false,
+            "damage": false,
+            "specifics": {
+              "Player/Athlete": [
+                "Scotty Pippen Jr."
+              ],
+              "Season": [
+                "2024-25"
+              ],
+              "Parallel/Variety": [
+                "Ruby Wave Prizm"
+              ]
+            }
+          },
+          "photos": [
+            {
+              "hash": "651c0465e97c38579fd756818482b2cf8907f148a86295bc6fb750e409a1e34f",
+              "side": "front"
+            },
+            {
+              "hash": "07996edf122f9b1d69873f251cfd35069257204afdf7fd99b8e606a87069f44f",
+              "side": "back"
+            }
+          ],
+          "identityReview": {
+            "path": "artifacts/card-processing-v2-redwave155-20261105T023917Z/parallel-normalization/review-093.json",
+            "sha256": "8227e8aeacd64e92211f78d0c0f0c07f9a2ae295a23b9f3ec7f6e7f4552ff02d",
+            "reviewer": "root source-bound shared parallel naming correction; existing exact original review retained",
+            "observedAt": "2026-11-05T03:15:18.651Z"
+          },
+          "reviewText": "{\n  \"kind\": \"original-pair-identity-review\",\n  \"cardId\": \"V2-c0aafa158961fb66fcb005b4\",\n  \"reviewer\": \"root source-bound shared parallel naming correction; existing exact original review retained\",\n  \"observedAt\": \"2026-11-05T03:15:18.651Z\",\n  \"photoHashes\": [\n    \"651c0465e97c38579fd756818482b2cf8907f148a86295bc6fb750e409a1e34f\",\n    \"07996edf122f9b1d69873f251cfd35069257204afdf7fd99b8e606a87069f44f\"\n  ],\n  \"finding\": {\n    \"pairMatches\": true,\n    \"frontImageIndex\": \"0\",\n    \"upright\": true,\n    \"identity\": {\n      \"name\": \"Scotty Pippen Jr.\",\n      \"year\": \"2024-25\",\n      \"manufacturer\": \"Panini\",\n      \"product\": \"Prizm Black\",\n      \"number\": \"221\",\n      \"categoryId\": \"261328\",\n      \"language\": \"English\",\n      \"variant\": \"Ruby Wave Prizm\",\n      \"artwork\": \"Scotty Pippen Jr. dribbling a basketball in a light blue Memphis Grizzlies uniform.\",\n      \"sportOrGame\": \"Basketball\",\n      \"team\": \"Memphis Grizzlies\",\n      \"serial\": \"\",\n      \"graded\": false,\n      \"damage\": false,\n      \"specifics\": {\n        \"Player/Athlete\": [\n          \"Scotty Pippen Jr.\"\n        ],\n        \"Season\": [\n          \"2024-25\"\n        ],\n        \"Parallel/Variety\": [\n          \"Ruby Wave Prizm\"\n        ]\n      }\n    },\n    \"warnings\": []\n  }\n}"
+        },
+        {
+          "id": "V2-a063abc7d3792bcf028db42b",
+          "condition": "Near mint or better",
+          "identity": {
+            "name": "Scotty Pippen Jr.",
+            "year": "2024-25",
+            "manufacturer": "Panini",
+            "product": "Prizm Black",
+            "number": "221",
+            "categoryId": "261328",
+            "language": "English",
+            "variant": "Ruby Wave Prizm",
+            "artwork": "Scotty Pippen Jr. dribbling a basketball in a light blue Memphis Grizzlies uniform.",
+            "sportOrGame": "Basketball",
+            "team": "Memphis Grizzlies",
+            "serial": "",
+            "graded": false,
+            "damage": false,
+            "specifics": {
+              "League": [
+                "NBA"
+              ]
+            }
+          },
+          "photos": [
+            {
+              "hash": "5e6a5bf4807d8e8e41a87e57381759573eeb9cf454da3317d750a3995b4176bb",
+              "side": "front"
+            },
+            {
+              "hash": "c42ea0dac86f4b079e61e2c82be1a81daf444d96628ba71313d95d7685f100b8",
+              "side": "back"
+            }
+          ],
+          "identityReview": {
+            "path": "artifacts/card-processing-v2-redwave155-20261105T023917Z/parallel-normalization/review-130.json",
+            "sha256": "7ddac87b206551dc9ea76d43b8b530ef9951650e109498b397d0e0b28e679bbb",
+            "reviewer": "root source-bound shared parallel naming correction; existing exact original review retained",
+            "observedAt": "2026-11-05T03:15:18.651Z"
+          },
+          "reviewText": "{\n  \"kind\": \"original-pair-identity-review\",\n  \"cardId\": \"V2-a063abc7d3792bcf028db42b\",\n  \"reviewer\": \"root source-bound shared parallel naming correction; existing exact original review retained\",\n  \"observedAt\": \"2026-11-05T03:15:18.651Z\",\n  \"photoHashes\": [\n    \"5e6a5bf4807d8e8e41a87e57381759573eeb9cf454da3317d750a3995b4176bb\",\n    \"c42ea0dac86f4b079e61e2c82be1a81daf444d96628ba71313d95d7685f100b8\"\n  ],\n  \"finding\": {\n    \"pairMatches\": true,\n    \"frontImageIndex\": \"0\",\n    \"upright\": true,\n    \"identity\": {\n      \"name\": \"Scotty Pippen Jr.\",\n      \"year\": \"2024-25\",\n      \"manufacturer\": \"Panini\",\n      \"product\": \"Prizm Black\",\n      \"number\": \"221\",\n      \"categoryId\": \"261328\",\n      \"language\": \"English\",\n      \"variant\": \"Ruby Wave Prizm\",\n      \"artwork\": \"Scotty Pippen Jr. dribbling a basketball in a light blue Memphis Grizzlies uniform.\",\n      \"sportOrGame\": \"Basketball\",\n      \"team\": \"Memphis Grizzlies\",\n      \"serial\": \"\",\n      \"graded\": false,\n      \"damage\": false,\n      \"specifics\": {\n        \"League\": [\n          \"NBA\"\n        ]\n      }\n    },\n    \"warnings\": []\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "Allen Iverson",
+      "members": [
+        {
+          "id": "V2-fb83c4a82e0f722ad7bf0fc3",
+          "condition": "Near mint or better",
+          "identity": {
+            "name": "Allen Iverson",
+            "year": "2024-25",
+            "manufacturer": "Panini",
+            "product": "Prizm Black",
+            "number": "262",
+            "categoryId": "261328",
+            "language": "English",
+            "variant": "Ruby Wave Prizm",
+            "artwork": "Allen Iverson dribbling a basketball in a red Philadelphia 76ers number 3 uniform; Legends designation.",
+            "sportOrGame": "Basketball",
+            "team": "Philadelphia 76ers",
+            "serial": "",
+            "graded": false,
+            "damage": false,
+            "specifics": {
+              "Season": [
+                "2024-25"
+              ],
+              "Parallel/Variety": [
+                "Ruby Wave Prizm"
+              ]
+            }
+          },
+          "photos": [
+            {
+              "hash": "e04568bc955ff3c19a5e7053c54a31a343e1eef44a34cdeff29b0ba10648e08b",
+              "side": "front"
+            },
+            {
+              "hash": "41b1bbbec2d8e2d27b23df91462525835e052c93400a2032b4e75f39c32b89b4",
+              "side": "back"
+            }
+          ],
+          "identityReview": {
+            "path": "artifacts/card-processing-v2-redwave155-20261105T023917Z/parallel-normalization/review-067.json",
+            "sha256": "4e86f79bf7b2ecd9783b8a91eb4541bcebdf1148624ccddbf74a701c3f8f5fd2",
+            "reviewer": "root source-bound shared parallel naming correction; existing exact original review retained",
+            "observedAt": "2026-11-05T03:15:18.651Z"
+          },
+          "reviewText": "{\n  \"kind\": \"original-pair-identity-review\",\n  \"cardId\": \"V2-fb83c4a82e0f722ad7bf0fc3\",\n  \"reviewer\": \"root source-bound shared parallel naming correction; existing exact original review retained\",\n  \"observedAt\": \"2026-11-05T03:15:18.651Z\",\n  \"photoHashes\": [\n    \"e04568bc955ff3c19a5e7053c54a31a343e1eef44a34cdeff29b0ba10648e08b\",\n    \"41b1bbbec2d8e2d27b23df91462525835e052c93400a2032b4e75f39c32b89b4\"\n  ],\n  \"finding\": {\n    \"pairMatches\": true,\n    \"frontImageIndex\": \"0\",\n    \"upright\": true,\n    \"identity\": {\n      \"name\": \"Allen Iverson\",\n      \"year\": \"2024-25\",\n      \"manufacturer\": \"Panini\",\n      \"product\": \"Prizm Black\",\n      \"number\": \"262\",\n      \"categoryId\": \"261328\",\n      \"language\": \"English\",\n      \"variant\": \"Ruby Wave Prizm\",\n      \"artwork\": \"Allen Iverson dribbling a basketball in a red Philadelphia 76ers number 3 uniform; Legends designation.\",\n      \"sportOrGame\": \"Basketball\",\n      \"team\": \"Philadelphia 76ers\",\n      \"serial\": \"\",\n      \"graded\": false,\n      \"damage\": false,\n      \"specifics\": {\n        \"Season\": [\n          \"2024-25\"\n        ],\n        \"Parallel/Variety\": [\n          \"Ruby Wave Prizm\"\n        ]\n      }\n    },\n    \"warnings\": [\n      \"Protective holder reflections limit fine surface inspection. No definite card damage is visible.\"\n    ]\n  }\n}"
+        },
+        {
+          "id": "V2-d689ba7aaa7bbfdf735271d1",
+          "condition": "Near mint or better",
+          "identity": {
+            "name": "Allen Iverson",
+            "year": "2024-25",
+            "manufacturer": "Panini",
+            "product": "Prizm Black",
+            "number": "262",
+            "categoryId": "261328",
+            "language": "English",
+            "variant": "Ruby Wave Prizm",
+            "artwork": "Allen Iverson dribbling a basketball in a red Philadelphia 76ers number 3 uniform; Legends designation.",
+            "sportOrGame": "Basketball",
+            "team": "Philadelphia 76ers",
+            "serial": "",
+            "graded": false,
+            "damage": false,
+            "specifics": {
+              "Player/Athlete": [
+                "Allen Iverson"
+              ],
+              "Season": [
+                "2024-25"
+              ],
+              "Parallel/Variety": [
+                "Ruby Wave Prizm"
+              ],
+              "League": [
+                "National Basketball Association (NBA)"
+              ]
+            }
+          },
+          "photos": [
+            {
+              "hash": "c7b96d41e20c7f771c32c3b0b62fc7685ac2ebc7a23f665e85e31e15c904ec14",
+              "side": "front"
+            },
+            {
+              "hash": "3a23c292a0519c3b7961b600b833172729168b80268340aaece407e40abc7916",
+              "side": "back"
+            }
+          ],
+          "identityReview": {
+            "path": "artifacts/card-processing-v2-redwave155-20261105T023917Z/consolidation-corrections/review-128.json",
+            "sha256": "79b820d9a22619011f68173a4ea12c0d25e01e3a8d87a3512d6febdfaa45ce21",
+            "reviewer": "OpenAI source-bound offline consolidation audit; root/transport/dashboard actual original reviews retained; no new image inspection",
+            "observedAt": "2026-11-05T03:51:51.177Z"
+          },
+          "reviewText": "{\n  \"kind\": \"original-pair-identity-review\",\n  \"cardId\": \"V2-d689ba7aaa7bbfdf735271d1\",\n  \"reviewer\": \"OpenAI source-bound offline consolidation audit; root/transport/dashboard actual original reviews retained; no new image inspection\",\n  \"observedAt\": \"2026-11-05T03:51:51.177Z\",\n  \"photoHashes\": [\n    \"c7b96d41e20c7f771c32c3b0b62fc7685ac2ebc7a23f665e85e31e15c904ec14\",\n    \"3a23c292a0519c3b7961b600b833172729168b80268340aaece407e40abc7916\"\n  ],\n  \"finding\": {\n    \"pairMatches\": true,\n    \"frontImageIndex\": \"0\",\n    \"upright\": true,\n    \"identity\": {\n      \"name\": \"Allen Iverson\",\n      \"year\": \"2024-25\",\n      \"manufacturer\": \"Panini\",\n      \"product\": \"Prizm Black\",\n      \"number\": \"262\",\n      \"categoryId\": \"261328\",\n      \"language\": \"English\",\n      \"variant\": \"Ruby Wave Prizm\",\n      \"artwork\": \"Allen Iverson dribbling a basketball in a red Philadelphia 76ers number 3 uniform; Legends designation.\",\n      \"sportOrGame\": \"Basketball\",\n      \"team\": \"Philadelphia 76ers\",\n      \"serial\": \"\",\n      \"graded\": false,\n      \"damage\": false,\n      \"specifics\": {\n        \"Player/Athlete\": [\n          \"Allen Iverson\"\n        ],\n        \"Season\": [\n          \"2024-25\"\n        ],\n        \"Parallel/Variety\": [\n          \"Ruby Wave Prizm\"\n        ],\n        \"League\": [\n          \"National Basketball Association (NBA)\"\n        ]\n      }\n    },\n    \"warnings\": []\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "Grant Hill",
+      "members": [
+        {
+          "id": "V2-5f95ffca4c8c8af933efeb1e",
+          "condition": "Near mint or better",
+          "identity": {
+            "name": "Grant Hill",
+            "year": "2024-25",
+            "manufacturer": "Panini",
+            "product": "Prizm Black",
+            "number": "287",
+            "categoryId": "261328",
+            "language": "English",
+            "variant": "Ruby Wave Prizm",
+            "artwork": "Grant Hill holding a basketball in a blue Detroit Pistons number 33 uniform; Legends design.",
+            "sportOrGame": "Basketball",
+            "team": "Detroit Pistons",
+            "serial": "",
+            "graded": false,
+            "damage": false,
+            "specifics": {
+              "Player/Athlete": [
+                "Grant Hill"
+              ],
+              "Season": [
+                "2024-25"
+              ],
+              "League": [
+                "National Basketball Association (NBA)"
+              ],
+              "Parallel/Variety": [
+                "Ruby Wave Prizm"
+              ]
+            }
+          },
+          "photos": [
+            {
+              "hash": "2443e73225dbfd2cc00278967aa0acc8b7c0ca71f907a4c0d11b44a3d3bbe436",
+              "side": "front"
+            },
+            {
+              "hash": "c0093375de60e410836d462c8dcb8385438842f5900538b8e2aee800d3168b76",
+              "side": "back"
+            }
+          ],
+          "identityReview": {
+            "path": "artifacts/card-processing-v2-redwave155-20261105T023917Z/parallel-normalization/review-072.json",
+            "sha256": "a176ebd50b820dfc7af8fe8b946d05cfca1e487e193e6823cf2fc415f6528f2e",
+            "reviewer": "root source-bound shared parallel naming correction; existing exact original review retained",
+            "observedAt": "2026-11-05T03:15:18.651Z"
+          },
+          "reviewText": "{\n  \"kind\": \"original-pair-identity-review\",\n  \"cardId\": \"V2-5f95ffca4c8c8af933efeb1e\",\n  \"reviewer\": \"root source-bound shared parallel naming correction; existing exact original review retained\",\n  \"observedAt\": \"2026-11-05T03:15:18.651Z\",\n  \"photoHashes\": [\n    \"2443e73225dbfd2cc00278967aa0acc8b7c0ca71f907a4c0d11b44a3d3bbe436\",\n    \"c0093375de60e410836d462c8dcb8385438842f5900538b8e2aee800d3168b76\"\n  ],\n  \"finding\": {\n    \"pairMatches\": true,\n    \"frontImageIndex\": \"0\",\n    \"upright\": true,\n    \"identity\": {\n      \"name\": \"Grant Hill\",\n      \"year\": \"2024-25\",\n      \"manufacturer\": \"Panini\",\n      \"product\": \"Prizm Black\",\n      \"number\": \"287\",\n      \"categoryId\": \"261328\",\n      \"language\": \"English\",\n      \"variant\": \"Ruby Wave Prizm\",\n      \"artwork\": \"Grant Hill holding a basketball in a blue Detroit Pistons number 33 uniform; Legends design.\",\n      \"sportOrGame\": \"Basketball\",\n      \"team\": \"Detroit Pistons\",\n      \"serial\": \"\",\n      \"graded\": false,\n      \"damage\": false,\n      \"specifics\": {\n        \"Player/Athlete\": [\n          \"Grant Hill\"\n        ],\n        \"Season\": [\n          \"2024-25\"\n        ],\n        \"League\": [\n          \"National Basketball Association (NBA)\"\n        ],\n        \"Parallel/Variety\": [\n          \"Ruby Wave Prizm\"\n        ]\n      }\n    },\n    \"warnings\": []\n  }\n}"
+        },
+        {
+          "id": "V2-e7df32a0f3695186304e1fa5",
+          "condition": "Near mint or better",
+          "identity": {
+            "name": "Grant Hill",
+            "year": "2024-25",
+            "manufacturer": "Panini",
+            "product": "Prizm Black",
+            "number": "287",
+            "categoryId": "261328",
+            "language": "English",
+            "variant": "Ruby Wave Prizm",
+            "artwork": "Grant Hill holding a basketball in a blue Detroit Pistons number 33 uniform; Legends design.",
+            "sportOrGame": "Basketball",
+            "team": "Detroit Pistons",
+            "serial": "",
+            "graded": false,
+            "damage": false,
+            "specifics": {
+              "Set": [
+                "2024-25 Panini Prizm Black"
+              ],
+              "Parallel/Variety": [
+                "Ruby Wave Prizm"
+              ],
+              "Features": [
+                "Legends"
+              ]
+            }
+          },
+          "photos": [
+            {
+              "hash": "dcfb0c6e0c0b697598c214ebae380e969378833bd2279803ed217a224eb92cb6",
+              "side": "front"
+            },
+            {
+              "hash": "8421edfd7a8ea5c36b84f9dfd84374c6e534c5d9a2eec4b36df615dcc54dd10b",
+              "side": "back"
+            }
+          ],
+          "identityReview": {
+            "path": "artifacts/card-processing-v2-redwave155-20261105T023917Z/parallel-normalization/review-073.json",
+            "sha256": "35459e9224296ec6ad0d3a6e86d74765a28b910e05dba45ef4fc0edb6fe5283f",
+            "reviewer": "root source-bound shared parallel naming correction; existing exact original review retained",
+            "observedAt": "2026-11-05T03:15:18.651Z"
+          },
+          "reviewText": "{\n  \"kind\": \"original-pair-identity-review\",\n  \"cardId\": \"V2-e7df32a0f3695186304e1fa5\",\n  \"reviewer\": \"root source-bound shared parallel naming correction; existing exact original review retained\",\n  \"observedAt\": \"2026-11-05T03:15:18.651Z\",\n  \"photoHashes\": [\n    \"dcfb0c6e0c0b697598c214ebae380e969378833bd2279803ed217a224eb92cb6\",\n    \"8421edfd7a8ea5c36b84f9dfd84374c6e534c5d9a2eec4b36df615dcc54dd10b\"\n  ],\n  \"finding\": {\n    \"pairMatches\": true,\n    \"frontImageIndex\": \"0\",\n    \"upright\": true,\n    \"identity\": {\n      \"name\": \"Grant Hill\",\n      \"year\": \"2024-25\",\n      \"manufacturer\": \"Panini\",\n      \"product\": \"Prizm Black\",\n      \"number\": \"287\",\n      \"categoryId\": \"261328\",\n      \"language\": \"English\",\n      \"variant\": \"Ruby Wave Prizm\",\n      \"artwork\": \"Grant Hill holding a basketball in a blue Detroit Pistons number 33 uniform; Legends design.\",\n      \"sportOrGame\": \"Basketball\",\n      \"team\": \"Detroit Pistons\",\n      \"serial\": \"\",\n      \"graded\": false,\n      \"damage\": false,\n      \"specifics\": {\n        \"Set\": [\n          \"2024-25 Panini Prizm Black\"\n        ],\n        \"Parallel/Variety\": [\n          \"Ruby Wave Prizm\"\n        ],\n        \"Features\": [\n          \"Legends\"\n        ]\n      }\n    },\n    \"warnings\": [\n      \"Protective holder reflections limit fine surface inspection. No definite card damage is visible.\"\n    ]\n  }\n}"
+        },
+        {
+          "id": "V2-1e14193ac270d354871cc4a7",
+          "condition": "Near mint or better",
+          "identity": {
+            "name": "Grant Hill",
+            "year": "2024-25",
+            "manufacturer": "Panini",
+            "product": "Prizm Black",
+            "number": "287",
+            "categoryId": "261328",
+            "language": "English",
+            "variant": "Ruby Wave Prizm",
+            "artwork": "Grant Hill holding a basketball in a blue Detroit Pistons number 33 uniform; Legends design.",
+            "sportOrGame": "Basketball",
+            "team": "Detroit Pistons",
+            "serial": "",
+            "graded": false,
+            "damage": false,
+            "specifics": {
+              "Subset": [
+                "Legends"
+              ]
+            }
+          },
+          "photos": [
+            {
+              "hash": "5b341dee9a8f913204146df75677df7f802b5d160470c430155c61338e462682",
+              "side": "front"
+            },
+            {
+              "hash": "4a0f992761d4c8c1151924d16cc5d67580c1060e674d97188a6d4138f0d8c2b3",
+              "side": "back"
+            }
+          ],
+          "identityReview": {
+            "path": "artifacts/card-processing-v2-redwave155-20261105T023917Z/consolidation-corrections/review-153.json",
+            "sha256": "a7b2f027f034f082467aa5245ea2d5e80a3f41b3ddd777ff43ae6e63cc3187c8",
+            "reviewer": "OpenAI source-bound offline consolidation audit; root/transport/dashboard actual original reviews retained; no new image inspection",
+            "observedAt": "2026-11-05T03:51:51.184Z"
+          },
+          "reviewText": "{\n  \"kind\": \"original-pair-identity-review\",\n  \"cardId\": \"V2-1e14193ac270d354871cc4a7\",\n  \"reviewer\": \"OpenAI source-bound offline consolidation audit; root/transport/dashboard actual original reviews retained; no new image inspection\",\n  \"observedAt\": \"2026-11-05T03:51:51.184Z\",\n  \"photoHashes\": [\n    \"5b341dee9a8f913204146df75677df7f802b5d160470c430155c61338e462682\",\n    \"4a0f992761d4c8c1151924d16cc5d67580c1060e674d97188a6d4138f0d8c2b3\"\n  ],\n  \"finding\": {\n    \"pairMatches\": true,\n    \"frontImageIndex\": \"0\",\n    \"upright\": true,\n    \"identity\": {\n      \"name\": \"Grant Hill\",\n      \"year\": \"2024-25\",\n      \"manufacturer\": \"Panini\",\n      \"product\": \"Prizm Black\",\n      \"number\": \"287\",\n      \"categoryId\": \"261328\",\n      \"language\": \"English\",\n      \"variant\": \"Ruby Wave Prizm\",\n      \"artwork\": \"Grant Hill holding a basketball in a blue Detroit Pistons number 33 uniform; Legends design.\",\n      \"sportOrGame\": \"Basketball\",\n      \"team\": \"Detroit Pistons\",\n      \"serial\": \"\",\n      \"graded\": false,\n      \"damage\": false,\n      \"specifics\": {\n        \"Subset\": [\n          \"Legends\"\n        ]\n      }\n    },\n    \"warnings\": [\n      \"Protective holder reflections limit fine surface inspection. No definite card damage is visible.\"\n    ]\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "Cam Whitmore",
+      "members": [
+        {
+          "id": "V2-0ee62066246bcd508659ec8b",
+          "condition": "Near mint or better",
+          "identity": {
+            "name": "Cam Whitmore",
+            "year": "2024-25",
+            "manufacturer": "Panini",
+            "product": "Prizm Black",
+            "number": "199",
+            "categoryId": "261328",
+            "language": "English",
+            "variant": "Ruby Wave Prizm",
+            "artwork": "Cam Whitmore dribbling a basketball in a red Houston Rockets uniform, number 7.",
+            "sportOrGame": "Basketball",
+            "team": "Houston Rockets",
+            "serial": "",
+            "graded": false,
+            "damage": false,
+            "specifics": {}
+          },
+          "photos": [
+            {
+              "hash": "9604479243b665eff95a64526658c5bf6e4e61ae54c5f84bc8a9181bea65594a",
+              "side": "front"
+            },
+            {
+              "hash": "56cf983b1684b9ece5a3c6b492579b7389dfbf7e0ae845cb039a6a91c23e7abd",
+              "side": "back"
+            }
+          ],
+          "identityReview": {
+            "path": "artifacts/card-processing-v2-redwave155-20261105T023917Z/consolidation-corrections/review-089.json",
+            "sha256": "17de7f19eef02cb2c679e17549e4f54570095b1d17d32fc033e5ed119b5241ef",
+            "reviewer": "OpenAI source-bound offline consolidation audit; root/transport/dashboard actual original reviews retained; no new image inspection",
+            "observedAt": "2026-11-05T03:51:51.170Z"
+          },
+          "reviewText": "{\n  \"kind\": \"original-pair-identity-review\",\n  \"cardId\": \"V2-0ee62066246bcd508659ec8b\",\n  \"reviewer\": \"OpenAI source-bound offline consolidation audit; root/transport/dashboard actual original reviews retained; no new image inspection\",\n  \"observedAt\": \"2026-11-05T03:51:51.170Z\",\n  \"photoHashes\": [\n    \"9604479243b665eff95a64526658c5bf6e4e61ae54c5f84bc8a9181bea65594a\",\n    \"56cf983b1684b9ece5a3c6b492579b7389dfbf7e0ae845cb039a6a91c23e7abd\"\n  ],\n  \"finding\": {\n    \"pairMatches\": true,\n    \"frontImageIndex\": \"0\",\n    \"upright\": true,\n    \"identity\": {\n      \"name\": \"Cam Whitmore\",\n      \"year\": \"2024-25\",\n      \"manufacturer\": \"Panini\",\n      \"product\": \"Prizm Black\",\n      \"number\": \"199\",\n      \"categoryId\": \"261328\",\n      \"language\": \"English\",\n      \"variant\": \"Ruby Wave Prizm\",\n      \"artwork\": \"Cam Whitmore dribbling a basketball in a red Houston Rockets uniform, number 7.\",\n      \"sportOrGame\": \"Basketball\",\n      \"team\": \"Houston Rockets\",\n      \"serial\": \"\",\n      \"graded\": false,\n      \"damage\": false,\n      \"specifics\": {}\n    },\n    \"warnings\": []\n  }\n}"
+        },
+        {
+          "id": "V2-3ac22c0b08f14a8059862f61",
+          "condition": "Near mint or better",
+          "identity": {
+            "name": "Cam Whitmore",
+            "year": "2024-25",
+            "manufacturer": "Panini",
+            "product": "Prizm Black",
+            "number": "199",
+            "categoryId": "261328",
+            "language": "English",
+            "variant": "Ruby Wave Prizm",
+            "artwork": "Cam Whitmore dribbling a basketball in a red Houston Rockets uniform, number 7.",
+            "sportOrGame": "Basketball",
+            "team": "Houston Rockets",
+            "serial": "",
+            "graded": false,
+            "damage": false,
+            "specifics": {}
+          },
+          "photos": [
+            {
+              "hash": "cbdc4bdc5838095cb7403b15c59e8e42430d7dec69dfffb5029695ab60c913b5",
+              "side": "front"
+            },
+            {
+              "hash": "d8985fdf0de47a6febd1f61c5b662f896d6fbcf12dafab64aafb1c94f51b3193",
+              "side": "back"
+            }
+          ],
+          "identityReview": {
+            "path": "artifacts/card-processing-v2-redwave155-20261105T023917Z/consolidation-corrections/review-090.json",
+            "sha256": "9fb15ce45a51673525a6aacb24dfcf43f0eac7a5f3d7dfb6c9972c16b839e55f",
+            "reviewer": "OpenAI source-bound offline consolidation audit; root/transport/dashboard actual original reviews retained; no new image inspection",
+            "observedAt": "2026-11-05T03:51:51.171Z"
+          },
+          "reviewText": "{\n  \"kind\": \"original-pair-identity-review\",\n  \"cardId\": \"V2-3ac22c0b08f14a8059862f61\",\n  \"reviewer\": \"OpenAI source-bound offline consolidation audit; root/transport/dashboard actual original reviews retained; no new image inspection\",\n  \"observedAt\": \"2026-11-05T03:51:51.171Z\",\n  \"photoHashes\": [\n    \"cbdc4bdc5838095cb7403b15c59e8e42430d7dec69dfffb5029695ab60c913b5\",\n    \"d8985fdf0de47a6febd1f61c5b662f896d6fbcf12dafab64aafb1c94f51b3193\"\n  ],\n  \"finding\": {\n    \"pairMatches\": true,\n    \"frontImageIndex\": \"0\",\n    \"upright\": true,\n    \"identity\": {\n      \"name\": \"Cam Whitmore\",\n      \"year\": \"2024-25\",\n      \"manufacturer\": \"Panini\",\n      \"product\": \"Prizm Black\",\n      \"number\": \"199\",\n      \"categoryId\": \"261328\",\n      \"language\": \"English\",\n      \"variant\": \"Ruby Wave Prizm\",\n      \"artwork\": \"Cam Whitmore dribbling a basketball in a red Houston Rockets uniform, number 7.\",\n      \"sportOrGame\": \"Basketball\",\n      \"team\": \"Houston Rockets\",\n      \"serial\": \"\",\n      \"graded\": false,\n      \"damage\": false,\n      \"specifics\": {}\n    },\n    \"warnings\": []\n  }\n}"
+        },
+        {
+          "id": "V2-03d1f3f4ce5d0dacdd50c1f7",
+          "condition": "Near mint or better",
+          "identity": {
+            "name": "Cam Whitmore",
+            "year": "2024-25",
+            "manufacturer": "Panini",
+            "product": "Prizm Black",
+            "number": "199",
+            "categoryId": "261328",
+            "language": "English",
+            "variant": "Ruby Wave Prizm",
+            "artwork": "Cam Whitmore dribbling a basketball in a red Houston Rockets uniform, number 7.",
+            "sportOrGame": "Basketball",
+            "team": "Houston Rockets",
+            "serial": "",
+            "graded": false,
+            "damage": false,
+            "specifics": {
+              "Player/Athlete": [
+                "Cam Whitmore"
+              ],
+              "Season": [
+                "2024-25"
+              ],
+              "Set": [
+                "2024-25 Panini Prizm Black"
+              ],
+              "Parallel/Variety": [
+                "Ruby Wave Prizm"
+              ],
+              "Card Number": [
+                "199"
+              ],
+              "League": [
+                "National Basketball Association (NBA)"
+              ]
+            }
+          },
+          "photos": [
+            {
+              "hash": "43f11ca5d34789130bfe026d9cdaa8434b6b65209bcefe6d4e48339a975d9a93",
+              "side": "front"
+            },
+            {
+              "hash": "12430d54e3c98648a9a5fb34615c86321ac66144d4ba9297c72efcec00672ece",
+              "side": "back"
+            }
+          ],
+          "identityReview": {
+            "path": "artifacts/card-processing-v2-redwave155-20261105T023917Z/parallel-normalization/review-096.json",
+            "sha256": "26b8a5ede814f6c4708164eb630ef1e1e3e36a4dff1a2e214d8aada0d8e17431",
+            "reviewer": "root source-bound shared parallel naming correction; existing exact original review retained",
+            "observedAt": "2026-11-05T03:15:18.651Z"
+          },
+          "reviewText": "{\n  \"kind\": \"original-pair-identity-review\",\n  \"cardId\": \"V2-03d1f3f4ce5d0dacdd50c1f7\",\n  \"reviewer\": \"root source-bound shared parallel naming correction; existing exact original review retained\",\n  \"observedAt\": \"2026-11-05T03:15:18.651Z\",\n  \"photoHashes\": [\n    \"43f11ca5d34789130bfe026d9cdaa8434b6b65209bcefe6d4e48339a975d9a93\",\n    \"12430d54e3c98648a9a5fb34615c86321ac66144d4ba9297c72efcec00672ece\"\n  ],\n  \"finding\": {\n    \"pairMatches\": true,\n    \"frontImageIndex\": \"0\",\n    \"upright\": true,\n    \"identity\": {\n      \"name\": \"Cam Whitmore\",\n      \"year\": \"2024-25\",\n      \"manufacturer\": \"Panini\",\n      \"product\": \"Prizm Black\",\n      \"number\": \"199\",\n      \"categoryId\": \"261328\",\n      \"language\": \"English\",\n      \"variant\": \"Ruby Wave Prizm\",\n      \"artwork\": \"Cam Whitmore dribbling a basketball in a red Houston Rockets uniform, number 7.\",\n      \"sportOrGame\": \"Basketball\",\n      \"team\": \"Houston Rockets\",\n      \"serial\": \"\",\n      \"graded\": false,\n      \"damage\": false,\n      \"specifics\": {\n        \"Player/Athlete\": [\n          \"Cam Whitmore\"\n        ],\n        \"Season\": [\n          \"2024-25\"\n        ],\n        \"Set\": [\n          \"2024-25 Panini Prizm Black\"\n        ],\n        \"Parallel/Variety\": [\n          \"Ruby Wave Prizm\"\n        ],\n        \"Card Number\": [\n          \"199\"\n        ],\n        \"League\": [\n          \"National Basketball Association (NBA)\"\n        ]\n      }\n    },\n    \"warnings\": [\n      \"Protective holder reflections limit fine surface inspection. No definite card damage is visible.\"\n    ]\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "Coby White",
+      "members": [
+        {
+          "id": "V2-cfe42085bf100e79baee300b",
+          "condition": "Near mint or better",
+          "identity": {
+            "name": "Coby White",
+            "year": "2024-25",
+            "manufacturer": "Panini",
+            "product": "Prizm Black",
+            "number": "68",
+            "categoryId": "261328",
+            "language": "English",
+            "variant": "Ruby Wave Prizm",
+            "artwork": "Coby White in a black Chicago Bulls uniform, jumping with the basketball raised in his right hand.",
+            "sportOrGame": "Basketball",
+            "team": "Chicago Bulls",
+            "serial": "",
+            "graded": false,
+            "damage": false,
+            "specifics": {
+              "Player/Athlete": [
+                "Coby White"
+              ],
+              "Season": [
+                "2024-25"
+              ],
+              "League": [
+                "National Basketball Association (NBA)"
+              ],
+              "Parallel/Variety": [
+                "Ruby Wave Prizm"
+              ]
+            }
+          },
+          "photos": [
+            {
+              "hash": "3cc6fb6c8282107a23cf11bcdd27c491a597ad4a89991fe84d7925b7dde34427",
+              "side": "front"
+            },
+            {
+              "hash": "8c798158bf3659fb3fdf2b4372c7e94e72fb64dea0fba52534ab101a99b43c1e",
+              "side": "back"
+            }
+          ],
+          "identityReview": {
+            "path": "artifacts/card-processing-v2-redwave155-20261105T023917Z/parallel-normalization/review-109.json",
+            "sha256": "4861ddc177280bb06830599c8f079fad08567c684343f3c07dc917d4c8fd3c18",
+            "reviewer": "root source-bound shared parallel naming correction; existing exact original review retained",
+            "observedAt": "2026-11-05T03:15:18.651Z"
+          },
+          "reviewText": "{\n  \"kind\": \"original-pair-identity-review\",\n  \"cardId\": \"V2-cfe42085bf100e79baee300b\",\n  \"reviewer\": \"root source-bound shared parallel naming correction; existing exact original review retained\",\n  \"observedAt\": \"2026-11-05T03:15:18.651Z\",\n  \"photoHashes\": [\n    \"3cc6fb6c8282107a23cf11bcdd27c491a597ad4a89991fe84d7925b7dde34427\",\n    \"8c798158bf3659fb3fdf2b4372c7e94e72fb64dea0fba52534ab101a99b43c1e\"\n  ],\n  \"finding\": {\n    \"pairMatches\": true,\n    \"frontImageIndex\": \"0\",\n    \"upright\": true,\n    \"identity\": {\n      \"name\": \"Coby White\",\n      \"year\": \"2024-25\",\n      \"manufacturer\": \"Panini\",\n      \"product\": \"Prizm Black\",\n      \"number\": \"68\",\n      \"categoryId\": \"261328\",\n      \"language\": \"English\",\n      \"variant\": \"Ruby Wave Prizm\",\n      \"artwork\": \"Coby White in a black Chicago Bulls uniform, jumping with the basketball raised in his right hand.\",\n      \"sportOrGame\": \"Basketball\",\n      \"team\": \"Chicago Bulls\",\n      \"serial\": \"\",\n      \"graded\": false,\n      \"damage\": false,\n      \"specifics\": {\n        \"Player/Athlete\": [\n          \"Coby White\"\n        ],\n        \"Season\": [\n          \"2024-25\"\n        ],\n        \"League\": [\n          \"National Basketball Association (NBA)\"\n        ],\n        \"Parallel/Variety\": [\n          \"Ruby Wave Prizm\"\n        ]\n      }\n    },\n    \"warnings\": [\n      \"Protective holder reflections limit fine surface inspection. No definite card damage is visible.\"\n    ]\n  }\n}"
+        },
+        {
+          "id": "V2-1ce1712c8781b672903d67e5",
+          "condition": "Near mint or better",
+          "identity": {
+            "name": "Coby White",
+            "year": "2024-25",
+            "manufacturer": "Panini",
+            "product": "Prizm Black",
+            "number": "68",
+            "categoryId": "261328",
+            "language": "English",
+            "variant": "Ruby Wave Prizm",
+            "artwork": "Coby White in a black Chicago Bulls uniform, jumping with the basketball raised in his right hand.",
+            "sportOrGame": "Basketball",
+            "team": "Chicago Bulls",
+            "serial": "",
+            "graded": false,
+            "damage": false,
+            "specifics": {
+              "Features": [
+                "Parallel"
+              ]
+            }
+          },
+          "photos": [
+            {
+              "hash": "ac69cac355e0bbdc8172db0ae856632fa785ac35a456198325a3d986d956d9fb",
+              "side": "front"
+            },
+            {
+              "hash": "c20540ac55c4f3e660cbf94b6d8d0daa3de5392ef174f9033848f9105f8497e1",
+              "side": "back"
+            }
+          ],
+          "identityReview": {
+            "path": "artifacts/card-processing-v2-redwave155-20261105T023917Z/consolidation-corrections/review-119.json",
+            "sha256": "12861c56e28714b4a5ff3ced4147ee3ce7f87d5432dc6f34d9df1ccf137155b5",
+            "reviewer": "OpenAI source-bound offline consolidation audit; root/transport/dashboard actual original reviews retained; no new image inspection",
+            "observedAt": "2026-11-05T03:51:51.174Z"
+          },
+          "reviewText": "{\n  \"kind\": \"original-pair-identity-review\",\n  \"cardId\": \"V2-1ce1712c8781b672903d67e5\",\n  \"reviewer\": \"OpenAI source-bound offline consolidation audit; root/transport/dashboard actual original reviews retained; no new image inspection\",\n  \"observedAt\": \"2026-11-05T03:51:51.174Z\",\n  \"photoHashes\": [\n    \"ac69cac355e0bbdc8172db0ae856632fa785ac35a456198325a3d986d956d9fb\",\n    \"c20540ac55c4f3e660cbf94b6d8d0daa3de5392ef174f9033848f9105f8497e1\"\n  ],\n  \"finding\": {\n    \"pairMatches\": true,\n    \"frontImageIndex\": \"0\",\n    \"upright\": true,\n    \"identity\": {\n      \"name\": \"Coby White\",\n      \"year\": \"2024-25\",\n      \"manufacturer\": \"Panini\",\n      \"product\": \"Prizm Black\",\n      \"number\": \"68\",\n      \"categoryId\": \"261328\",\n      \"language\": \"English\",\n      \"variant\": \"Ruby Wave Prizm\",\n      \"artwork\": \"Coby White in a black Chicago Bulls uniform, jumping with the basketball raised in his right hand.\",\n      \"sportOrGame\": \"Basketball\",\n      \"team\": \"Chicago Bulls\",\n      \"serial\": \"\",\n      \"graded\": false,\n      \"damage\": false,\n      \"specifics\": {\n        \"Features\": [\n          \"Parallel\"\n        ]\n      }\n    },\n    \"warnings\": []\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "Larry Bird",
+      "members": [
+        {
+          "id": "V2-4c9cf1825cfb79d52ac90c1e",
+          "condition": "Near mint or better",
+          "identity": {
+            "name": "Larry Bird",
+            "year": "2024-25",
+            "manufacturer": "Panini",
+            "product": "Prizm Black",
+            "number": "257",
+            "categoryId": "261328",
+            "language": "English",
+            "variant": "Ruby Wave Prizm",
+            "artwork": "Larry Bird in a white Boston Celtics #33 uniform, holding a basketball above his head in a shooting pose.",
+            "sportOrGame": "Basketball",
+            "team": "Boston Celtics",
+            "serial": "",
+            "graded": false,
+            "damage": false,
+            "specifics": {
+              "Player/Athlete": [
+                "Larry Bird"
+              ],
+              "Season": [
+                "2024-25"
+              ],
+              "Parallel/Variety": [
+                "Ruby Wave Prizm"
+              ]
+            }
+          },
+          "photos": [
+            {
+              "hash": "48398dc1c689bc8a4f182c41d4d8c2653cf05a9f1d3dc5f66b80dbde79b6221e",
+              "side": "front"
+            },
+            {
+              "hash": "4e626ec124b3b2996a30e6ffe30f0ebaf2e9b2de2e13187030b8c015649990b3",
+              "side": "back"
+            }
+          ],
+          "identityReview": {
+            "path": "artifacts/card-processing-v2-redwave155-20261105T023917Z/parallel-normalization/review-116.json",
+            "sha256": "eb8c487fa1646c1588bdff914e31723d681b4a9e8877c20830aed093d3ca1aa5",
+            "reviewer": "root source-bound shared parallel naming correction; existing exact original review retained",
+            "observedAt": "2026-11-05T03:15:18.651Z"
+          },
+          "reviewText": "{\n  \"kind\": \"original-pair-identity-review\",\n  \"cardId\": \"V2-4c9cf1825cfb79d52ac90c1e\",\n  \"reviewer\": \"root source-bound shared parallel naming correction; existing exact original review retained\",\n  \"observedAt\": \"2026-11-05T03:15:18.651Z\",\n  \"photoHashes\": [\n    \"48398dc1c689bc8a4f182c41d4d8c2653cf05a9f1d3dc5f66b80dbde79b6221e\",\n    \"4e626ec124b3b2996a30e6ffe30f0ebaf2e9b2de2e13187030b8c015649990b3\"\n  ],\n  \"finding\": {\n    \"pairMatches\": true,\n    \"frontImageIndex\": \"0\",\n    \"upright\": true,\n    \"identity\": {\n      \"name\": \"Larry Bird\",\n      \"year\": \"2024-25\",\n      \"manufacturer\": \"Panini\",\n      \"product\": \"Prizm Black\",\n      \"number\": \"257\",\n      \"categoryId\": \"261328\",\n      \"language\": \"English\",\n      \"variant\": \"Ruby Wave Prizm\",\n      \"artwork\": \"Larry Bird in a white Boston Celtics #33 uniform, holding a basketball above his head in a shooting pose.\",\n      \"sportOrGame\": \"Basketball\",\n      \"team\": \"Boston Celtics\",\n      \"serial\": \"\",\n      \"graded\": false,\n      \"damage\": false,\n      \"specifics\": {\n        \"Player/Athlete\": [\n          \"Larry Bird\"\n        ],\n        \"Season\": [\n          \"2024-25\"\n        ],\n        \"Parallel/Variety\": [\n          \"Ruby Wave Prizm\"\n        ]\n      }\n    },\n    \"warnings\": [\n      \"Protective holder reflections limit fine surface inspection. No definite card damage is visible.\"\n    ]\n  }\n}"
+        },
+        {
+          "id": "V2-75617b98e031f9ad5df6c358",
+          "condition": "Near mint or better",
+          "identity": {
+            "name": "Larry Bird",
+            "year": "2024-25",
+            "manufacturer": "Panini",
+            "product": "Prizm Black",
+            "number": "257",
+            "categoryId": "261328",
+            "language": "English",
+            "variant": "Ruby Wave Prizm",
+            "artwork": "Larry Bird in a white Boston Celtics #33 uniform, holding a basketball above his head in a shooting pose.",
+            "sportOrGame": "Basketball",
+            "team": "Boston Celtics",
+            "serial": "",
+            "graded": false,
+            "damage": false,
+            "specifics": {
+              "Subset": [
+                "Legends"
+              ]
+            }
+          },
+          "photos": [
+            {
+              "hash": "e92a83bcc3dc1e2139f1f1f435e4f4fcc33b4b0c73e376d937ae5448451a0281",
+              "side": "front"
+            },
+            {
+              "hash": "49422d7e27049549073577efa5beeb591dad643c65543eec0b61e2b4218ef616",
+              "side": "back"
+            }
+          ],
+          "identityReview": {
+            "path": "artifacts/card-processing-v2-redwave155-20261105T023917Z/consolidation-corrections/review-146.json",
+            "sha256": "2f31f1e78f72bc0ae799a1e684ce49aa0df93f85f41afdbb295521afa12f21cb",
+            "reviewer": "OpenAI source-bound offline consolidation audit; root/transport/dashboard actual original reviews retained; no new image inspection",
+            "observedAt": "2026-11-05T03:51:51.183Z"
+          },
+          "reviewText": "{\n  \"kind\": \"original-pair-identity-review\",\n  \"cardId\": \"V2-75617b98e031f9ad5df6c358\",\n  \"reviewer\": \"OpenAI source-bound offline consolidation audit; root/transport/dashboard actual original reviews retained; no new image inspection\",\n  \"observedAt\": \"2026-11-05T03:51:51.183Z\",\n  \"photoHashes\": [\n    \"e92a83bcc3dc1e2139f1f1f435e4f4fcc33b4b0c73e376d937ae5448451a0281\",\n    \"49422d7e27049549073577efa5beeb591dad643c65543eec0b61e2b4218ef616\"\n  ],\n  \"finding\": {\n    \"pairMatches\": true,\n    \"frontImageIndex\": \"0\",\n    \"upright\": true,\n    \"identity\": {\n      \"name\": \"Larry Bird\",\n      \"year\": \"2024-25\",\n      \"manufacturer\": \"Panini\",\n      \"product\": \"Prizm Black\",\n      \"number\": \"257\",\n      \"categoryId\": \"261328\",\n      \"language\": \"English\",\n      \"variant\": \"Ruby Wave Prizm\",\n      \"artwork\": \"Larry Bird in a white Boston Celtics #33 uniform, holding a basketball above his head in a shooting pose.\",\n      \"sportOrGame\": \"Basketball\",\n      \"team\": \"Boston Celtics\",\n      \"serial\": \"\",\n      \"graded\": false,\n      \"damage\": false,\n      \"specifics\": {\n        \"Subset\": [\n          \"Legends\"\n        ]\n      }\n    },\n    \"warnings\": []\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "Kawhi Leonard",
+      "members": [
+        {
+          "id": "V2-9db78f6c312e67756b4b974e",
+          "condition": "Near mint or better",
+          "identity": {
+            "name": "Kawhi Leonard",
+            "year": "2024-25",
+            "manufacturer": "Panini",
+            "product": "Prizm Black",
+            "number": "167",
+            "categoryId": "261328",
+            "language": "English",
+            "variant": "Ruby Wave Prizm",
+            "artwork": "Kawhi Leonard holding a basketball in a white Los Angeles Clippers uniform.",
+            "sportOrGame": "Basketball",
+            "team": "Los Angeles Clippers",
+            "serial": "",
+            "graded": false,
+            "damage": false,
+            "specifics": {
+              "Player/Athlete": [
+                "Kawhi Leonard"
+              ],
+              "League": [
+                "National Basketball Association (NBA)"
+              ],
+              "Season": [
+                "2024-25"
+              ],
+              "Parallel/Variety": [
+                "Ruby Wave Prizm"
+              ]
+            }
+          },
+          "photos": [
+            {
+              "hash": "c4cdaaa019eee9d8edc17350f6c76d17fea6f877fa0639b3d531e2aecf173529",
+              "side": "front"
+            },
+            {
+              "hash": "315da4a1526f449540b0b79a9c2988a2e637294e47bb54774fe623002f1022dc",
+              "side": "back"
+            }
+          ],
+          "identityReview": {
+            "path": "artifacts/card-processing-v2-redwave155-20261105T023917Z/parallel-normalization/review-121.json",
+            "sha256": "bd0aafc516145b924a705e46277b724dbf53c263f2f00c8ce0dcd651ced97335",
+            "reviewer": "root source-bound shared parallel naming correction; existing exact original review retained",
+            "observedAt": "2026-11-05T03:15:18.651Z"
+          },
+          "reviewText": "{\n  \"kind\": \"original-pair-identity-review\",\n  \"cardId\": \"V2-9db78f6c312e67756b4b974e\",\n  \"reviewer\": \"root source-bound shared parallel naming correction; existing exact original review retained\",\n  \"observedAt\": \"2026-11-05T03:15:18.651Z\",\n  \"photoHashes\": [\n    \"c4cdaaa019eee9d8edc17350f6c76d17fea6f877fa0639b3d531e2aecf173529\",\n    \"315da4a1526f449540b0b79a9c2988a2e637294e47bb54774fe623002f1022dc\"\n  ],\n  \"finding\": {\n    \"pairMatches\": true,\n    \"frontImageIndex\": \"0\",\n    \"upright\": true,\n    \"identity\": {\n      \"name\": \"Kawhi Leonard\",\n      \"year\": \"2024-25\",\n      \"manufacturer\": \"Panini\",\n      \"product\": \"Prizm Black\",\n      \"number\": \"167\",\n      \"categoryId\": \"261328\",\n      \"language\": \"English\",\n      \"variant\": \"Ruby Wave Prizm\",\n      \"artwork\": \"Kawhi Leonard holding a basketball in a white Los Angeles Clippers uniform.\",\n      \"sportOrGame\": \"Basketball\",\n      \"team\": \"Los Angeles Clippers\",\n      \"serial\": \"\",\n      \"graded\": false,\n      \"damage\": false,\n      \"specifics\": {\n        \"Player/Athlete\": [\n          \"Kawhi Leonard\"\n        ],\n        \"League\": [\n          \"National Basketball Association (NBA)\"\n        ],\n        \"Season\": [\n          \"2024-25\"\n        ],\n        \"Parallel/Variety\": [\n          \"Ruby Wave Prizm\"\n        ]\n      }\n    },\n    \"warnings\": [\n      \"Protective holder reflections limit fine surface inspection. No definite card damage is visible.\"\n    ]\n  }\n}"
+        },
+        {
+          "id": "V2-7596d486f06217259d7e5c27",
+          "condition": "Near mint or better",
+          "identity": {
+            "name": "Kawhi Leonard",
+            "year": "2024-25",
+            "manufacturer": "Panini",
+            "product": "Prizm Black",
+            "number": "167",
+            "categoryId": "261328",
+            "language": "English",
+            "variant": "Ruby Wave Prizm",
+            "artwork": "Kawhi Leonard holding a basketball in a white Los Angeles Clippers uniform.",
+            "sportOrGame": "Basketball",
+            "team": "Los Angeles Clippers",
+            "serial": "",
+            "graded": false,
+            "damage": false,
+            "specifics": {
+              "Player/Athlete": [
+                "Kawhi Leonard"
+              ],
+              "Season": [
+                "2024-25"
+              ],
+              "Parallel/Variety": [
+                "Ruby Wave Prizm"
+              ],
+              "Condition": [
+                "Near mint or better"
+              ]
+            }
+          },
+          "photos": [
+            {
+              "hash": "58c5b78150f3d6b38588e0f0cdc891cf73f0abf670081e7d4b976ec8f0ac1441",
+              "side": "front"
+            },
+            {
+              "hash": "5077fd0362eda72235ebca3f39d59e087ba708e79a84e2110df890c29d45db40",
+              "side": "back"
+            }
+          ],
+          "identityReview": {
+            "path": "artifacts/card-processing-v2-redwave155-20261105T023917Z/parallel-normalization/review-122.json",
+            "sha256": "a2364109ec317547906b80a23908f8f47dee89cdcdf0655a099ac24a9eeef4a5",
+            "reviewer": "root source-bound shared parallel naming correction; existing exact original review retained",
+            "observedAt": "2026-11-05T03:15:18.651Z"
+          },
+          "reviewText": "{\n  \"kind\": \"original-pair-identity-review\",\n  \"cardId\": \"V2-7596d486f06217259d7e5c27\",\n  \"reviewer\": \"root source-bound shared parallel naming correction; existing exact original review retained\",\n  \"observedAt\": \"2026-11-05T03:15:18.651Z\",\n  \"photoHashes\": [\n    \"58c5b78150f3d6b38588e0f0cdc891cf73f0abf670081e7d4b976ec8f0ac1441\",\n    \"5077fd0362eda72235ebca3f39d59e087ba708e79a84e2110df890c29d45db40\"\n  ],\n  \"finding\": {\n    \"pairMatches\": true,\n    \"frontImageIndex\": \"0\",\n    \"upright\": true,\n    \"identity\": {\n      \"name\": \"Kawhi Leonard\",\n      \"year\": \"2024-25\",\n      \"manufacturer\": \"Panini\",\n      \"product\": \"Prizm Black\",\n      \"number\": \"167\",\n      \"categoryId\": \"261328\",\n      \"language\": \"English\",\n      \"variant\": \"Ruby Wave Prizm\",\n      \"artwork\": \"Kawhi Leonard holding a basketball in a white Los Angeles Clippers uniform.\",\n      \"sportOrGame\": \"Basketball\",\n      \"team\": \"Los Angeles Clippers\",\n      \"serial\": \"\",\n      \"graded\": false,\n      \"damage\": false,\n      \"specifics\": {\n        \"Player/Athlete\": [\n          \"Kawhi Leonard\"\n        ],\n        \"Season\": [\n          \"2024-25\"\n        ],\n        \"Parallel/Variety\": [\n          \"Ruby Wave Prizm\"\n        ],\n        \"Condition\": [\n          \"Near mint or better\"\n        ]\n      }\n    },\n    \"warnings\": [\n      \"Protective holder reflections limit fine surface inspection. No definite card damage is visible.\"\n    ]\n  }\n}"
+        },
+        {
+          "id": "V2-aff0205e333313ff69e2b1f2",
+          "condition": "Near mint or better",
+          "identity": {
+            "name": "Kawhi Leonard",
+            "year": "2024-25",
+            "manufacturer": "Panini",
+            "product": "Prizm Black",
+            "number": "167",
+            "categoryId": "261328",
+            "language": "English",
+            "variant": "Ruby Wave Prizm",
+            "artwork": "Kawhi Leonard holding a basketball in a white Los Angeles Clippers uniform.",
+            "sportOrGame": "Basketball",
+            "team": "Los Angeles Clippers",
+            "serial": "",
+            "graded": false,
+            "damage": false,
+            "specifics": {
+              "Player/Athlete": [
+                "Kawhi Leonard"
+              ],
+              "Season": [
+                "2024-25"
+              ],
+              "League": [
+                "National Basketball Association (NBA)"
+              ],
+              "Set": [
+                "2024-25 Panini Prizm Black"
+              ],
+              "Parallel/Variety": [
+                "Ruby Wave Prizm"
+              ]
+            }
+          },
+          "photos": [
+            {
+              "hash": "042f49d5b908c8155a6e5eb3f0f7d5d0f693b3db6ea9b04f51f11dc4b277beef",
+              "side": "front"
+            },
+            {
+              "hash": "c3878abfbefe3f739e59439a13daa2cb01695319be64c44460fd0bc95d643dd7",
+              "side": "back"
+            }
+          ],
+          "identityReview": {
+            "path": "artifacts/card-processing-v2-redwave155-20261105T023917Z/consolidation-corrections/review-145.json",
+            "sha256": "789c251a14ac41286d85bea5564494707108b5913a8445fa46ac53e9490cc09f",
+            "reviewer": "OpenAI source-bound offline consolidation audit; root/transport/dashboard actual original reviews retained; no new image inspection",
+            "observedAt": "2026-11-05T03:51:51.182Z"
+          },
+          "reviewText": "{\n  \"kind\": \"original-pair-identity-review\",\n  \"cardId\": \"V2-aff0205e333313ff69e2b1f2\",\n  \"reviewer\": \"OpenAI source-bound offline consolidation audit; root/transport/dashboard actual original reviews retained; no new image inspection\",\n  \"observedAt\": \"2026-11-05T03:51:51.182Z\",\n  \"photoHashes\": [\n    \"042f49d5b908c8155a6e5eb3f0f7d5d0f693b3db6ea9b04f51f11dc4b277beef\",\n    \"c3878abfbefe3f739e59439a13daa2cb01695319be64c44460fd0bc95d643dd7\"\n  ],\n  \"finding\": {\n    \"pairMatches\": true,\n    \"frontImageIndex\": \"0\",\n    \"upright\": true,\n    \"identity\": {\n      \"name\": \"Kawhi Leonard\",\n      \"year\": \"2024-25\",\n      \"manufacturer\": \"Panini\",\n      \"product\": \"Prizm Black\",\n      \"number\": \"167\",\n      \"categoryId\": \"261328\",\n      \"language\": \"English\",\n      \"variant\": \"Ruby Wave Prizm\",\n      \"artwork\": \"Kawhi Leonard holding a basketball in a white Los Angeles Clippers uniform.\",\n      \"sportOrGame\": \"Basketball\",\n      \"team\": \"Los Angeles Clippers\",\n      \"serial\": \"\",\n      \"graded\": false,\n      \"damage\": false,\n      \"specifics\": {\n        \"Player/Athlete\": [\n          \"Kawhi Leonard\"\n        ],\n        \"Season\": [\n          \"2024-25\"\n        ],\n        \"League\": [\n          \"National Basketball Association (NBA)\"\n        ],\n        \"Set\": [\n          \"2024-25 Panini Prizm Black\"\n        ],\n        \"Parallel/Variety\": [\n          \"Ruby Wave Prizm\"\n        ]\n      }\n    },\n    \"warnings\": []\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "Keldon Johnson",
+      "members": [
+        {
+          "id": "V2-8cf03f68fa3c65216d20c2b1",
+          "condition": "Near mint or better",
+          "identity": {
+            "name": "Keldon Johnson",
+            "year": "2024-25",
+            "manufacturer": "Panini",
+            "product": "Prizm Black",
+            "number": "83",
+            "categoryId": "261328",
+            "language": "English",
+            "variant": "Ruby Wave Prizm",
+            "artwork": "Keldon Johnson holding a basketball in a black San Antonio Spurs uniform",
+            "sportOrGame": "Basketball",
+            "team": "San Antonio Spurs",
+            "serial": "",
+            "graded": false,
+            "damage": false,
+            "specifics": {
+              "Player/Athlete": [
+                "Keldon Johnson"
+              ],
+              "Season": [
+                "2024-25"
+              ],
+              "League": [
+                "National Basketball Association (NBA)"
+              ],
+              "Parallel/Variety": [
+                "Ruby Wave Prizm"
+              ]
+            }
+          },
+          "photos": [
+            {
+              "hash": "6e71508e1ad61f60d1e2f3e04f85a730efd6feb51eae70eb801cccb21e3fed83",
+              "side": "front"
+            },
+            {
+              "hash": "456d1d8c93f6efa1ce4edd8d911448106263b5979ca2e3877fe2290db431abbd",
+              "side": "back"
+            }
+          ],
+          "identityReview": {
+            "path": "artifacts/card-processing-v2-redwave155-20261105T023917Z/parallel-normalization/review-138.json",
+            "sha256": "e00b3e2a08219aec2a9cdd96843aa7c8661e124825b2f3451f3134f6ab253c54",
+            "reviewer": "root source-bound shared parallel naming correction; existing exact original review retained",
+            "observedAt": "2026-11-05T03:15:18.651Z"
+          },
+          "reviewText": "{\n  \"kind\": \"original-pair-identity-review\",\n  \"cardId\": \"V2-8cf03f68fa3c65216d20c2b1\",\n  \"reviewer\": \"root source-bound shared parallel naming correction; existing exact original review retained\",\n  \"observedAt\": \"2026-11-05T03:15:18.651Z\",\n  \"photoHashes\": [\n    \"6e71508e1ad61f60d1e2f3e04f85a730efd6feb51eae70eb801cccb21e3fed83\",\n    \"456d1d8c93f6efa1ce4edd8d911448106263b5979ca2e3877fe2290db431abbd\"\n  ],\n  \"finding\": {\n    \"pairMatches\": true,\n    \"frontImageIndex\": \"0\",\n    \"upright\": true,\n    \"identity\": {\n      \"name\": \"Keldon Johnson\",\n      \"year\": \"2024-25\",\n      \"manufacturer\": \"Panini\",\n      \"product\": \"Prizm Black\",\n      \"number\": \"83\",\n      \"categoryId\": \"261328\",\n      \"language\": \"English\",\n      \"variant\": \"Ruby Wave Prizm\",\n      \"artwork\": \"Keldon Johnson holding a basketball in a black San Antonio Spurs uniform\",\n      \"sportOrGame\": \"Basketball\",\n      \"team\": \"San Antonio Spurs\",\n      \"serial\": \"\",\n      \"graded\": false,\n      \"damage\": false,\n      \"specifics\": {\n        \"Player/Athlete\": [\n          \"Keldon Johnson\"\n        ],\n        \"Season\": [\n          \"2024-25\"\n        ],\n        \"League\": [\n          \"National Basketball Association (NBA)\"\n        ],\n        \"Parallel/Variety\": [\n          \"Ruby Wave Prizm\"\n        ]\n      }\n    },\n    \"warnings\": []\n  }\n}"
+        },
+        {
+          "id": "V2-d20a8297ea0dedfd68214581",
+          "condition": "Near mint or better",
+          "identity": {
+            "name": "Keldon Johnson",
+            "year": "2024-25",
+            "manufacturer": "Panini",
+            "product": "Prizm Black",
+            "number": "83",
+            "categoryId": "261328",
+            "language": "English",
+            "variant": "Ruby Wave Prizm",
+            "artwork": "Keldon Johnson holding a basketball in a black San Antonio Spurs uniform",
+            "sportOrGame": "Basketball",
+            "team": "San Antonio Spurs",
+            "serial": "",
+            "graded": false,
+            "damage": false,
+            "specifics": {
+              "League": [
+                "National Basketball Association (NBA)"
+              ],
+              "Season": [
+                "2024-25"
+              ]
+            }
+          },
+          "photos": [
+            {
+              "hash": "9cde4025cc020067554face0b4e08341da1335643b2e89bd8c30f3e8963e4a77",
+              "side": "front"
+            },
+            {
+              "hash": "5bffa370a5f035e96d72762d85d06c1660fb1be700dbac035722ff6525b58f0b",
+              "side": "back"
+            }
+          ],
+          "identityReview": {
+            "path": "artifacts/card-processing-v2-redwave155-20261105T023917Z/consolidation-corrections/review-139.json",
+            "sha256": "4787448f8898213b5187a424af3c02c07645f871f3e20d06b0831be6ef33e04d",
+            "reviewer": "OpenAI source-bound offline consolidation audit; root/transport/dashboard actual original reviews retained; no new image inspection",
+            "observedAt": "2026-11-05T03:51:51.181Z"
+          },
+          "reviewText": "{\n  \"kind\": \"original-pair-identity-review\",\n  \"cardId\": \"V2-d20a8297ea0dedfd68214581\",\n  \"reviewer\": \"OpenAI source-bound offline consolidation audit; root/transport/dashboard actual original reviews retained; no new image inspection\",\n  \"observedAt\": \"2026-11-05T03:51:51.181Z\",\n  \"photoHashes\": [\n    \"9cde4025cc020067554face0b4e08341da1335643b2e89bd8c30f3e8963e4a77\",\n    \"5bffa370a5f035e96d72762d85d06c1660fb1be700dbac035722ff6525b58f0b\"\n  ],\n  \"finding\": {\n    \"pairMatches\": true,\n    \"frontImageIndex\": \"0\",\n    \"upright\": true,\n    \"identity\": {\n      \"name\": \"Keldon Johnson\",\n      \"year\": \"2024-25\",\n      \"manufacturer\": \"Panini\",\n      \"product\": \"Prizm Black\",\n      \"number\": \"83\",\n      \"categoryId\": \"261328\",\n      \"language\": \"English\",\n      \"variant\": \"Ruby Wave Prizm\",\n      \"artwork\": \"Keldon Johnson holding a basketball in a black San Antonio Spurs uniform\",\n      \"sportOrGame\": \"Basketball\",\n      \"team\": \"San Antonio Spurs\",\n      \"serial\": \"\",\n      \"graded\": false,\n      \"damage\": false,\n      \"specifics\": {\n        \"League\": [\n          \"National Basketball Association (NBA)\"\n        ],\n        \"Season\": [\n          \"2024-25\"\n        ]\n      }\n    },\n    \"warnings\": []\n  }\n}"
+        },
+        {
+          "id": "V2-4f79421a2d9a1db8a297b529",
+          "condition": "Near mint or better",
+          "identity": {
+            "name": "Keldon Johnson",
+            "year": "2024-25",
+            "manufacturer": "Panini",
+            "product": "Prizm Black",
+            "number": "83",
+            "categoryId": "261328",
+            "language": "English",
+            "variant": "Ruby Wave Prizm",
+            "artwork": "Keldon Johnson holding a basketball in a black San Antonio Spurs uniform",
+            "sportOrGame": "Basketball",
+            "team": "San Antonio Spurs",
+            "serial": "",
+            "graded": false,
+            "damage": false,
+            "specifics": {
+              "Player/Athlete": [
+                "Keldon Johnson"
+              ],
+              "Season": [
+                "2024-25"
+              ],
+              "Set": [
+                "2024-25 Panini Prizm Black"
+              ],
+              "Parallel/Variety": [
+                "Ruby Wave Prizm"
+              ]
+            }
+          },
+          "photos": [
+            {
+              "hash": "247356614e4fbf73f35076edecb7e5837f5f4d8272180549231ec94de3cec6c4",
+              "side": "front"
+            },
+            {
+              "hash": "c3018c870c906d3c8953841c764cc005b291ce220258a81f05b64824f39dc574",
+              "side": "back"
+            }
+          ],
+          "identityReview": {
+            "path": "artifacts/card-processing-v2-redwave155-20261105T023917Z/consolidation-corrections/review-155.json",
+            "sha256": "f9730a66fc00b7a7af21064bb273ac17855af097240a3484a9812da2eb3b422b",
+            "reviewer": "OpenAI source-bound offline consolidation audit; root/transport/dashboard actual original reviews retained; no new image inspection",
+            "observedAt": "2026-11-05T03:51:51.187Z"
+          },
+          "reviewText": "{\n  \"kind\": \"original-pair-identity-review\",\n  \"cardId\": \"V2-4f79421a2d9a1db8a297b529\",\n  \"reviewer\": \"OpenAI source-bound offline consolidation audit; root/transport/dashboard actual original reviews retained; no new image inspection\",\n  \"observedAt\": \"2026-11-05T03:51:51.187Z\",\n  \"photoHashes\": [\n    \"247356614e4fbf73f35076edecb7e5837f5f4d8272180549231ec94de3cec6c4\",\n    \"c3018c870c906d3c8953841c764cc005b291ce220258a81f05b64824f39dc574\"\n  ],\n  \"finding\": {\n    \"pairMatches\": true,\n    \"frontImageIndex\": \"0\",\n    \"upright\": true,\n    \"identity\": {\n      \"name\": \"Keldon Johnson\",\n      \"year\": \"2024-25\",\n      \"manufacturer\": \"Panini\",\n      \"product\": \"Prizm Black\",\n      \"number\": \"83\",\n      \"categoryId\": \"261328\",\n      \"language\": \"English\",\n      \"variant\": \"Ruby Wave Prizm\",\n      \"artwork\": \"Keldon Johnson holding a basketball in a black San Antonio Spurs uniform\",\n      \"sportOrGame\": \"Basketball\",\n      \"team\": \"San Antonio Spurs\",\n      \"serial\": \"\",\n      \"graded\": false,\n      \"damage\": false,\n      \"specifics\": {\n        \"Player/Athlete\": [\n          \"Keldon Johnson\"\n        ],\n        \"Season\": [\n          \"2024-25\"\n        ],\n        \"Set\": [\n          \"2024-25 Panini Prizm Black\"\n        ],\n        \"Parallel/Variety\": [\n          \"Ruby Wave Prizm\"\n        ]\n      }\n    },\n    \"warnings\": [\n      \"Protective holder reflections limit fine surface inspection. No definite card damage is visible.\"\n    ]\n  }\n}"
+        }
+      ]
+    }
+  ]
+}

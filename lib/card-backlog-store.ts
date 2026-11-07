@@ -3,11 +3,18 @@ import { createReadStream } from "node:fs";
 import path from "node:path";
 import os from "node:os";
 import { createHash } from "node:crypto";
-import { fingerprint, reviewedIdentity, type QueueState } from "./card-orchestrator.ts";
-import { importLegacyCard } from "./card-orchestrator-import.ts";
+import { BacklogReadError } from "./card-backlog-errors.ts";
+import { backlogJsonCache } from "./backlog-json-cache.ts";
+import { approvedRulePrice, fingerprint, hasCompleteIdentity, reviewedIdentity, validateCardIntake, type CardInput, type QueueState } from "./card-orchestrator.ts";
+import { applyCurrentPricing } from "./card-pricing-integration.ts";
+import { cardPremiumReasons } from "./card-orchestrator-policy.ts";
+import { importLegacyCard, partialIdentityRejectionReasons, receiptManifestPaths } from "./card-orchestrator-import.ts";
 import { backlogCounts, reconcileBacklog, reconcileScans, unique, type BacklogEvidence, type BacklogPrice, type BacklogReceipt, type BacklogScan, type BacklogSnapshot, type BacklogSource, type CardIdentity } from "./card-backlog.ts";
 
 type Row = Record<string, unknown>;
+const parseSource=backlogJsonCache();
+// Same inputs as the identity job, including source uncertainty and the original photo snapshot.
+const identityInputKey = (i: CardInput) => fingerprint([i.identity,i.photos,i.identityIssue??"",i.sourceHold??"",fingerprint(i.photos)]);
 const row = (v: unknown): Row => v && typeof v === "object" && !Array.isArray(v) ? v as Row : {};
 const rows = (v: unknown): Row[] => Array.isArray(v) ? v.map(row) : [];
 const str = (v: unknown) => typeof v === "string" ? v.trim() : typeof v === "number" ? String(v) : "";
@@ -21,7 +28,7 @@ export const defaultCardInbox = () => process.env.CARD_INBOX_PATH || path.join(o
 function identity(r: Row): CardIdentity {
   const fields: Record<string, unknown[]> = { player: [r.player, r.character], season: [r.season, r.year], set: [r.set], manufacturer: [r.manufacturer],
     cardNumber: [r.cardNumber, r.card_number, r.number], parallel: [r.parallel, r.variant], serial: [r.serial, r.serial_text, r.serialNumber],
-    printRun: [r.printRun, r.print_run, r.run], language: [r.language], condition: [r.condition_plan, r.condition], conditionType: [r.condition_type, r.conditionType], sport: [r.sport_game, r.sport], team: [r.team] };
+    printRun: [r.printRun, r.print_run, r.run], language: [r.language], artwork: [r.artwork], condition: [r.condition_plan, r.condition], conditionType: [r.condition_type, r.conditionType], sport: [r.sport_game, r.sport], team: [r.team] };
   return Object.fromEntries(Object.entries(fields).map(([k, v]) => [k, text(...v)]).filter(([, v]) => v));
 }
 function price(item: unknown, shipping: unknown, source: string, updatedAt?: string, policy?: string, reviewRequired = true): BacklogPrice | undefined {
@@ -81,9 +88,13 @@ export async function loadCardBacklog(options: { root?: string; inbox?: string; 
   async function read(relative: string): Promise<Row | unknown[] | null> {
     try {
       const file = path.join(root, relative), before = await fs.stat(file);
-      const data: unknown = JSON.parse((await fs.readFile(file, "utf8")).replace(/^\uFEFF/, ""));
+      const sourceText=(await fs.readFile(file,"utf8")).replace(/^\uFEFF/, "");
+      // Only the two large, stable legacy inputs benefit across queue transactions.
+      // Do not fill the cache with small receipts or the frequently changing queue.
+      const data: unknown = relative==="artifacts/identity-queue/cards.json"||relative==="artifacts/pricing-queue/queue-state.json"
+        ?parseSource(path.resolve(file),sourceText):JSON.parse(sourceText);
       const after = await fs.stat(file);
-      if (before.mtimeMs !== after.mtimeMs || before.size !== after.size) throw new Error("Source changed during read");
+      if (before.mtimeMs !== after.mtimeMs || before.size !== after.size) throw new BacklogReadError("SOURCE_CHANGED");
       if (!data || typeof data !== "object") throw new Error("Invalid source object");
       const r = row(data), entries = Array.isArray(data) ? data : r.cards ?? r.groups ?? r.approvals ?? [];
       if (/artifacts\/(identity-queue\/cards|pricing-queue\/queue-state)\.json$/.test(relative) && !Array.isArray(r.cards)) throw new Error("Invalid cards schema");
@@ -91,6 +102,9 @@ export async function loadCardBacklog(options: { root?: string; inbox?: string; 
       sources.push({ path: relative, status: "loaded", records: Array.isArray(entries) ? entries.length : Object.keys(row(entries)).length, updatedAt: text(r.updatedAt, r.updated_at, r.asOf, r.verifiedAt) || undefined });
       return data as Row | unknown[];
     } catch (e) {
+      if(e instanceof BacklogReadError)throw e;
+      if(relative==="artifacts/identity-queue/cards.json"&&(e as NodeJS.ErrnoException).code!=="ENOENT")throw new BacklogReadError(e instanceof SyntaxError||(e as Error).message==="Invalid cards schema"?"EVIDENCE_INVALID":"BACKLOG_READ_FAILED");
+      if(["artifacts/card-orchestrator/state.json","artifacts/pricing-queue/queue-state.json","artifacts/card-orchestrator/asking-price-approvals.json"].includes(relative)&&(e as NodeJS.ErrnoException).code!=="ENOENT")throw new BacklogReadError(e instanceof SyntaxError||(e as Error).message==="Invalid cards schema"?"EVIDENCE_INVALID":"BACKLOG_READ_FAILED");
       sources.push({ path: relative, status: (e as NodeJS.ErrnoException).code === "ENOENT" ? "missing" : "invalid", records: 0 });
       return null;
     }
@@ -106,12 +120,19 @@ export async function loadCardBacklog(options: { root?: string; inbox?: string; 
   scans.forEach(f => rememberPath(f.path, f.hash));
   for (const i of identities) {
     for (const side of ["front", "back"]) for (const field of ["original", "current"]) rememberPath(str(i[`${side}_${field}_path`]), sha(i[`${side}_sha256`]));
-    let identityKey: string | undefined; try { identityKey = fingerprint(importLegacyCard(i, {}, []).identity); } catch { /* Partial identities remain visible. */ }
+    let identityKey: string | undefined, workKey: string | undefined, completeIdentity=false;
+    try {
+      const imported=importLegacyCard(i, {}, []);completeIdentity=hasCompleteIdentity(imported.identity);
+      if(completeIdentity)identityKey=fingerprint(imported.identity);
+      validateCardIntake(imported);workKey=identityInputKey(imported);
+    } catch { /* Invalid capture metadata/condition must not acquire identity-work authority. */ }
+    const gap=str(i.unresolved_fields);
     evidence.push({ source: identitySource, kind: "identity", id: str(i.card_id), sku: str(i.source_key), frontHash: sha(i.front_sha256), backHash: sha(i.back_sha256),
       paths: unique([i.front_original_path, i.back_original_path, i.front_current_path, i.back_current_path].map(str).filter(Boolean)),
-      identity: identity(i), identityKey, identityStatus: i.status === "identity-ready" ? "identified" : /^held/.test(str(i.status)) ? "needs-review" : undefined,
+      identity: identity(i), identityKey, identityStatus: i.status === "identity-ready" && completeIdentity ? "identified" : /^held/.test(str(i.status)) || !completeIdentity ? "needs-review" : undefined,
       title: text(i.proposed_title, i.player), quantity: num(i.quantity) ?? undefined, observedAt: text(i.verified_at),
       holds: [i.hold_reason, i.unresolved_fields].map(str).filter(Boolean), receipts: references(i, identitySource, text(i.verified_at)),
+      identityInputKey:workKey,identityRequirements:workKey&&i.status==="held-identity"&&gap?[gap]:[],
       overrides: { condition: i.condition_plan, conditionEvidence: i.condition_evidence, correction: i.proposed_correction } });
   }
   for (const p of pricing) {
@@ -129,29 +150,39 @@ export async function loadCardBacklog(options: { root?: string; inbox?: string; 
   }
   if (queueRaw && row(queueRaw).seller === "imaydit58" && row(queueRaw).schemaVersion === 1) {
     const queue = queueRaw as unknown as QueueState;
+    for(const [id,failure] of Object.entries(queue.photoArchiveFailures??{}))warnings.push(`Photo archive pending for ${id}: ${failure.reason}`);
     for (const c of Object.values(queue.cards)) {
       const i = c.input, legacy = identityById.get(i.id) ?? {}, reviewed = reviewedIdentity(c);
       // Preserve the saved approval's source fingerprint when review only fills unknown fields.
       // A correction to any already-known identity value invalidates that source binding.
       const changedIdentity = reviewed && Object.entries(i.identity).some(([field, value]) => value !== null && value !== undefined && value !== "" && JSON.stringify(value) !== JSON.stringify((reviewed as unknown as Row)[field]));
       const photos = i.photos, projection = row(c.jobs.pricing.state === "done" ? c.jobs.pricing.result?.projection : null);
+      const ruleApproval=approvedRulePrice(c),identityKey=fingerprint(changedIdentity ? reviewed : i.identity);
+      const baseProposal=price(projection.item,projection.shipping,queueSource,ruleApproval?.approvedAt??c.updatedAt,str(projection.policyVersion));
+      const proposal=baseProposal?{...baseProposal,premiumReasons:cardPremiumReasons(reviewed??i.identity),colorMatchReviewed:!!reviewed?.colorMatch}:undefined;
       const receipts = references({ draftId: i.knownDraft, liveItemId: i.knownLive?.itemId }, queueSource, i.knownLive?.observedAt);
       for (const r of [...(i.savedReceipts ?? []), ...(c.exclusion ? [c.exclusion] : [])]) if (/^\d+$/.test(r.itemId) && ["draft", "live", "sold", "scheduled"].includes(r.disposition)) receipts.push({ id: r.itemId, disposition: r.disposition as BacklogReceipt["disposition"], source: queueSource });
       evidence.push({ source: queueSource, kind: "orchestrator", id: i.id, sku: i.sku, frontHash: photos.find(p => p.side === "front")?.sha256,
-        backHash: photos.find(p => p.side === "back")?.sha256, paths: photos.map(p => p.path), identity: { ...identity(legacy), ...identity((reviewed ?? i.identity) as unknown as Row) }, identityKey: fingerprint(changedIdentity ? reviewed : i.identity), reviewed: !!reviewed,
+        backHash: photos.find(p => p.side === "back")?.sha256, paths: [...photos.map(p => p.path),...(queue.photoArchives?.[i.id]?.files.map(f=>f.destination)??[])], identity: { ...identity(legacy), ...identity((reviewed ?? i.identity) as unknown as Row) }, identityKey: fingerprint(changedIdentity ? reviewed : i.identity), reviewed: !!reviewed,
         identityStatus: reviewed ? "identified" : undefined, title: str(c.jobs.listing.result?.title), observedAt: c.updatedAt,
-        proposal: price(projection.item, projection.shipping, queueSource, c.updatedAt, str(projection.policyVersion)),
+        resolvedIdentityInputKey:reviewed&&hasCompleteIdentity(reviewed)&&reviewed.autograph!==null&&c.jobs.photos.state==="done"
+          &&c.jobs.photos.inputKey===fingerprint(i.photos)&&c.jobs.identity.inputKey===identityInputKey(i)?identityInputKey(i):undefined,
+        proposal, approval: ruleApproval&&proposal?{proposal:{...proposal,approvedAt:ruleApproval.approvedAt},identityKey,photoHashes:photos.map(p=>p.sha256)}:undefined,
         override: i.override ? price(i.override.item, i.override.shipping, queueSource, c.updatedAt, str(projection.policyVersion), false) : undefined,
         receipts, holds: Object.values(c.jobs).filter(j => j.state === "held").map(j => `${j.kind}: ${j.reason || "Held"}`), prepared: c.jobs.listing.state === "done" });
     }
     for (const [id, rejected] of Object.entries(queue.rejectedImports ?? {})) {
       const original = evidence.find(e => e.kind === "identity" && e.id === id);
-      if (original) original.holds = [...(original.holds ?? []), `Orchestrator import: ${rejected.reason}`];
+      if (original) {
+        const reason=`Orchestrator import: ${rejected.reason}`;
+        original.holds = [...(original.holds ?? []), reason];
+        if(original.identityInputKey&&partialIdentityRejectionReasons.includes(rejected.reason))original.identityRequirements=[...(original.identityRequirements??[]),reason];
+      }
     }
   } else if (queueRaw) warnings.push("Orchestrator schema or seller mismatch; queue evidence withheld");
   let dirs: string[] = [];
-  try { dirs = (await fs.readdir(path.join(root, "artifacts"), { withFileTypes: true })).filter(d => d.isDirectory() && /^(batch-\d+|bulk-draft-pilot|bulk-photo-(pilot|ten)-\d{8})$/.test(d.name)).map(d => d.name).sort(); } catch { /* Reported by required sources. */ }
-  const manifests = await Promise.all([...dirs.map(d => `artifacts/${d}/manifest.json`), "artifacts/one-piece-processing.json", "artifacts/goodman-test/ebay-saved-draft.json", "artifacts/batch-test/batch-audit.json"].map(async source => ({ source, data: await read(source) })));
+  try { dirs = (await fs.readdir(path.join(root, "artifacts"), { withFileTypes: true })).filter(d => d.isDirectory()).map(d => d.name); } catch { /* Reported by required sources. */ }
+  const manifests = await Promise.all(receiptManifestPaths(dirs).map(async source => ({ source, data: await read(source) })));
   // Original path/hash mappings from receipts; basename alone is never a scanner identity key.
   for (const { data } of manifests) for (const r of rows(row(data).cards ?? row(data).groups ?? (Array.isArray(data) ? data : [data]))) {
     for (const f of [...rows(r.files), ...rows(row(r.photoArchive).files), ...rows(r.photos)]) {
@@ -205,6 +236,8 @@ export async function loadCardBacklog(options: { root?: string; inbox?: string; 
         receipts: receiptList.map(x => ({ ...x, groupId })),
         proposal: price(r.proposedPrice ?? row(r.priceProposal).item ?? r.price, r.shipping ?? row(r.priceProposal).shipping, source, observedAt),
         holds: [...(Array.isArray(r.remainingReview) ? r.remainingReview.map(str) : []), ...(/held/.test(str(r.status)) ? [text(r.reviewReason, r.notes, r.status)] : [])],
+        pricingHolds: ["held-pricing-evidence", "held-own-acquisition-excluded-needs-independent-comps"].includes(str(r.status))
+          ? [text(r.reviewReason, r.notes, r.status)] : [],
         overrides: { title: r.title, condition: r.condition, priceApproval: r.priceApproval ?? r.priceApproved, price: r.price, shipping: r.shipping, quantity: r.quantity, notes: r.notes } });
       if (groupFronts.length) {
         for (const front of unique(groupFronts)) {
@@ -238,8 +271,14 @@ export async function loadCardBacklog(options: { root?: string; inbox?: string; 
     const pair = named.get(normPath(m[1])) ?? {}; pair[m[2].toLowerCase() as "front" | "back"] = f; named.set(normPath(m[1]), pair);
   }
   named.forEach(pair => { if (pair.front && pair.back) evidence.push({ source: "Card Inbox (explicit front/back names; pairing not reviewed)", kind: "scan", frontHash: pair.front.hash, backHash: pair.back.hash, paths: [pair.front.path, pair.back.path], title: basename(pair.front.path), identityStatus: "not-identified" }); });
-  const cards = reconcileBacklog(evidence, now), scan = reconcileScans(cards, scans), retained = new Set(scans.map(f => f.hash));
+  const cards = applyCurrentPricing(reconcileBacklog(evidence, now), row(queueRaw).seller === "imaydit58" ? queueRaw as unknown as QueueState : undefined, now), scan = reconcileScans(cards, scans), retained = new Set(scans.map(f => f.hash));
   for (const c of cards) {
+    // Explicit scans:[] is used by metadata-only handoffs. Only a real inbox scan asserts availability.
+    if(options.scans===undefined&&c.physicalUnits&&c.identityStatus!=="identified"
+      &&(!c.frontHash||c.backHashes.length!==1||[c.frontHash,...c.backHashes].some(h=>!h||!retained.has(h)))) {
+      c.issues.push("Original front/back files are missing or unavailable in the inbox");c.state="unresolved";
+      c.nextOwner="photo-review";c.nextAction="Restore the retained originals before identity work";
+    }
     const actual = c.originalPaths.filter(p => hashByPath.has(normPath(p)));
     if ([c.frontHash, ...c.backHashes].some(h => h && !retained.has(h)) && actual.some(p => hashByPath.get(normPath(p))!.size > 1)) {
       c.issues.push("Original path now has different bytes from saved evidence; inspect hash provenance"); c.state = "unresolved";
@@ -250,8 +289,10 @@ export async function loadCardBacklog(options: { root?: string; inbox?: string; 
   sources.filter(s => s.status === "invalid").forEach(s => warnings.push(`Invalid or changing source: ${s.path}; retained receipts in other sources still apply`));
   // Never return a mixed generation if an independent writer changed a source during reconciliation.
   await Promise.all(Array.from(versions, async ([relative, version]) => {
-    const after = await fs.stat(path.join(root, relative));
-    if (after.size !== version.size || after.mtimeMs !== version.mtime) throw new Error("Source generation changed; refresh the backlog");
+    let after;
+    try { after=await fs.stat(path.join(root, relative)); }
+    catch(error) { if((error as NodeJS.ErrnoException).code==="ENOENT")throw new BacklogReadError("SOURCE_CHANGED");throw error; }
+    if (after.size !== version.size || after.mtimeMs !== version.mtime) throw new BacklogReadError("SOURCE_CHANGED");
   }));
   return { version: 2, asOf: now, mode: "read-only-local", cards, counts: backlogCounts(cards), scan, sources: sources.sort((a, b) => a.path.localeCompare(b.path)), warnings,
     marketplace: { complete: false, absenceMeansUnlisted: false, note: "Saved positive eBay receipts and partial active snapshots only. No fresh four-scope inventory clearance; missing rows never authorize a new listing or stock increment." } };

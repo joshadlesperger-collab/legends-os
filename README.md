@@ -1,3 +1,5 @@
+Active local operational runtime: C:\Users\josha\CascadeProjects\legends-os-ops. Start with Start Legends OS.cmd; preview http://localhost:3097/card-processing-v2. The former OneDrive runtime is retired; never run V2 there. See CURRENT_STATE.md for verified cutover and unfinished batch status.
+
 # Legends OS — Phase 1 + Phase 2: Inventory Intelligence with eBay Production API
 
 A Next.js 14 + TypeScript + Prisma/PostgreSQL foundation for the Legends OS multi-tenant eBay decision engine.
@@ -117,3 +119,4 @@ Comp Confidence is a 0–100 evidence-quality score. It is not a probability tha
 Bands are Very High (90–100), High (75–89), Moderate (60–74), Low (40–59), and Insufficient (below 40). An actionable price requires at least three qualifying confirmed sold transactions, Moderate confidence, a legitimate live provider marker, and a positive supported market value. Evidence starts with a 90-day window, expands to 180 days if needed, then permits up to 365 days with an explicit confidence penalty. Active asking prices and fixture evidence never qualify as sold evidence.
 
 The primary estimate is anchored to the median and adjusted modestly by a recency/identity-weighted median. External market evidence and Legends authoritative historical sales are displayed separately.
+

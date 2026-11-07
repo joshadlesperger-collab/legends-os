@@ -1,6 +1,43 @@
 # Local Card Backlog
 
-The Sell → Card Backlog page at `/listing-factory` loads the existing local work automatically through the authenticated, read-only `/api/listing-factory/backlog` endpoint. The older manual snapshot queue remains available from that page; `/card-listing-factory` is unchanged.
+The backlog API reports stable error codes for unavailable local evidence, source-generation changes, invalid evidence and unexpected read failures. It never exposes raw exception text. A changing generation gets one bounded retry; corrupt or unknown failures do not. The browser retains its previous successful snapshot when refresh fails. The hosted app cannot access the canonical Windows workspace; use the local app for this backlog.
+
+Verified draft-to-live observations recorded through `cards:orchestrate -- record-receipt` are retained in the queue and projected into this dashboard. A positive live receipt excludes new Add work but does not certify saved prices or grant publication authority. See the verified receipt feedback contract in `card-orchestrator.md`.
+
+The Sell → Card Backlog page at `/listing-factory` opens a card workbench using existing local work from the authenticated `/api/listing-factory/backlog` endpoint. The full source dashboard and the older manual snapshot queue remain under **All records & audit**; `/card-listing-factory` is unchanged.
+
+## Working a card
+
+The landing page shows **Scanned → Identified → Priced → Listed** coverage for original physical captures. These are overlapping saved-evidence milestones: priced means a positive saved asking price, and listed means a saved live or sold receipt. Neither a draft nor a scheduled receipt counts as listed. Source conflicts remain visible and no current stock is inferred.
+
+Below the totals, **Identify**, **Price**, and **Listing review** show the remaining cards in each stage, split into **Your review**, **Needs work**, and **Blocked**. A held card stays in its stage. Each physical capture belongs to exactly one next-work stage or the existing-receipts bucket. Receipt-only unmapped records are separate and never add physical inventory. No status claims that an agent is actively running.
+
+Tabs for **All cards**, the three preparation stages, **Existing listings**, and **Unmapped records** open searchable card-level tables. Every row shows its stage, current status, saved blocker, and next action. Clicking a card opens the detailed workbench, with saved drafts and prepared cards ordered first in its stage queue. Status filters expose action-required and stuck cards directly. Next-card actions stay in the selected stage and status filter. These queues are review tasks, not upload readiness or unsold stock.
+
+Card rows are one line high. The Card column uses saved eBay receipt titles first, then saved prepared titles; records with only a player name use their available identity fields as a display fallback. This fallback does not assert an eBay save or complete identity review. Long fields truncate visually and retain full hover text and card details.
+
+### Blocker causes and RCCA/PA
+
+`lib/card-blocker-causes.ts` defines versioned codes for capture/receipt mapping, original photos, local processing failures, identity gaps, parallel/serial uncertainty, sold evidence, price validation, inventory clearance, shipping, listing audits, offers/promotion, manual holds and unclassified causes. Codes derive from current saved requirements; they are blocker categories, not confirmed root causes. Unknown reasons remain `OTHER01` for triage. The evidence and source queues are unchanged.
+
+The **Primary cause** filter and clickable row codes narrow the card list. **Blocker causes · Pareto & RCCA/PA** shows the selected stage's blocked population, sorted by count, with share and cumulative percentages. Each card contributes to exactly one primary code; secondary codes and every original reason remain in card details. Pareto counts are scoped to the stage before search/status/cause filters, so selecting a bar does not change the denominator. All cards excludes unmapped records; their own tab includes them explicitly.
+
+The RCCA/PA CSV exports the complete stage's blocked population, original capture/SKU, title, stage, primary/secondary codes, exact reasons, rule version and snapshot date. Suggested owners, correction and prevention prompts are separate from blank fields for confirmed root cause, corrective/preventive actions, owner, due date, effectiveness check and action status. These suggestions do not perform queue actions, grant approval or claim root-cause confirmation. Spreadsheet formula prefixes are escaped. Next-card navigation retains a selected primary-cause filter.
+
+The workbench displays both original photos, identity, retained asking price, open requirements and existing receipt links. Original bytes are served only after operator authentication, inbox containment and SHA-256 validation. Missing, ambiguous or unsupported originals show an unavailable preview rather than a substitute card.
+
+- **Approve asking price & next** saves an exact local seller decision and advances to another card. It does not claim evidence validation, save anything to eBay or mark listing checks complete.
+- **Set a manual price** accepts the seller's exact item amount and buyer shipping, even when a comp proposal is missing. **Save price & move to listing review** records an approved override and moves that capture out of Price. No premium, rounding or postage conversion changes the typed item amount. Shipping defaults are editable; a current tracked-service requirement is retained in the suggestion. Saving another manual price replaces the current override while retaining its history.
+- **Save note** records a correction or instruction with that capture; it does not complete an identity/research job.
+- **Hold & next** requires a concrete reason and puts the card in its stage’s Blocked bucket. **Return to workflow** removes the local hold while preserving its history and any source requirements.
+- **Skip for now** moves past a card for this session without changing its evidence. The browser remembers the current card across reloads.
+- **Copy work request** includes the exact capture, saved decisions, receipts and remaining requirements for the existing workflow chat. It does not message or start an agent. Known drafts open using their recorded IDs.
+
+Decisions live in ignored `artifacts/card-backlog/reviews.json`, protected by an exclusive lock and atomic replacement. Requests are idempotent. Approval and hold projections bind to the current identity, original pair, exact source proposal, source approval/override, receipts and blockers; changed source evidence invalidates the projection while retaining decision history. Failed or stale saves keep the card visible with an error. Source queues remain unchanged. Identity and pricing worker completion still requires the orchestrator claim/complete protocol, and external listing work still requires a fresh preflight and the existing publication handoff.
+
+`CARD_WORKFLOW_REVIEW_ROOT` is an optional process-only root for isolated review-write smoke tests. Normal operation uses the workspace root.
+
+Manual prices bind to the physical capture, original pair and reviewed identity, rather than the changing comp proposal. Research refreshes cannot silently replace them; changed identity/photos require a new decision. Ordinary price approvals keep their existing tighter source-proposal binding. Pricing-job holds remain in saved evidence after a manual decision and no longer block that card's listing-review queue; identity, inventory, shipping, seller holds and listing requirements remain active. The workflow's copyable handoff and the orchestrator's fresh `pricing-context`/`preflight` include the manual price with precedence over automatic estimates. The runner reads that decision from the supported review store without changing source jobs or repeating photo hashing. Conflicting concurrent source/review changes require a fresh packet. No eBay price is changed by this control.
 
 Run `npm run cards:backlog` to generate `artifacts/card-backlog/snapshot.json` and the smaller `artifacts/card-backlog/audit.json`. These ignored artifacts contain local evidence and are not deployment assets. `npm run test:card-backlog` runs the reconciliation, manual queue, and scan-folder tests. The full repository test command also includes them.
 
@@ -42,3 +79,5 @@ The application process must have access to this workspace's evidence and the Ca
 The optional `LEGENDS_NEXT_DIST_DIR` allows an isolated Next.js output directory when an existing OneDrive build directory is locked. Validation here used `.next-backlog`; the normal default remains `.next`. Build with `npm run build` and start with the same output-directory setting.
 
 The ignored `artifacts/card-backlog/` directory contains the audit, source snapshot, validation logs and browser verification screenshot. It is an audit output, not a new source queue. Existing Card Inbox automation may still write the source files; this dashboard does not claim cross-chat writer coordination.
+
+Legacy manifest statuses `held-pricing-evidence` and `held-own-acquisition-excluded-needs-independent-comps` retain pricing-stage provenance. Their exact reasons remain visible but do not block independent identity work. Generic manifest reviews, seller holds and capture/identity conflicts remain blockers. Cause rules version 2 distinguishes unavailable comparable-sale originals in pricing research from missing inventory originals.

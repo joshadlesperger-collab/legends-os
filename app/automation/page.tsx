@@ -28,9 +28,9 @@ export default async function AutomationPage(){
     </section>
     <section className="panel" style={{marginTop:18}}>
       <div className="eyebrow">Sense · learn · adapt</div><h2>Closed-loop learning</h2>
-      <p>Legends observes provider-verified outcomes after each action. Batch volume can adapt only after enough completed observation windows; discounts, high-value thresholds, refresh eligibility, and title-safety rules do not loosen automatically.</p>
-      <div className="pareto-table"><div className="pareto-row pareto-head"><span>Action</span><span>Observed</span><span>Sale rate</span><span>Posture</span></div>{learning.summaries.map(row=><div className="pareto-row" key={row.action}><strong>{row.action}</strong><span>{row.observations}</span><span>{row.saleRatePct.toFixed(1)}%</span><span>{row.posture}</span></div>)}</div>
-      <p><strong>Adaptive caps:</strong> offers {adaptive.sellerOffer.maxPerRun}/run · unknown-cost {adaptive.sellerOffer.unknownCostMax24h}/24h · refresh {adaptive.refresh.maxPerRun}/run · titles {adaptive.title.maxPerRun}/run.</p>
+      <p>Outcome summaries are descriptive, not proof that an action caused sales or improved profit. Windows and policy versions remain separate. Execution caps stay at baseline until controlled, cost-complete evidence supports adaptation.</p>
+      <div className="pareto-table"><div className="pareto-row pareto-head"><span>Action</span><span>Observed</span><span>Sale rate</span><span>Posture</span></div>{learning.summaries.map(row=><div className="pareto-row" key={`${row.action}:${row.doctrineVersion}:${row.outcomeWindowDays}`}><strong>{row.action} · {row.outcomeWindowDays}d · {row.doctrineVersion}</strong><span>{row.knownOutcomes} known / {row.unknownOutcomes} unknown</span><span>{row.saleRatePct == null ? "Unknown" : `${row.saleRatePct.toFixed(1)}%`}</span><span>{row.posture}</span></div>)}</div>
+      <p><strong>Baseline caps (adaptation disabled):</strong> offers {adaptive.sellerOffer.maxPerRun}/run · unknown-cost {adaptive.sellerOffer.unknownCostMax24h}/24h · refresh {adaptive.refresh.maxPerRun}/run · titles {adaptive.title.maxPerRun}/run.</p>
     </section>
     <section className="panel" style={{marginTop:18}}>
       <div className="eyebrow">Kill switches</div><h2>Fail-closed controls</h2>

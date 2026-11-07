@@ -7,6 +7,181 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// Catalog knowledge is separate from seller inventory and listing approvals.
+// Applying the additive migration requires explicit operator approval.
+model KnowledgeProduct {
+  id              String @id
+  name            String
+  season          String
+  printedYear     Int
+  manufacturer    String
+  sport           String
+  productUrl      String
+  catalogDigest   String
+  titlePolicyVersion String @default("pending")
+  entries         KnowledgeEntry[]
+  sources         KnowledgeSource[]
+  odds            KnowledgeOdds[]
+  reviewItems     KnowledgeReviewItem[]
+  parallelStudies KnowledgeParallelStudy[]
+  @@index([sport, season, manufacturer])
+}
+
+// Research snapshots retain source sales and algorithm version; never listing approval.
+model KnowledgeParallelStudy {
+  id String @id
+  productId String
+  section String
+  baseline String
+  target String
+  condition String
+  currency String @db.VarChar(3)
+  method String
+  status String
+  playerCount Int
+  saleCount Int
+  multiplier Float?
+  ratioLow Float?
+  ratioHigh Float?
+  confidence String
+  asOf DateTime
+  expiresAt DateTime
+  packet Json
+  result Json
+  product KnowledgeProduct @relation(fields: [productId], references: [id], onDelete: Restrict)
+  @@index([productId, asOf])
+}
+
+model KnowledgeSource {
+  id          String @id
+  productId   String
+  kind        String
+  url         String
+  sha256      String
+  retrievedAt DateTime
+  publisher   String
+  product     KnowledgeProduct @relation(fields: [productId], references: [id], onDelete: Restrict)
+  entries     KnowledgeEntry[]
+  odds        KnowledgeOdds[]
+  @@index([productId])
+}
+
+model KnowledgeSubject {
+  id       String @id
+  name     String
+  // Product-scoped IDs until aliases are independently reconciled.
+  entries  KnowledgeEntry[]
+  @@index([name])
+}
+
+model KnowledgeEntry {
+  id          String @id
+  productId   String
+  subjectId   String
+  section     String
+  category    String
+  cardNumber  String
+  team        String?
+  rookie      Boolean
+  sourceId    String
+  sourcePage  Int
+  raw         String
+  playerName  String @default("")
+  recommendedEbayTitle String @default("") @db.VarChar(80)
+  titleNeedsReview Boolean @default(true)
+  product     KnowledgeProduct @relation(fields: [productId], references: [id], onDelete: Restrict)
+  subject     KnowledgeSubject @relation(fields: [subjectId], references: [id], onDelete: Restrict)
+  source      KnowledgeSource @relation(fields: [sourceId], references: [id], onDelete: Restrict)
+  variants    KnowledgeVariant[]
+  @@unique([productId, section, cardNumber])
+  @@index([subjectId, productId])
+}
+
+model KnowledgeOdds {
+  id            String @id
+  productId     String
+  label         String
+  raw           String
+  sourceId      String
+  sourcePage    Int
+  ratios        Json
+  formatMapping String @default("requires-review")
+  product       KnowledgeProduct @relation(fields: [productId], references: [id], onDelete: Restrict)
+  source        KnowledgeSource @relation(fields: [sourceId], references: [id], onDelete: Restrict)
+  @@index([productId])
+}
+
+model KnowledgeVariant {
+  id             String @id
+  entryId        String
+  parallel       String
+  language       String
+  finish         String
+  numbering      String
+  printRun       Int?
+  reviewStatus   String @default("requires-review")
+  evidence       Json
+  entry          KnowledgeEntry @relation(fields: [entryId], references: [id], onDelete: Restrict)
+  observations   KnowledgeObservation[]
+  @@index([entryId, parallel])
+}
+
+model KnowledgeObservation {
+  id                String @id
+  variantId         String
+  provider          String
+  saleId            String
+  sourceUrl         String
+  kind              String
+  soldAt            DateTime?
+  observedAt        DateTime
+  itemPrice         Decimal @db.Decimal(12, 2)
+  buyerShipping     Decimal? @db.Decimal(12, 2)
+  currency          String @db.VarChar(3)
+  condition         String
+  identityVerified  Boolean @default(false)
+  conditionVerified Boolean @default(false)
+  ownPurchase       Boolean @default(false)
+  hiddenPrice       Boolean @default(false)
+  evidence          Json
+  variant           KnowledgeVariant @relation(fields: [variantId], references: [id], onDelete: Restrict)
+  // Re-observation cannot create an additional sale or increase comparable counts.
+  @@unique([provider, saleId])
+  @@index([variantId, soldAt])
+}
+
+model KnowledgeReviewItem {
+  id        String @id
+  productId String
+  page      Int
+  raw       String
+  reason    String
+  status    String @default("requires-review")
+  product   KnowledgeProduct @relation(fields: [productId], references: [id], onDelete: Restrict)
+  @@index([productId, status])
+}
+
+model KnowledgeImport {
+  id           String @id
+  sourceSha256 String @unique
+  importedAt   DateTime @default(now())
+  recordCounts Json
+  records      KnowledgeLegacyRecord[]
+}
+
+model KnowledgeLegacyRecord {
+  id           String @id
+  importId     String
+  sourceTable  String
+  sourceKey    String
+  raw          Json
+  // Source status, historical prices and quantities confer no current approval.
+  reviewStatus String @default("historical-unvalidated")
+  import       KnowledgeImport @relation(fields: [importId], references: [id], onDelete: Restrict)
+  @@unique([importId, sourceTable, sourceKey])
+  @@index([sourceTable, sourceKey])
+}
+
 model Account {
   id           String        @id @default(cuid())
   name         String

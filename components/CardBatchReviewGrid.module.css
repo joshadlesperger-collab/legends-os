@@ -1,0 +1,15 @@
+.review { margin-block: 24px; }
+.scroll { overflow-x: auto; border: 1px solid var(--border); border-radius: 10px; }
+.review table { border-collapse: collapse; width: 100%; min-width: 850px; font-size: 14px; }
+.review th { background: #173b4b; color: white; padding: 12px; text-align: left; }
+.review td { padding: 14px; vertical-align: top; border-bottom: 1px solid var(--border); max-width: 340px; white-space: normal; overflow-wrap: anywhere; }
+.review tr:nth-child(even) { background: var(--surface-2); }
+.review p { margin-block: 8px; }
+.review details { margin-block: 10px; }
+.review summary { cursor: pointer; font-weight: 600; }
+.review button { margin-block: 8px; }
+.review small { display: block; }
+.review dl { margin: 8px 0; }.review dt { font-weight: 600; }.review dd { margin-left: 0; }
+.photos { display: flex; gap: 8px; width: 180px; }
+.photos a { flex: 1; text-align: center; }
+.photos img { width: 84px; height: 122px; object-fit: contain; background: #e8edf1; }

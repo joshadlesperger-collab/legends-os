@@ -1,0 +1,35 @@
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import {createHash} from 'node:crypto';
+import {z} from 'zod';
+import {digest} from './card-processing-v2.ts';
+import type {PdcaRef,PdcaQuality,PdcaCompletion,V2PdcaRegister} from './card-processing-v2-pdca.ts';
+const ref=z.object({path:z.string().min(1),sha256:z.string().regex(/^[a-f0-9]{64}$/)}).strict();
+const run=z.object({id:z.string().uuid(),label:z.string().min(1).max(160),startedAt:z.string().datetime(),classification:z.enum(['mixed-recovery','stable-clean','unknown']),role:z.enum(['pending-reference','observed-reference','proven-baseline','candidate','unclassified']),comparabilityKey:z.string().min(1).nullable(),scopeRef:ref,parentJobRef:ref,qualityRef:ref.optional(),baselineRef:ref.optional()}).strict();
+const opportunity=z.object({id:z.string().min(1),label:z.string().min(1),constraint:z.string().min(1),hypothesis:z.string().min(1),status:z.enum(['observed-opportunity','candidate','retained','reverted']),successMetrics:z.array(z.string().min(1)).min(1),evidence:ref}).strict();
+const schema=z.object({version:z.literal(1),policyVersion:z.string().min(1),updatedAt:z.string().datetime(),automaticHistoryFrom:z.string().datetime().optional(),runs:z.array(run).max(20),opportunities:z.array(opportunity).max(30)}).strict();
+const cache=new Map<string,{at:number;promise:Promise<V2PdcaRegister|null>}>();
+async function artifact(root:string,source:PdcaRef){
+ if(path.isAbsolute(source.path)||!source.path.replaceAll('\\','/').startsWith('artifacts/')||source.path.split(/[\\/]/).includes('..'))throw Error('PDCA evidence must stay in artifacts');
+ const base=await fs.realpath(path.join(root,'artifacts')),file=await fs.realpath(path.join(root,source.path)),relative=path.relative(base,file),stat=await fs.lstat(path.join(root,source.path));
+ if(relative.startsWith('..')||path.isAbsolute(relative)||!relative||stat.isSymbolicLink()||!stat.isFile()||stat.size>2000000)throw Error('Invalid PDCA evidence');
+ const bytes=await fs.readFile(file);if(createHash('sha256').update(bytes).digest('hex')!==source.sha256)throw Error('PDCA evidence changed');return JSON.parse(bytes.toString('utf8'));
+}
+async function read(root:string):Promise<V2PdcaRegister|null>{
+ const file=path.join(root,'artifacts/card-processing-v2/pdca/register.json');let raw;try{const stat=await fs.lstat(file);if(!stat.isFile()||stat.isSymbolicLink()||stat.size>262144)throw Error('Invalid PDCA register');raw=schema.parse(JSON.parse(await fs.readFile(file,'utf8')));}catch(e){if((e as NodeJS.ErrnoException).code==='ENOENT')return null;throw e;}
+ const runs=await Promise.all(raw.runs.map(async r=>{
+  const [source,parent]=await Promise.all([artifact(root,r.scopeRef),artifact(root,r.parentJobRef)]);
+  const accepted=z.object({photos:z.array(z.object({candidateId:z.string().regex(/^[a-f0-9]{64}$/),photos:z.array(z.object({hash:z.string().regex(/^[a-f0-9]{64}$/),path:z.string()}).passthrough()).length(2)}).strict()).min(1).max(500)}).passthrough().parse(source);
+  const parentRecord=z.object({id:z.string().uuid(),startedAt:z.string().datetime(),baselineCallIds:z.array(z.string()),candidateIds:z.array(z.string())}).passthrough().parse(parent);
+  if(parentRecord.id!==r.id||parentRecord.startedAt!==r.startedAt||new Set(accepted.photos.map(c=>c.candidateId)).size!==accepted.photos.length||digest(accepted.photos.map(c=>c.candidateId).sort())!==digest(parentRecord.candidateIds.slice().sort())||accepted.photos.some(c=>c.candidateId!==digest(['v2-photo-pair-selection',c.photos.map(p=>p.hash).sort()])))throw Error('PDCA parent scope or original clock differs');
+  let quality:PdcaQuality={draftFirstSavePassed:null,softwareFalseHoldCards:null,interventions:null,evidence:null};
+  if(r.qualityRef){const q=z.object({kind:z.literal('pdca-classified-run-quality'),runId:z.string(),scopeSha256:z.string(),draftFirstSavePassed:z.number().int().nonnegative().nullable(),softwareFalseHoldCards:z.number().int().nonnegative().nullable(),interventions:z.number().int().nonnegative().nullable()}).passthrough().parse(await artifact(root,r.qualityRef));if(q.runId!==r.id||q.scopeSha256!==r.scopeRef.sha256)throw Error('Quality classification scope differs');quality={draftFirstSavePassed:q.draftFirstSavePassed,softwareFalseHoldCards:q.softwareFalseHoldCards,interventions:q.interventions,evidence:r.qualityRef};}
+  let completion:PdcaCompletion|undefined;
+  if(r.baselineRef){const q=z.object({kind:z.literal('pdca-completed-run-reference'),version:z.literal(1),runId:z.string().uuid(),scopeSha256:z.string(),startedAt:z.string().datetime(),endedAt:z.string().datetime(),totalCards:z.number().int().positive(),completedCards:z.number().int().positive(),drafts:z.number().int().nonnegative(),fullCycleMs:z.number().finite().nonnegative(),versions:z.array(z.string()),recordedUsd:z.number().finite().nonnegative(),knownCalls:z.number().int().nonnegative(),unknownCostCalls:z.number().int().nonnegative(),unknownReservationUsd:z.number().finite().nonnegative().nullable(),missingCostEvidenceCards:z.number().int().nonnegative(),totalUsdPerCard:z.number().finite().nonnegative().nullable(),completionEvidence:ref}).strict().parse(await artifact(root,r.baselineRef));if(q.runId!==r.id||q.scopeSha256!==r.scopeRef.sha256||q.startedAt!==r.startedAt||q.totalCards!==accepted.photos.length||q.completedCards!==q.totalCards||Date.parse(q.endedAt)-Date.parse(q.startedAt)!==q.fullCycleMs||(q.unknownCostCalls>0||q.missingCostEvidenceCards>0)&&q.totalUsdPerCard!==null||q.totalUsdPerCard!==null&&Math.abs(q.totalUsdPerCard-q.recordedUsd/q.totalCards)>1e-9)throw Error('Frozen completion differs from the original whole run');await artifact(root,q.completionEvidence);completion={endedAt:q.endedAt,totalCards:q.totalCards,drafts:q.drafts,fullCycleMs:q.fullCycleMs,versions:q.versions,recordedUsd:q.recordedUsd,knownCalls:q.knownCalls,unknownCostCalls:q.unknownCostCalls,unknownReservationUsd:q.unknownReservationUsd,missingCostEvidenceCards:q.missingCostEvidenceCards,totalUsdPerCard:q.totalUsdPerCard,evidence:r.baselineRef};}
+  return{id:r.id,label:r.label,startedAt:r.startedAt,classification:r.classification,role:r.role,comparabilityKey:r.comparabilityKey,source:r.scopeRef,baselineCallIds:parentRecord.baselineCallIds,scope:accepted.photos.map(c=>({candidateId:c.candidateId,photos:c.photos.map((p,n)=>({hash:p.hash,side:n===0?'front' as const:'back' as const}))})),quality,...(completion?{completion}:{})};
+ }));
+ for(const o of raw.opportunities)await artifact(root,o.evidence);
+ return{version:1,policyVersion:raw.policyVersion,updatedAt:raw.updatedAt,...(raw.automaticHistoryFrom?{automaticHistoryFrom:raw.automaticHistoryFrom}:{}),runs,opportunities:raw.opportunities};
+}
+/** Small registry/evidence reads only, coalesced once per minute; operational state is supplied by the existing page. */
+export function readV2PdcaRegister(root=process.cwd(),now=Date.now()){const key=path.resolve(root),prior=cache.get(key);if(prior&&now-prior.at<60000)return prior.promise;const promise=read(key);cache.set(key,{at:now,promise});return promise;}

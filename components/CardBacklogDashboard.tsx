@@ -3,6 +3,8 @@ import { useCallback, useDeferredValue, useEffect, useMemo, useState } from "rea
 import { BACKLOG_STATES, reconcileScans, type BacklogSnapshot, type BacklogState } from "@/lib/card-backlog";
 import type { ScanFile } from "@/lib/scan-folder";
 import ScanFolderReader from "./ScanFolderReader";
+import CardWorkflow from "./CardWorkflow";
+import type { WorkflowSnapshot } from "@/lib/card-workflow";
 import styles from "./ListingFactory.module.css";
 
 const money = (n?: number | null) => n == null ? "Unknown" : new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(n);
@@ -11,7 +13,8 @@ function exportSnapshot(snapshot: BacklogSnapshot) {
   const a = document.createElement("a"); a.href = url; a.download = "card-backlog-evidence.json"; a.click(); URL.revokeObjectURL(url);
 }
 export default function CardBacklogDashboard({ onManualQueue }: { onManualQueue: () => void }) {
-  const [snapshot, setSnapshot] = useState<BacklogSnapshot>();
+  const [snapshot, setSnapshot] = useState<WorkflowSnapshot>();
+  const [view, setView] = useState<"work" | "audit">("work");
   const [busy, setBusy] = useState(false), [error, setError] = useState("");
   const [search, setSearch] = useState(""), [state, setState] = useState<BacklogState | "all">("all");
   const [identity, setIdentity] = useState("all"), [scope, setScope] = useState("all"), [page, setPage] = useState(0), [selected, setSelected] = useState("");
@@ -40,9 +43,10 @@ export default function CardBacklogDashboard({ onManualQueue }: { onManualQueue:
       return { ...previous, cards, scan: reconcileScans(cards, files) };
     });
   }
+  if (snapshot && view === "work") return <><CardWorkflow snapshot={snapshot} busy={busy} onSnapshot={setSnapshot} onRefresh={() => void refresh()} onAudit={() => setView("audit")} />{error ? <p role="alert" className={styles.error}>{error} The previous snapshot remains visible.</p> : null}</>;
   return <main className={`page ${styles.factory}`}>
     <header className={styles.header}><div><div className="eyebrow">Sell / Listing factory</div><h1>Your card backlog</h1><p>Original captures, saved work and eBay receipts reconciled in one view.</p></div><div className={styles.actions}>
-      <button disabled={busy} onClick={() => void refresh()}>{busy ? "Reading local evidence…" : "Refresh local backlog"}</button>
+      <button onClick={() => setView("work")}>Back to workflow</button><button disabled={busy} onClick={() => void refresh()}>{busy ? "Reading local evidence…" : "Refresh local backlog"}</button>
       <button disabled={!snapshot} onClick={() => snapshot && exportSnapshot(snapshot)}>Export evidence snapshot</button><button onClick={onManualQueue}>Open manual snapshot queue</button>
     </div></header>
     {error ? <p role="alert" className={styles.error}>{error}{snapshot ? " The previous snapshot remains visible." : ""}</p> : null}

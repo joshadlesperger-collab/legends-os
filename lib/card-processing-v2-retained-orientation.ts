@@ -1,0 +1,8 @@
+import{identificationSchema,type V2Identification}from'./card-processing-v2.ts';import{classifyV2IdentificationWarnings}from'./card-processing-v2-identification-warnings.ts';
+export const V2_BACK_ROTATION_WARNING='Original front is upright; original back text is sideways and requires 90-degree counterclockwise derivative rotation before final upright approval.';
+/** Only finite settled-provider clauses with a complete identity and exact input
+ * angles qualify. This never calls an originally sideways photo upright. */
+export function retainedV2BackOrientation(raw:V2Identification){const finding=identificationSchema.parse(structuredClone(raw));if(!finding.identity||finding.identity.damage||finding.identity.graded||!finding.pairMatches||finding.frontImageIndex!=='1'||finding.upright)return null;
+ const rotation=/^(?:orientation: )?image 0 requires (?:a )?(?:270 clockwise rotation(?: to (?:be|read) upright)?|90 counterclockwise rotation \(270 clockwise\)|90 counterclockwise \(270 clockwise\) rotation)[.;] image 1 (?:is upright(?: \(0 correction\))?|requires no rotation)\.?$/;
+ const angles=finding.warnings.filter(w=>rotation.test(w.normalize('NFKC').toLowerCase().replaceAll('°','').replace(/\s+/g,' ').trim()));if(angles.length!==1)return null;const remaining=finding.warnings.filter(w=>w!==angles[0]);const classification=classifyV2IdentificationWarnings({...finding,frontImageIndex:'0',upright:true,warnings:remaining});if(classification.blocking.length)return null;
+ return{finding:{...finding,warnings:[V2_BACK_ROTATION_WARNING,...remaining]},inputClockwiseDegrees:[270,0] as const,sourceOrientationWarning:angles[0]};}

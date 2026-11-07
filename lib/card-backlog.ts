@@ -2,7 +2,7 @@
 export type BacklogState = "unprocessed" | "identified" | "priced" | "locally-approved" | "draft" | "live" | "sold" | "held" | "unresolved";
 export const BACKLOG_STATES: BacklogState[] = ["unprocessed", "identified", "priced", "locally-approved", "draft", "live", "sold", "held", "unresolved"];
 export type CardIdentity = Record<string, string>;
-export type BacklogPrice = { item: number; shipping: number | null; source: string; updatedAt?: string; policy?: string; reviewRequired: boolean; approvedAt?: string; stale?: boolean };
+export type BacklogPrice = { item: number; shipping: number | null; source: string; updatedAt?: string; policy?: string; reviewRequired: boolean; approvedAt?: string; stale?: boolean; premiumReasons?: string[]; colorMatchReviewed?: boolean; evidenceKey?: string; evidenceExpiresAt?: string; reviewNotes?: string[]; targetBuyerTotal?: number };
 export type BacklogReceipt = { id: string; disposition: "draft" | "live" | "sold" | "scheduled"; source: string; observedAt?: string; title?: string; quantity?: number; item?: number; shipping?: number | null; groupId?: string };
 export type BacklogEvidence = {
   source: string; kind: "identity" | "pricing" | "orchestrator" | "manifest" | "marketplace" | "scan";
@@ -10,6 +10,10 @@ export type BacklogEvidence = {
   title?: string; identity?: CardIdentity; identityStatus?: "identified" | "not-identified" | "needs-review";
   observedAt?: string; quantity?: number; proposal?: BacklogPrice; override?: BacklogPrice;
   receipts?: BacklogReceipt[]; issues?: string[]; holds?: string[]; reviewed?: boolean;
+  /** Explicit stage provenance for legacy manifest holds; never inferred from free text. */
+  pricingHolds?: string[];
+  /** Typed source gaps, not worker failures or seller holds. Text remains in holds for audit. */
+  identityRequirements?: string[]; identityInputKey?: string; resolvedIdentityInputKey?: string;
   approval?: { proposal: BacklogPrice; identityKey: string; photoHashes: string[] };
   identityKey?: string; prepared?: boolean; groupId?: string; overrides?: Record<string, unknown>;
 };
@@ -20,7 +24,8 @@ export type BacklogCard = {
   physicalUnits: number; recordedQuantity: number | null; identity: CardIdentity;
   identityStatus: "identified" | "not-identified" | "needs-review" | "unknown";
   proposal: BacklogPrice | null; override: BacklogPrice | null; approvedPrice: BacklogPrice | null;
-  prices: BacklogPrice[]; receipts: BacklogReceipt[]; issues: string[]; holds: string[];
+  prices: BacklogPrice[]; receipts: BacklogReceipt[]; issues: string[]; holds: string[]; pricingHolds?: string[];
+  identityRequirements?: { reason: string; sources: string[]; resolved: boolean }[];
   sources: string[]; overrides: { source: string; values: Record<string, unknown> }[];
   textPrepared: boolean; excludedFromNewListing: boolean; nextOwner: string; nextAction: string;
   groupKey: string | null; inboxPaths: string[];
@@ -103,20 +108,30 @@ export function reconcileBacklog(evidence: BacklogEvidence[], now: string): Back
     const overrides = compatible.filter(e => e.override).map(e => e.override!);
     const override = overrides[0] ?? null;
     if (unique(overrides.map(p => `${p.item}|${p.shipping}`)).length > 1) issues.push("Conflicting explicit price overrides; no formula may replace them");
-    const approved = compatible.flatMap(e => e.approval && e.proposal && priceKey(e.approval.proposal) === priceKey(e.proposal) ? [e.approval] : []).find(a => !a.proposal.stale
+    const approved = compatible.flatMap(e => e.approval && e.proposal && priceKey(e.approval.proposal) === priceKey(e.proposal) ? [e.approval] : []).sort((a,b)=>time(b.proposal.approvedAt)-time(a.proposal.approvedAt)).find(a => !a.proposal.stale
       && time(a.proposal.updatedAt) > 0 && time(now) >= time(a.proposal.updatedAt) && time(now) - time(a.proposal.updatedAt) <= 90 * 86400000
       && a.identityKey === canonical.identityKey && unique(a.photoHashes.map(h => h.toLowerCase())).sort().join() === [frontHash, ...backs].sort().join()
       && time(a.proposal.approvedAt) >= time(a.proposal.updatedAt) && time(a.proposal.approvedAt) <= time(now));
     const approvedPrice = override || approved?.proposal || null;
-    const identityStatus = canonical.identityStatus ?? "unknown";
     const receipts = unique(rows.flatMap(e => e.receipts ?? []).map(r => JSON.stringify(r))).map(r => JSON.parse(r) as BacklogReceipt);
     const holds = unique(rows.flatMap(e => e.holds ?? []));
+    // A generic hold wins even if another source uses the same words for a work requirement.
+    const owners = (reason: string) => rows.filter(e => e.holds?.includes(reason));
+    const identityRequirements = holds.flatMap(reason => {
+      const sources = owners(reason);
+      if (!sources.every(e => compatible.includes(e) && e.identityInputKey && e.identityRequirements?.includes(reason))) return [];
+      return [{ reason, sources: unique(sources.map(e => e.source)), resolved: sources.every(e => compatible.some(r =>
+        r.kind === "orchestrator" && r.reviewed && r.resolvedIdentityInputKey === e.identityInputKey)) }];
+    });
+    const identityStatus = identityRequirements.some(r => !r.resolved) ? "needs-review" : canonical.identityStatus ?? "unknown";
     const c: BacklogCard = { id: frontHash ? `capture:${frontHash}` : capture, aliases, skus: skuList,
       title: rows.find(e => e.kind === "marketplace" && e.title)?.title || rows.find(e => e.kind === "manifest" && e.title)?.title || canonical.title || identity.player || aliases[0] || "Unmapped card record",
       state: "unresolved", captureId: frontHash ? `sha256:${frontHash}` : null, frontHash, backHashes: backs, photoHashes: unique(rows.flatMap(e => e.hashes ?? []).map(h => hash(h)).filter((h): h is string => !!h)),
       originalPaths: unique(rows.flatMap(e => e.paths ?? [])), physicalUnits: frontHash ? 1 : 0,
       recordedQuantity: Math.max(0, ...rows.map(e => e.quantity ?? 0)) || null, identity, identityStatus,
       proposal, override, approvedPrice, prices, receipts, issues: unique(issues), holds,
+      identityRequirements,
+      pricingHolds: holds.filter(reason => owners(reason).every(e => (e.kind === "pricing" || e.pricingHolds?.includes(reason)) && compatible.includes(e))),
       sources: unique(rows.map(e => e.source)), overrides: rows.filter(e => e.overrides).map(e => ({ source: e.source, values: e.overrides! })),
       textPrepared: rows.some(e => e.prepared), excludedFromNewListing: receipts.length > 0,
       nextOwner: "reconciliation", nextAction: "Resolve saved evidence conflicts", groupKey: groupKey(identity, identityStatus === "identified"), inboxPaths: [] };
@@ -151,7 +166,7 @@ export function reconcileBacklog(evidence: BacklogEvidence[], now: string): Back
   serials.forEach(members => { if (members.length > 1) members.forEach(c => { c.issues.push("Same full serial on distinct originals; verify serial reading, retain both captures"); assignState(c); }); });
   return cards.sort((a, b) => a.id.localeCompare(b.id));
 }
-function assignState(c: BacklogCard) {
+export function assignState(c: BacklogCard) {
   const dispositions = new Set(c.receipts.map(r => r.disposition));
   c.state = c.issues.length ? "unresolved" : dispositions.has("sold") ? "sold" : dispositions.has("live") ? "live" : dispositions.has("draft") ? "draft" : dispositions.has("scheduled") ? "held" : c.holds.length ? "held" : c.approvedPrice ? "locally-approved" : c.proposal ? "priced" : c.identityStatus === "identified" ? "identified" : "unprocessed";
   c.nextOwner = c.issues.length || c.excludedFromNewListing ? "reconciliation" : c.identityStatus !== "identified" ? "identity" : !c.proposal && !c.override ? "pricing" : !c.approvedPrice ? "seller-review" : "listing-review";

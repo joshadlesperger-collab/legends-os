@@ -1,0 +1,22 @@
+{
+  "scope": {
+    "productId": "topps-chrome-basketball-2025-26",
+    "section": "BASE CARDS",
+    "language": "English",
+    "condition": "raw-nm",
+    "currency": "USD",
+    "baseline": {
+      "parallel": "Base",
+      "finish": "Chrome",
+      "numbering": "unnumbered",
+      "printRun": null
+    },
+    "target": {
+      "parallel": "RayWave",
+      "finish": "Refractor",
+      "numbering": "unnumbered",
+      "printRun": null
+    }
+  },
+  "sales": []
+}

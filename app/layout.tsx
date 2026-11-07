@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import "./globals.css";
 import AppNav from "@/components/AppNav";
+import SpendDashboard from "@/components/SpendDashboard";
 
 export const metadata: Metadata = {
   title: "Legends | Operating System",
@@ -16,7 +17,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body><div className="app-shell"><AppNav/>{children}</div></body>
+      <body><div className="app-shell"><AppNav/><SpendDashboard/>{children}</div></body>
     </html>
   );
 }

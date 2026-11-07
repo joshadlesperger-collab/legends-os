@@ -3,6 +3,19 @@ import {evaluateSalesVelocityDoctrine,type SalesVelocityDecisionInput} from "../
 import {getTrafficReport} from "../lib/ebay-analytics.ts";
 const base:any={interventionSelected:"LEAVE_ALONE",actionConfidence:{score:70,band:"moderate"},whyThisActionOutranksAlternatives:"observe",observationWindowDays:30};
 const input=(overrides:Partial<SalesVelocityDecisionInput>={}):SalesVelocityDecisionInput=>({base,impressions:null,views:null,clickThroughRate:null,conversionRate:null,transactions:null,watchers:null,watcherQuality:"missing",offerEligible:null,advertisingEligible:null,currentAdRate:null,knownUnitCost:null,costComplete:false,currentPrice:100,supportedPriceAction:null,suggestedPrice:null,compConfidence:null,trafficFresh:false,...overrides});
+
+test('unknown transactions cannot trigger conversion offers or repricing; observed zero still can',()=>{
+ const supported={impressions:100,clickThroughRate:2,watchers:2,watcherQuality:'authoritative' as const,knownUnitCost:50,costComplete:true,trafficFresh:true,supportedPriceAction:'lower-price' as const,suggestedPrice:95,compConfidence:90};
+ for(const offerEligible of [true,false]){
+  for(const transactions of [null,NaN,-1]){
+   const result=evaluateSalesVelocityDoctrine(input({...supported,offerEligible,transactions}));
+   assert.equal(result.action,'MANUAL REVIEW');assert.ok(result.missingEvidence.includes('Analytics transaction count'));assert.match(result.why,/unavailable/);
+  }
+  const result=evaluateSalesVelocityDoctrine(input({...supported,offerEligible,transactions:0}));
+  assert.equal(result.action,offerEligible?'SEND OFFER':'REPRICE');
+ }
+ assert.equal(evaluateSalesVelocityDoctrine(input({...supported,transactions:null,conversionRate:2})).action,'HOLD / PROTECT MARGIN');
+});
 test("low exposure recommends only a margin-supported advertising test",()=>{const safe=evaluateSalesVelocityDoctrine(input({impressions:20,clickThroughRate:.7,conversionRate:0,transactions:0,trafficFresh:true,advertisingEligible:true,knownUnitCost:50,costComplete:true}));assert.equal(safe.action,"INCREASE ADS");assert.equal(safe.suggestedAdjustmentPct,3);const unsafe=evaluateSalesVelocityDoctrine(input({impressions:20,trafficFresh:true,advertisingEligible:true,knownUnitCost:90,costComplete:true}));assert.equal(unsafe.action,"MANUAL REVIEW")});
 test("send offer requires eBay eligibility and preserves economics",()=>{const decision=evaluateSalesVelocityDoctrine(input({impressions:100,clickThroughRate:2,transactions:0,watchers:2,watcherQuality:"authoritative",offerEligible:true,knownUnitCost:50,costComplete:true,trafficFresh:true}));assert.equal(decision.action,"SEND OFFER");assert.equal(decision.suggestedAdjustmentPct,-5);assert.notEqual(evaluateSalesVelocityDoctrine(input({impressions:100,watchers:2,offerEligible:null,knownUnitCost:50,costComplete:true,trafficFresh:true})).action,"SEND OFFER")});
 test("healthy conversion protects margin",()=>assert.equal(evaluateSalesVelocityDoctrine(input({impressions:100,transactions:1,trafficFresh:true})).action,"HOLD / PROTECT MARGIN"));

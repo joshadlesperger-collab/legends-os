@@ -1,9 +1,9 @@
 import { canonicalCardKey, priceFromSoldComp, projectListing, type DraftCard } from "./card-listing-factory.ts";
-import { CARD_POLICY_VERSION, calculateCardPrice, roundUpCardPrice } from "./card-orchestrator-policy.ts";
+import { CARD_POLICY, CARD_POLICY_VERSION, calculateCardPrice, cardPremiumReasons, premiumCompAdjustment, roundUpCardPrice, type PremiumIdentity } from "./card-orchestrator-policy.ts";
 
-export type SoldComp = { id: string; sourceUrl: string; soldDate: string; itemPrice: number; shipping: number; notes: string; verified: boolean; identityKey?: string };
+export type SoldComp = { id: string; sourceUrl: string; soldDate: string; itemPrice: number; shipping: number; notes: string; verified: boolean; identityKey?: string; premiumIdentity?: PremiumIdentity };
 export type PricingReview = { comps: SoldComp[]; premiumPercent: number; needsTracked: boolean; envelopeEligible: boolean; patchCard?: boolean; generalPromotionPercent?: number; approvedSnapshot?: string };
-export const emptyPricing = (): PricingReview => ({ comps: [], premiumPercent: 9, needsTracked: false, envelopeEligible: false, generalPromotionPercent: 3 });
+export const emptyPricing = (): PricingReview => ({ comps: [], premiumPercent: 0, needsTracked: false, envelopeEligible: false, generalPromotionPercent: 3 });
 const cents = (n: number, positive: boolean) => Number.isFinite(n) && (positive ? n > 0 : n >= 0) && n <= 1_000_000 && Math.abs(n * 100 - Math.round(n * 100)) < 0.000001;
 const round = (n: number) => Math.round(n * 100) / 100;
 
@@ -13,6 +13,9 @@ export function roundUpListingPrice(value: number): number {
 
 export function projectPricing(draft: DraftCard, today = new Date().toISOString().slice(0, 10)) {
   const pricing = draft.pricing ?? emptyPricing();
+  const targetPremium:PremiumIdentity={serial:draft.identity.serialNumber?.includes("/")?draft.identity.serialNumber:draft.identity.serialNumber&&draft.identity.numberedTo?`${draft.identity.serialNumber}/${draft.identity.numberedTo}`:undefined,printRun:draft.identity.numberedTo,colorMatch:draft.identity.colorMatch};
+  const directColorMatch=targetPremium.colorMatch?.matches===true&&pricing.comps.length>=CARD_POLICY.minimumDirectColorMatchSales&&pricing.comps.every(c=>c.premiumIdentity?.colorMatch?.matches!==false);
+  const premiumFactors:number[]=[];
   const reasons: string[] = [];
   if (!pricing.comps.length) reasons.push("Add at least one verified sold comp.");
   const urls = new Set<string>();
@@ -32,31 +35,34 @@ export function projectPricing(draft: DraftCard, today = new Date().toISOString(
     if (!cents(comp.itemPrice, true)) reasons.push(prefix + "enter a positive sold item price in USD cents.");
     if (!cents(comp.shipping, false)) reasons.push(prefix + "enter known shipping in USD cents (0 for free).");
     if (!comp.verified || comp.identityKey !== canonicalCardKey(draft.identity)) reasons.push(prefix + "verify the sold price, date and matching card identity / parallel.");
+    try {premiumFactors.push(premiumCompAdjustment(targetPremium,comp.premiumIdentity??{},directColorMatch).multiplier);}
+    catch {reasons.push(prefix + "a premium sold copy cannot price an ordinary card.");}
   });
-  if (!Number.isFinite(pricing.premiumPercent) || pricing.premiumPercent < 8 || pricing.premiumPercent > 10) reasons.push("Premium must be between 8% and 10%.");
+  if (pricing.premiumPercent !== 0) reasons.push("Review under the current buyer-total policy with no automatic buffer.");
   const evidenceValid = reasons.length === 0;
   const generalPromotionPercent = pricing.generalPromotionPercent ?? 3;
   const promotionValid = Number.isFinite(generalPromotionPercent) && (generalPromotionPercent === 0 || (generalPromotionPercent >= 3 && generalPromotionPercent <= 5));
   if (!promotionValid) reasons.push("General promotion must be off (0%) or between 3% and 5%; review any increase above the 3% default.");
   // Use the seller's arithmetic average; round only the final listing price.
-  const compValue = evidenceValid ? pricing.comps.reduce((sum, comp) => sum + comp.itemPrice, 0) / pricing.comps.length : null;
-  const premiumPrice = compValue === null ? null : compValue * (1 + pricing.premiumPercent / 100);
+  const rawCompValue = evidenceValid ? pricing.comps.reduce((sum, comp) => sum + comp.itemPrice, 0) / pricing.comps.length : null;
+  const compValue = evidenceValid ? pricing.comps.reduce((sum, comp,index) => sum + comp.itemPrice*premiumFactors[index]+comp.shipping, 0) / pricing.comps.length : null;
+  const premiumPrice = compValue === null ? null : compValue;
   const calculated = compValue === null ? null : calculateCardPrice(compValue, { premiumPercent: pricing.premiumPercent, tracked: !!draft.identity.graded || pricing.needsTracked, patch: pricing.patchCard });
   const listingPrice = calculated?.item ?? null;
-  const tracked = !!draft.identity.graded || pricing.needsTracked || (calculated !== null && calculated.roundedBase >= 20);
+  const tracked = !!draft.identity.graded || pricing.needsTracked || (calculated !== null && calculated.shipping >= 6.29);
   const shippingCharge = calculated?.shipping ?? null;
   if (!tracked && listingPrice !== null && !pricing.envelopeEligible) reasons.push("Verify envelope eligibility for the packaged card, or choose tracked shipping.");
   if (projectListing(draft).requiresReview) reasons.push("Confirm card identity and front/back photos first.");
   const { approvedSnapshot: _approval, ...savedInputs } = pricing;
   const inputs = { ...savedInputs, generalPromotionPercent };
   const estimatedPromotionFeeBeforeTax = listingPrice === null || shippingCharge === null || !promotionValid ? null : round((listingPrice + shippingCharge) * generalPromotionPercent / 100);
-  const snapshot = JSON.stringify({ method: CARD_POLICY_VERSION, identity: canonicalCardKey(draft.identity), front: draft.frontImageId, back: draft.backImageId, quantity: draft.quantity, inputs, listingPrice, shippingCharge });
+  const snapshot = JSON.stringify({ method: CARD_POLICY_VERSION, identity: canonicalCardKey(draft.identity), targetPremium, front: draft.frontImageId, back: draft.backImageId, quantity: draft.quantity, inputs, listingPrice, shippingCharge });
   const approved = reasons.length === 0 && pricing.approvedSnapshot === snapshot;
-  return { compValue, premiumPrice, roundingAdjustment: calculated === null || premiumPrice === null ? null : calculated.roundedBase - premiumPrice,
+  return { compValue, rawCompValue, premiumReasons:cardPremiumReasons(targetPremium),directColorMatch, premiumPrice, roundingAdjustment: calculated === null || premiumPrice === null ? null : calculated.roundedBase - (premiumPrice - calculated.shipping),
     freeEnvelopeConversion: calculated?.freeEnvelopeConversion ?? false, roundedBase: calculated?.roundedBase ?? null,
     effectivePremiumPercent: listingPrice === null || compValue === null ? null : (listingPrice / compValue - 1) * 100,
     listingPrice, shippingCharge, generalPromotionPercent, estimatedPromotionFeeBeforeTax, buyerTotal: listingPrice === null || shippingCharge === null ? null : round(listingPrice + shippingCharge),
-    lowPrice: compValue === null ? null : priceFromSoldComp(compValue, 8), highPrice: compValue === null ? null : priceFromSoldComp(compValue, 10),
+    lowPrice: compValue === null ? null : compValue, highPrice: compValue === null ? null : compValue,
     shippingMethod: tracked ? "Tracked shipping" : "Envelope (eligibility must be verified)",
-    approved, snapshot, reviewReasons: reasons, inputs, currency: "USD", basis: "Arithmetic average sold item price excluding shipping; apply 8–10% premium, round upward to .49/.95; eligible rounded bases under $3 add exactly $1.49 with free shipping and no second rounding; buyer total excludes tax", warnings: pricing.comps.length === 1 ? ["Only one sold comp: limited evidence. Review carefully."] : [] };
+    approved, snapshot, reviewReasons: reasons, inputs, currency: "USD", basis: "Average comparable buyer total including known shipping; no automatic buffer; subtract seller shipping once, tiered .49/.95 rounding and $1.49 item floor; excludes tax", warnings: pricing.comps.length === 1 ? ["Only one sold comp: limited evidence. Review carefully."] : [] };
 }

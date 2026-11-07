@@ -1,0 +1,20 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import {validateCatalog} from "../lib/card-knowledge.ts";
+import {addMarketIndexObservation,summarizeMarketIndex} from "../lib/market-collection.ts";
+import type {MarketIndexEntry} from "../lib/market-collection.ts";
+const catalog=validateCatalog(JSON.parse(readFileSync("data/card-catalog/topps-chrome-basketball-2025-26.json","utf8")));
+test("overlaps preserve evidence and flags; conflicting titles cannot become approved comps",()=>{
+ const index=new Map<string,MarketIndexEntry>();
+ const row={itemId:"123",title:"2025 Topps Chrome Cooper Flagg #251",flags:["accepted_price_unknown"],sourceRef:"html#123"};
+ assert.equal(addMarketIndexObservation(index,row,catalog),true);
+ assert.equal(addMarketIndexObservation(index,{...row,flags:["provider_reported_price_unverified"],sourceRef:"api#123"},catalog),false);
+ assert.equal(index.size,1);assert.equal(index.get("123")?.sourceRefs.length,2);
+ assert.ok(index.get("123")?.flags.includes("accepted_price_unknown"));
+ addMarketIndexObservation(index,{...row,title:"2025 Topps Chrome Black Cooper Flagg #251",sourceRef:"new-api#123"},catalog);
+ assert.equal(index.get("123")?.proposedChecklistEntryId,null);
+ assert.equal(index.get("123")?.productHint,"Conflicting source titles");
+ assert.equal(summarizeMarketIndex(index).uncertainPrices,1);
+ assert.equal(index.get("123")?.pricingEligible,false);
+});

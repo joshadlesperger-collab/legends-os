@@ -22,3 +22,33 @@ tsconfig.tsbuildinfo
 .forensics-readonly/
 artifacts/
 .env*
+
+# Isolated local validation build
+.next-speed-check/
+
+# Isolated preparation UI validation
+.next-preparation-build/
+.next-preparation-review/
+
+# Isolated bulk draft validation
+.next-bulk-validation/
+.next-market-review/
+
+.next-pricing-integration/
+
+.next-pricing-validated/
+
+# Private immutable seller exports and their local report indexes (buyer data).
+/reports/ebay/
+
+# Dedicated browser sign-in profile must never enter source control.
+/artifacts/card-processing-v2/background/profile/
+
+# Machine-local builds, operational exports and runtime ownership.
+.next-*/
+/outputs/
+/reports/
+/*.zip
+/.v2-runtime-location.json
+__pycache__/
+*.pyc

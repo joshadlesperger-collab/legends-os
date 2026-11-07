@@ -38,3 +38,11 @@ test("unknown category, missing traffic, and high-value ambiguity fail closed", 
   assert.equal(result.excluded.missingTraffic, 1);
   assert.equal(result.excluded.highValueAmbiguity, 1);
 });
+
+test('controls cannot cross category or price bands when exact peers are absent',()=>{
+ for(const mismatch of ['category','price']){
+  const rows=[evidence('1'),evidence('2',{currentPrice:mismatch==='price'?60:20})];
+  const result=buildWeekendTrafficSprint(rows,[assessment('1'),assessment('2',{categoryId:mismatch==='category'?'183454':'261328'})]);
+  assert.equal(result.cohortB.length,1);assert.equal(result.cohortC.length,0);assert.equal(result.excluded.unmatchedTreatment,1);
+ }
+});

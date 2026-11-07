@@ -6,6 +6,7 @@ export type CardIdentity = {
   cardNumber: string; team?: string; parallel?: string; serialNumber?: string;
   numberedTo?: number; rookie?: boolean; autograph?: boolean; graded?: boolean;
   grade?: string; condition?: string;
+  colorMatch?: { matches: boolean; evidence: string };
 };
 export type DraftCard = {
   identity: CardIdentity; quantity: number; frontImageId?: string; backImageId?: string;

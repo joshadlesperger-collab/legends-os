@@ -6,8 +6,34 @@ import path from "node:path";
 import { createHash } from "node:crypto";
 import { backlogCounts, reconcileBacklog, reconcileScans, type BacklogEvidence } from "../lib/card-backlog.ts";
 import { loadCardBacklog } from "../lib/card-backlog-store.ts";
-import { fingerprint, newQueue, upsertCard } from "../lib/card-orchestrator.ts";
+import { claimJob, completeJob, fingerprint, newQueue, upsertCard } from "../lib/card-orchestrator.ts";
 import { importLegacyCard } from "../lib/card-orchestrator-import.ts";
+import { canApprovePrice, nextWork, stageHolds, workAttention, workHandoff, workflowStage } from "../lib/card-workflow.ts";
+import { BacklogReadError, backlogErrorResponse } from "../lib/card-backlog-errors.ts";
+import { readStableBacklog } from "../lib/card-backlog-service.ts";
+import { readReviews } from "../lib/card-workflow-store.ts";
+
+test("dashboard errors distinguish missing, changing, corrupt and unexpected sources without exposing details",async()=>{
+  for(const code of ["LOCAL_EVIDENCE_UNAVAILABLE","SOURCE_CHANGED","EVIDENCE_INVALID","BACKLOG_READ_FAILED"] as const) {
+    const response=backlogErrorResponse(new BacklogReadError(code));assert.equal(response.code,code);assert.equal(response.retryable,code==="SOURCE_CHANGED");
+  }
+  assert.equal(backlogErrorResponse(new SyntaxError("private source contents")).code,"EVIDENCE_INVALID");
+  const error=backlogErrorResponse(new Error("secret filesystem path"));assert.equal(error.code,"BACKLOG_READ_FAILED");assert.ok(!JSON.stringify(error).includes("secret"));assert.ok(!error.error.includes("writer"));
+  const root=await fs.mkdtemp(path.join(os.tmpdir(),"backlog-errors-"));
+  try {
+    await fs.mkdir(path.join(root,"artifacts/identity-queue"),{recursive:true});await fs.writeFile(path.join(root,"artifacts/identity-queue/cards.json"),"{broken");
+    await assert.rejects(loadCardBacklog({root,scans:[]}),e=>e instanceof BacklogReadError&&e.code==="EVIDENCE_INVALID");
+    await fs.mkdir(path.join(root,"artifacts/card-backlog"),{recursive:true});await fs.writeFile(path.join(root,"artifacts/card-backlog/reviews.json"),JSON.stringify({version:1,events:[null]}));
+    await assert.rejects(readReviews(root),e=>e instanceof BacklogReadError&&e.code==="EVIDENCE_INVALID");
+  }finally{await fs.rm(root,{recursive:true,force:true});}
+});
+test("dashboard retries a changed generation once, but never retries corrupt or unknown failures",async()=>{
+  let calls=0;const expected={cards:[]} as unknown as Awaited<ReturnType<typeof loadCardBacklog>>;
+  const snapshot=await readStableBacklog(async()=>{if(++calls===1)throw new BacklogReadError("SOURCE_CHANGED");return expected;});assert.equal(snapshot,expected);assert.equal(calls,2);
+  for(const code of ["SOURCE_CHANGED","EVIDENCE_INVALID","BACKLOG_READ_FAILED"] as const) {
+    calls=0;await assert.rejects(readStableBacklog(async()=>{calls++;throw new BacklogReadError(code);}));assert.equal(calls,code==="SOURCE_CHANGED"?2:1);
+  }
+});
 
 const now = "2026-10-21T12:00:00Z", h = (n: number) => n.toString(16).padStart(64, "0");
 const identity = { player: "Player", season: "2025", set: "Set", manufacturer: "Maker", cardNumber: "12", parallel: "Base", language: "English", condition: "Excellent", conditionType: "Ungraded" };
@@ -116,7 +142,7 @@ test("live inbox hashing ignores symlinks and preserves originals across repeat 
   } finally { await fs.rm(root,{recursive:true,force:true}); }
 });
 
-test("source approval survives filling unknown fields but not correcting known identity", async () => {
+test("legacy source approvals stay in history and never transfer to the new pricing policy", async () => {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), "card-backlog-approval-"));
   try {
     const write = async (p: string, data: unknown) => { await fs.mkdir(path.dirname(path.join(root,p)), { recursive: true }); await fs.writeFile(path.join(root,p), JSON.stringify(data)); };
@@ -128,9 +154,116 @@ test("source approval survives filling unknown fields but not correcting known i
     await write("artifacts/pricing-queue/queue-state.json",{cards:[pricing]});
     await write("artifacts/card-orchestrator/asking-price-approvals.json",{approvals:[{cardId:"one",item:proposal.item,shipping:proposal.shipping,sourceUpdatedAt:proposal.updatedAt,policyVersion:proposal.policy,photoHashes:[h(1),h(2)],sourceIdentityKey:fingerprint(input.identity),approvedAt:now}]});
     await write("artifacts/card-orchestrator/state.json",queue);
-    assert.equal((await loadCardBacklog({root,now,scans:[]})).cards[0].approvedPrice?.item,proposal.item);
+    const retained=(await loadCardBacklog({root,now,scans:[]})).cards[0];
+    assert.equal(retained.approvedPrice,null);assert.ok(retained.prices.some(p=>p.item===proposal.item));
     job.result={identity:{...input.identity,autograph:false,team:"Corrected team"}};
     await write("artifacts/card-orchestrator/state.json",queue);
     assert.equal((await loadCardBacklog({root,now,scans:[]})).cards[0].approvedPrice,null);
   } finally { await fs.rm(root,{recursive:true,force:true}); }
+});
+
+test("same-text generic holds cannot be reclassified by identity or pricing evidence",()=>{
+  const reason="Review required",gap=base({identityStatus:"needs-review",holds:[reason],identityRequirements:[reason],identityInputKey:"source"});
+  const c=reconcileBacklog([gap,base({kind:"manifest",source:"other",holds:[reason]})],now)[0];
+  assert.deepEqual(c.identityRequirements,[]);assert.equal(workAttention(c),"blocked");
+  const priced=reconcileBacklog([base({identityStatus:"needs-review",holds:[reason]}),base({kind:"pricing",source:"pricing",holds:[reason]})],now)[0];
+  assert.deepEqual(priced.pricingHolds,[]);assert.equal(workAttention(priced),"blocked");
+});
+
+async function identityFixture(fn:(f:{root:string;inbox:string;legacy:Record<string,unknown>;write:(p:string,data:unknown)=>Promise<void>;load:()=>ReturnType<typeof loadCardBacklog>})=>Promise<void>) {
+  const root=await fs.mkdtemp(path.join(os.tmpdir(),"identity-work-")),inbox=path.join(root,"inbox");
+  try {
+    await fs.mkdir(inbox);const front=Buffer.from("original front"),back=Buffer.from("original back");
+    await fs.writeFile(path.join(inbox,"front.jpg"),front);await fs.writeFile(path.join(inbox,"back.jpg"),back);
+    const write=async(p:string,data:unknown)=>{await fs.mkdir(path.dirname(path.join(root,p)),{recursive:true});await fs.writeFile(path.join(root,p),JSON.stringify(data));};
+    const gap="Exact parallel and release year unresolved";
+    const legacy:Record<string,unknown>={card_id:"one",source_key:"sku",quantity:1,player:"Player",season:"",set:"Set",manufacturer:"Maker",card_number:"12",
+      sport_game:"Basketball",team:"Team",parallel:"",condition_plan:"Excellent",status:"held-identity",hold_reason:gap,unresolved_fields:gap,
+      front_original_path:path.join(inbox,"front.jpg"),back_original_path:path.join(inbox,"back.jpg"),
+      front_sha256:createHash("sha256").update(front).digest("hex"),back_sha256:createHash("sha256").update(back).digest("hex")};
+    await write("artifacts/identity-queue/cards.json",{cards:[legacy]});
+    await write("artifacts/pricing-queue/queue-state.json",{cards:[{...legacy,status:"held-own-acquisition-excluded-needs-independent-comps",no_evidence_reason:"Independent sold evidence required"}]});
+    const queue=newQueue();queue.rejectedImports={one:{inputKey:"legacy-cache",reason:"Identity source is missing required fields; retain in identity inbox"}};
+    await write("artifacts/card-orchestrator/state.json",queue);
+    await fn({root,inbox,legacy,write,load:()=>loadCardBacklog({root,inbox,now})});
+  } finally {await fs.rm(root,{recursive:true,force:true});}
+}
+
+test("legacy identity gaps and obsolete identity rejection become work without editing source queues",()=>identityFixture(async({root,legacy,load})=>{
+  const files=["artifacts/identity-queue/cards.json","artifacts/pricing-queue/queue-state.json","artifacts/card-orchestrator/state.json",String(legacy.front_original_path),String(legacy.back_original_path)];
+  const before=await Promise.all(files.map(file=>fs.readFile(path.isAbsolute(file)?file:path.join(root,file))));
+  const snapshot=await load(),c=snapshot.cards[0];
+  assert.equal(workAttention(c),"work");assert.equal(nextWork({...snapshot,workflow:{}})?.id,c.id);
+  assert.equal(workflowStage(c),"identify");assert.equal(canApprovePrice(c),false);assert.equal(c.identityRequirements?.length,2);
+  assert.equal(c.holds.length,3);for(const reason of c.holds)assert.ok(workHandoff(c).includes(reason));
+  assert.deepEqual(stageHolds(c),[]);assert.equal(c.receipts.length,0);assert.equal(c.approvedPrice,null);
+  await load();const after=await Promise.all(files.map(file=>fs.readFile(path.isAbsolute(file)?file:path.join(root,file))));
+  assert.deepEqual(after,before);
+}));
+
+test("missing originals, conflicting pairs and unrelated legacy holds stay blocked",()=>identityFixture(async({inbox,legacy,write,load})=>{
+  const back=await fs.readFile(path.join(inbox,"back.jpg"));await fs.unlink(path.join(inbox,"back.jpg"));
+  let card=(await load()).cards[0];assert.equal(workAttention(card),"blocked");assert.match(card.issues.join(),/Original.*missing/);
+  await fs.writeFile(path.join(inbox,"back.jpg"),back);
+  await write("artifacts/pricing-queue/queue-state.json",{cards:[{...legacy,back_sha256:h(9)}]});
+  card=(await load()).cards[0];assert.equal(workAttention(card),"blocked");assert.match(card.issues.join(),/conflicting back/);
+  await write("artifacts/pricing-queue/queue-state.json",{cards:[]});
+  for(const change of [{condition_plan:"Unrecognized condition"},{back_original_path:""},{back_sha256:""},
+    {status:"held-condition"},{status:"existing-record"},{hold_reason:"Seller requested a hold"}]) {
+    await write("artifacts/identity-queue/cards.json",{cards:[{...legacy,...change}]});
+    card=(await load()).cards[0];assert.equal(workAttention(card),"blocked",JSON.stringify(change));
+  }
+  await write("artifacts/identity-queue/cards.json",{cards:[legacy]});
+  const queue=newQueue();queue.rejectedImports={one:{inputKey:"cache",reason:"Saved receipt photo pair needs reconciliation"}};
+  await write("artifacts/card-orchestrator/state.json",queue);
+  card=(await load()).cards[0];assert.equal(workAttention(card),"blocked");assert.match(stageHolds(card).join(),/Saved receipt/);
+}));
+
+test("only completed review of the matching source resolves identity requirements",()=>identityFixture(async({legacy,write,load})=>{
+  const input=importLegacyCard(legacy,{},[]),queue=newQueue();upsertCard(queue,input,now);
+  let job=claimJob(queue,"fixture","photos","one",now)!;
+  completeJob(queue,"one","photos",job.job.lease!.token,{outcome:"done",data:{hashes:input.photos.map(({side,sha256})=>({side,sha256})),evidence:"Fixture originals verified"}},now);
+  job=claimJob(queue,"fixture","identity","one",now)!;
+  completeJob(queue,"one","identity",job.job.lease!.token,{outcome:"held",reason:"Pair cannot be confirmed from the current originals"},now);
+  await write("artifacts/card-orchestrator/state.json",queue);
+  assert.equal(workAttention((await load()).cards[0]),"blocked");
+  // A fresh fixture queue exercises the ordinary claim/complete path, not fabricated completion metadata.
+  const reviewed=newQueue();upsertCard(reviewed,input,now);
+  job=claimJob(reviewed,"fixture","photos","one",now)!;
+  completeJob(reviewed,"one","photos",job.job.lease!.token,{outcome:"done",data:{hashes:input.photos.map(({side,sha256})=>({side,sha256})),evidence:"Fixture originals verified"}},now);
+  job=claimJob(reviewed,"fixture","identity","one",now)!;
+  completeJob(reviewed,"one","identity",job.job.lease!.token,{outcome:"done",data:{identity:{...input.identity,season:"2025",parallel:"Base",autograph:false},pairMatches:true,frontFirst:true,serialInspected:true,evidence:"Fixture identity inspected"}},now);
+  await write("artifacts/card-orchestrator/state.json",reviewed);
+  let card=(await load()).cards[0];assert.equal(card.identityRequirements?.[0].resolved,true);assert.equal(workflowStage(card),"price");
+  assert.ok(card.holds.includes(String(legacy.hold_reason)));assert.ok(!workHandoff(card).includes(String(legacy.hold_reason)));
+  assert.equal(workAttention(card),"blocked");assert.match(stageHolds(card).join(),/Independent sold evidence/);
+  const gap="Serial numerator requires another inspection";
+  await write("artifacts/identity-queue/cards.json",{cards:[{...legacy,hold_reason:gap,unresolved_fields:gap}]});
+  card=(await load()).cards[0];assert.equal(card.identityRequirements?.[0].resolved,false);
+  assert.equal(workflowStage(card),"identify");assert.equal(workAttention(card),"work");assert.equal(canApprovePrice(card),false);
+}));
+
+test("typed legacy pricing holds do not stop identification, but generic and seller holds do",()=>{
+  const reason="held-own-acquisition-excluded-needs-independent-comps";
+  const evidence=base({identityStatus:"needs-review",holds:[]});
+  const manifest=base({kind:"manifest",source:"legacy",holds:[reason],pricingHolds:[reason]});
+  const c=reconcileBacklog([evidence,manifest],now)[0];
+  assert.ok(c.holds.includes(reason));assert.equal(workAttention(c),"work");
+  c.identityStatus="identified";c.proposal=null;assert.equal(workAttention(c),"blocked");
+  const protectedCard=reconcileBacklog([evidence,manifest,base({kind:"manifest",source:"generic",holds:[reason]})],now)[0];
+  assert.equal(workAttention(protectedCard),"blocked");
+  assert.equal(workAttention({...c,identityStatus:"needs-review"},{token:"x",history:[],holdReason:"Seller review required"}),"blocked");
+});
+
+test("manifest intake retains explicit pricing-stage provenance without reclassifying generic reviews",async()=>{
+  const root=await fs.mkdtemp(path.join(os.tmpdir(),"manifest-stage-"));
+  try {
+    const folder=path.join(root,"artifacts/batch-6");await fs.mkdir(folder,{recursive:true});
+    for(const status of ["held-pricing-evidence","held-own-acquisition-excluded-needs-independent-comps","held-review"]) {
+      await fs.writeFile(path.join(folder,"manifest.json"),JSON.stringify({cards:[{cardId:"one",frontHash:h(1),backHash:h(2),status,notes:"Retained reason",remainingReview:["Pairing needs review"]}]}));
+      const s=await loadCardBacklog({root,scans:[]}),c=s.cards[0];
+      assert.equal(c.pricingHolds?.includes("Retained reason"),status!=="held-review");
+      assert.ok(!c.pricingHolds?.includes("Pairing needs review"));assert.ok(c.holds.includes("Retained reason"));
+    }
+  }finally{await fs.rm(root,{recursive:true,force:true});}
 });
