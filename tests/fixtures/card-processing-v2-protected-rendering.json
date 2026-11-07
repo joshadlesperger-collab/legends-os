@@ -1,0 +1,458 @@
+{
+  "before": {
+    "rows": [
+      {
+        "sku": "V2-000000000000000000000001",
+        "category": "Trading Card Singlesin Sports Mem, Cards & Fan Shop > Sports Trading Cards",
+        "shipping": "-Please add at least one valid shipping service option to your listing.",
+        "fields": [
+          {
+            "index": 0,
+            "tag": "TEXTAREA",
+            "name": "",
+            "type": "textarea",
+            "value": "Fixture basketball card 1"
+          },
+          {
+            "index": 1,
+            "tag": "INPUT",
+            "name": "",
+            "type": "text",
+            "value": ""
+          },
+          {
+            "index": 2,
+            "tag": "INPUT",
+            "name": "",
+            "type": "text",
+            "value": "V2-000000000000000000000001"
+          },
+          {
+            "index": 3,
+            "tag": "SELECT",
+            "name": "",
+            "type": "select-one",
+            "value": "FixedPrice"
+          },
+          {
+            "index": 4,
+            "tag": "INPUT",
+            "name": "",
+            "type": "text",
+            "value": "3"
+          },
+          {
+            "index": 5,
+            "tag": "INPUT",
+            "name": "",
+            "type": "text",
+            "value": ""
+          },
+          {
+            "index": 6,
+            "tag": "INPUT",
+            "name": "",
+            "type": "text",
+            "value": ""
+          }
+        ]
+      },
+      {
+        "sku": "V2-000000000000000000000002",
+        "category": "Trading Card Singlesin Sports Mem, Cards & Fan Shop > Sports Trading Cards",
+        "shipping": "-Please add at least one valid shipping service option to your listing.",
+        "fields": [
+          {
+            "index": 0,
+            "tag": "TEXTAREA",
+            "name": "",
+            "type": "textarea",
+            "value": "Fixture basketball card 2"
+          },
+          {
+            "index": 1,
+            "tag": "INPUT",
+            "name": "",
+            "type": "text",
+            "value": ""
+          },
+          {
+            "index": 2,
+            "tag": "INPUT",
+            "name": "",
+            "type": "text",
+            "value": "V2-000000000000000000000002"
+          },
+          {
+            "index": 3,
+            "tag": "SELECT",
+            "name": "",
+            "type": "select-one",
+            "value": "FixedPrice"
+          },
+          {
+            "index": 4,
+            "tag": "INPUT",
+            "name": "",
+            "type": "text",
+            "value": "1"
+          },
+          {
+            "index": 5,
+            "tag": "INPUT",
+            "name": "",
+            "type": "text",
+            "value": ""
+          },
+          {
+            "index": 6,
+            "tag": "INPUT",
+            "name": "",
+            "type": "text",
+            "value": ""
+          }
+        ]
+      },
+      {
+        "sku": "V2-000000000000000000000003",
+        "category": "Trading Card Singlesin Sports Mem, Cards & Fan Shop > Sports Trading Cards",
+        "shipping": "-Please add at least one valid shipping service option to your listing.",
+        "fields": [
+          {
+            "index": 0,
+            "tag": "TEXTAREA",
+            "name": "",
+            "type": "textarea",
+            "value": "Fixture basketball card 3"
+          },
+          {
+            "index": 1,
+            "tag": "INPUT",
+            "name": "",
+            "type": "text",
+            "value": ""
+          },
+          {
+            "index": 2,
+            "tag": "INPUT",
+            "name": "",
+            "type": "text",
+            "value": "V2-000000000000000000000003"
+          },
+          {
+            "index": 3,
+            "tag": "SELECT",
+            "name": "",
+            "type": "select-one",
+            "value": "FixedPrice"
+          },
+          {
+            "index": 4,
+            "tag": "INPUT",
+            "name": "",
+            "type": "text",
+            "value": "1"
+          },
+          {
+            "index": 5,
+            "tag": "INPUT",
+            "name": "",
+            "type": "text",
+            "value": ""
+          },
+          {
+            "index": 6,
+            "tag": "INPUT",
+            "name": "",
+            "type": "text",
+            "value": ""
+          }
+        ]
+      },
+      {
+        "sku": "V2-000000000000000000000004",
+        "category": "Trading Card Singlesin Sports Mem, Cards & Fan Shop > Sports Trading Cards",
+        "shipping": "-Please add at least one valid shipping service option to your listing.",
+        "fields": [
+          {
+            "index": 0,
+            "tag": "TEXTAREA",
+            "name": "",
+            "type": "textarea",
+            "value": "Fixture basketball card 4"
+          },
+          {
+            "index": 1,
+            "tag": "INPUT",
+            "name": "",
+            "type": "text",
+            "value": ""
+          },
+          {
+            "index": 2,
+            "tag": "INPUT",
+            "name": "",
+            "type": "text",
+            "value": "V2-000000000000000000000004"
+          },
+          {
+            "index": 3,
+            "tag": "SELECT",
+            "name": "",
+            "type": "select-one",
+            "value": "FixedPrice"
+          },
+          {
+            "index": 4,
+            "tag": "INPUT",
+            "name": "",
+            "type": "text",
+            "value": "1"
+          },
+          {
+            "index": 5,
+            "tag": "INPUT",
+            "name": "",
+            "type": "text",
+            "value": ""
+          },
+          {
+            "index": 6,
+            "tag": "INPUT",
+            "name": "",
+            "type": "text",
+            "value": ""
+          }
+        ]
+      }
+    ]
+  },
+  "after": {
+    "rows": [
+      {
+        "sku": "V2-000000000000000000000001",
+        "category": "Trading Card Singles\nin Sports Mem, Cards & Fan Shop > Sports Trading Cards",
+        "shipping": "-",
+        "fields": [
+          {
+            "index": 0,
+            "tag": "TEXTAREA",
+            "name": "",
+            "type": "textarea",
+            "value": "Fixture basketball card 1"
+          },
+          {
+            "index": 1,
+            "tag": "INPUT",
+            "name": "",
+            "type": "text",
+            "value": ""
+          },
+          {
+            "index": 2,
+            "tag": "INPUT",
+            "name": "",
+            "type": "text",
+            "value": "V2-000000000000000000000001"
+          },
+          {
+            "index": 3,
+            "tag": "SELECT",
+            "name": "",
+            "type": "select-one",
+            "value": "FixedPrice"
+          },
+          {
+            "index": 4,
+            "tag": "INPUT",
+            "name": "",
+            "type": "text",
+            "value": "3"
+          },
+          {
+            "index": 5,
+            "tag": "INPUT",
+            "name": "",
+            "type": "text",
+            "value": ""
+          },
+          {
+            "index": 6,
+            "tag": "INPUT",
+            "name": "",
+            "type": "text",
+            "value": ""
+          }
+        ]
+      },
+      {
+        "sku": "V2-000000000000000000000002",
+        "category": "Trading Card Singles\nin Sports Mem, Cards & Fan Shop > Sports Trading Cards",
+        "shipping": "-",
+        "fields": [
+          {
+            "index": 0,
+            "tag": "TEXTAREA",
+            "name": "",
+            "type": "textarea",
+            "value": "Fixture basketball card 2"
+          },
+          {
+            "index": 1,
+            "tag": "INPUT",
+            "name": "",
+            "type": "text",
+            "value": ""
+          },
+          {
+            "index": 2,
+            "tag": "INPUT",
+            "name": "",
+            "type": "text",
+            "value": "V2-000000000000000000000002"
+          },
+          {
+            "index": 3,
+            "tag": "SELECT",
+            "name": "",
+            "type": "select-one",
+            "value": "FixedPrice"
+          },
+          {
+            "index": 4,
+            "tag": "INPUT",
+            "name": "",
+            "type": "text",
+            "value": "1"
+          },
+          {
+            "index": 5,
+            "tag": "INPUT",
+            "name": "",
+            "type": "text",
+            "value": ""
+          },
+          {
+            "index": 6,
+            "tag": "INPUT",
+            "name": "",
+            "type": "text",
+            "value": ""
+          }
+        ]
+      },
+      {
+        "sku": "V2-000000000000000000000003",
+        "category": "Trading Card Singles\nin Sports Mem, Cards & Fan Shop > Sports Trading Cards",
+        "shipping": "-",
+        "fields": [
+          {
+            "index": 0,
+            "tag": "TEXTAREA",
+            "name": "",
+            "type": "textarea",
+            "value": "Fixture basketball card 3"
+          },
+          {
+            "index": 1,
+            "tag": "INPUT",
+            "name": "",
+            "type": "text",
+            "value": ""
+          },
+          {
+            "index": 2,
+            "tag": "INPUT",
+            "name": "",
+            "type": "text",
+            "value": "V2-000000000000000000000003"
+          },
+          {
+            "index": 3,
+            "tag": "SELECT",
+            "name": "",
+            "type": "select-one",
+            "value": "FixedPrice"
+          },
+          {
+            "index": 4,
+            "tag": "INPUT",
+            "name": "",
+            "type": "text",
+            "value": "1"
+          },
+          {
+            "index": 5,
+            "tag": "INPUT",
+            "name": "",
+            "type": "text",
+            "value": ""
+          },
+          {
+            "index": 6,
+            "tag": "INPUT",
+            "name": "",
+            "type": "text",
+            "value": ""
+          }
+        ]
+      },
+      {
+        "sku": "V2-000000000000000000000004",
+        "category": "Trading Card Singles\nin Sports Mem, Cards & Fan Shop > Sports Trading Cards",
+        "shipping": "-",
+        "fields": [
+          {
+            "index": 0,
+            "tag": "TEXTAREA",
+            "name": "",
+            "type": "textarea",
+            "value": "Fixture basketball card 4"
+          },
+          {
+            "index": 1,
+            "tag": "INPUT",
+            "name": "",
+            "type": "text",
+            "value": ""
+          },
+          {
+            "index": 2,
+            "tag": "INPUT",
+            "name": "",
+            "type": "text",
+            "value": "V2-000000000000000000000004"
+          },
+          {
+            "index": 3,
+            "tag": "SELECT",
+            "name": "",
+            "type": "select-one",
+            "value": "FixedPrice"
+          },
+          {
+            "index": 4,
+            "tag": "INPUT",
+            "name": "",
+            "type": "text",
+            "value": "1"
+          },
+          {
+            "index": 5,
+            "tag": "INPUT",
+            "name": "",
+            "type": "text",
+            "value": ""
+          },
+          {
+            "index": 6,
+            "tag": "INPUT",
+            "name": "",
+            "type": "text",
+            "value": ""
+          }
+        ]
+      }
+    ]
+  }
+}

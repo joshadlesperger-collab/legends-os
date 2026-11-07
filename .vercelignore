@@ -23,3 +23,13 @@ vercel_logs*
 *_raw_hits.txt
 line14.txt
 *.before-*
+
+# Machine-local validation builds and private operational exports.
+.next-*/
+outputs/
+reports/
+*.zip
+.v2-runtime-location.json
+.v2-runtime-retired.json
+__pycache__/
+*.pyc

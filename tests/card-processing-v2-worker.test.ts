@@ -457,7 +457,8 @@ test('accepted real worker automatically retains preparation progress and overdu
 test('failure diagnostics omit messages and secrets; exceeded usage keeps independent spending fenced',()=>temporary(async(root,folder)=>{
  await config(root,folder);await initializeV2(root);await pair(folder,'first',241);
  const error=Object.assign(new Error('secret-token must never be retained'),{name:'AI_NoObjectGeneratedError',statusCode:429,usage:{inputTokens:10001,outputTokens:5},response:{headers:{authorization:'secret-token'}}});
- const first=await runV2(root,'exceeded-failure',{legacyHashes:noLegacy,identify:async()=>{throw error;}});
+ await assert.rejects(runV2(root,'exceeded-failure',{legacyHashes:noLegacy,identify:async()=>{throw error;}}),/V2 processing did not finish/);
+ const first=await readV2State(root);assert.equal(first.lastRun?.status,'failed');
  assert.equal(first.calls[0].failure?.usageBoundExceeded,true);assert.equal(first.calls[0].actualMicros,null);
  const bytes=await fs.readFile(path.join(v2Dir(root),'identification-failures',`${first.calls[0].id}.json`),'utf8'),retained=JSON.parse(bytes);
  assert.equal(retained.errorType,'AI_NoObjectGeneratedError');assert.equal(retained.httpStatus,429);assert.equal(retained.usage.inputTokens,10001);assert.ok(!bytes.includes('secret-token'));assert.ok(!bytes.includes('authorization'));
