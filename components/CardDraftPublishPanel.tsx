@@ -42,7 +42,7 @@ export default function CardDraftPublishPanel({reportId,rows,manualPrices,onClea
   finally{clearTimeout(timeout);setSubmitting(false);}
  }
  return <div className={styles.publication} aria-label="Selected draft publishing">
-  <div><strong>{rows.length} drafts selected</strong><small title={connection.reason}>{connection.transportReady?'Publisher connected.':'Publishing unavailable until the signed-in runner is connected.'}</small></div>
+  <div><strong aria-live="polite" aria-atomic="true">{rows.length} drafts selected</strong><small title={connection.reason}>{connection.transportReady?'Publisher connected.':'Publishing unavailable until the signed-in runner is connected.'}</small></div>
   <button type="button" onClick={openReview} disabled={!rows.length||invalid||incomplete>0||!connection.transportReady||submitting||review||Boolean(activeRequest)}>Publish selected ({rows.length})</button>
   <button type="button" onClick={()=>{onClear();setReview(false);frozen.current=null;}} disabled={!rows.length||submitting||Boolean(activeRequest)}>Clear selection</button>
   {message&&<p role="status">{message}</p>}
