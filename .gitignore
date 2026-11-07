@@ -52,3 +52,6 @@ artifacts/
 /.v2-runtime-location.json
 __pycache__/
 *.pyc
+
+# Authenticated hosted report snapshots are deployment data, never source.
+/private-data/

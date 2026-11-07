@@ -7,6 +7,54 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// Additive durable handoff only. Migration requires explicit operator approval.
+model V2DraftPublicationJob {
+  id String @id
+  operatorId String @db.VarChar(200)
+  seller String @db.VarChar(50)
+  requestKey String @unique @db.VarChar(250)
+  scopeHash String @db.VarChar(64)
+  reportId String @db.VarChar(200)
+  selection Json
+  status String @default("QUEUED") @db.VarChar(40)
+  phase String @default("queued") @db.VarChar(80)
+  workerId String?
+  leaseToken String?
+  leaseExpiresAt DateTime?
+  publicationAttemptedAt DateTime?
+  progress Json?
+  result Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  completedAt DateTime?
+  items V2DraftPublicationItem[]
+  @@index([operatorId, seller, status, createdAt])
+}
+
+model V2DraftPublicationItem {
+  id String @id
+  jobId String
+  seller String @db.VarChar(50)
+  draftId String @db.VarChar(25)
+  status String @default("QUEUED") @db.VarChar(40)
+  liveItemId String? @db.VarChar(25)
+  result Json?
+  job V2DraftPublicationJob @relation(fields: [jobId], references: [id], onDelete: Restrict)
+  @@unique([seller, draftId])
+  @@index([jobId])
+}
+
+model V2DraftPublisherHeartbeat {
+  workerId String @id
+  operatorId String @db.VarChar(200)
+  seller String @db.VarChar(50)
+  version String @db.VarChar(80)
+  status String @db.VarChar(40)
+  sellerObservedAt DateTime?
+  seenAt DateTime @default(now())
+  @@index([operatorId, status, seenAt])
+}
+
 // Catalog knowledge is separate from seller inventory and listing approvals.
 // Applying the additive migration requires explicit operator approval.
 model KnowledgeProduct {
