@@ -8,7 +8,8 @@ Purpose: Durable discovery map for every assistant and operator. Read before ask
 - Application architecture in repository: Next.js, Prisma/PostgreSQL, eBay OAuth, listing/order synchronization, `/sales`, `/stores`, traffic reporting. **Code presence does not prove deployment or successful sync.**
 - Vercel connected account has team **Legends**, slug `legends17`, ID `team_dDuFlWun18GDzHrQAFN45CdV` (verified via team listing 2026-11-12). Both personal scope and this team returned zero projects and zero recent deployments in read-only listing calls on 2026-11-12. **This does not prove production is absent**: it may reside in another Vercel account, a disconnected integration, or a different host.
 - Windows laptop/workspace: operator reports an active local workflow; exact workspace path, connectivity, and current execution state **not verified**.
-- Production URL, Vercel team/project IDs, deployment revision, database host/instance, scheduler endpoint, eBay store identifiers and last successful sync: **unverified**. Never guess or fill from a different project.
+- Historical Vercel runtime log committed to repository identifies hostname `legends-os-beta.vercel.app`, project ID `prj_x6eSQwKAc3n7Fc0PnaeTe8HgDnbH` and deployment ID `dpl_HDU8jTRGby4xePd6ddT23YBTZTHW`. These are **historical evidence, not proof of the current production target**. Current connected Vercel scopes return project-not-found for that ID (2026-11-12). Source: repository `line14.txt`; note that file includes sensitive OAuth callback material and should be reviewed for redaction, not copied into documentation.
+- Production deployment revision, accessible database instance, current scheduler execution, eBay store identifiers and last successful sync: **unverified**. Never guess or fill from a different project.
 
 ## Required discovery order (read-only)
 1. Read this registry, `AGENTS.md`, `CURRENT_STATE.md`, and `DECISIONS.md`; check last verification dates.
@@ -28,7 +29,7 @@ Purpose: Durable discovery map for every assistant and operator. Read before ask
 | System | Known locator | Last verified | Status / next step |
 |---|---|---|---|
 | Source | GitHub repo above | 2026-11-12 | Accessible; not proof of production |
-| Vercel | Connected team `legends17` / `team_dDuFlWun18GDzHrQAFN45CdV`; project unknown | 2026-11-12 | Personal and team scopes return zero projects/deployments; identify correct account/connection |
+| Vercel | Historical `legends-os-beta.vercel.app` / `prj_x6eSQwKAc3n7Fc0PnaeTe8HgDnbH`; connected team `legends17` | 2026-11-12 | Project ID not found in connected scopes; establish hosting account access and verify current production |
 | PostgreSQL | Unknown instance | Never | Locate through deployment metadata; read-only checks |
 | eBay stores | Legends Trading Cards; Legends Trading Cards Too (operator labels) | Never in this session | Verify authorized accounts and sync freshness |
 | Windows photo/processing queue | Unknown path | Never | Establish runtime boundary and safe remote status access |
