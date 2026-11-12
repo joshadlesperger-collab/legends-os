@@ -2,7 +2,9 @@
 
 ## Project continuity
 
-- At session startup, read `CURRENT_STATE.md` and `DECISIONS.md`. Read `README.md` for orientation and only the domain procedures relevant to the task.
+- At session startup, read `SYSTEM_REGISTRY.md`, `CURRENT_STATE.md`, and `DECISIONS.md`. Read `README.md` for orientation and only the domain procedures relevant to the task.
+- For production questions, consult the verified topology and discovery order in `SYSTEM_REGISTRY.md` **before** asking the owner to repeat deployment locations. Recheck timestamps and permissions; distinguish repository code from deployed behavior and do not invent live metrics.
+- When a production locator or access blocker is verified, update `SYSTEM_REGISTRY.md` with evidence and date. Maintain runtime receipts in application storage, not Markdown.
 - Verify the current branch, working tree, and source evidence before relying on a previous handoff. Repository implementation is not proof of deployment or live operation.
 - Before ending substantial work, update `CURRENT_STATE.md` with verified changes, validation, unresolved blockers, and the next concrete action. Never record planned work as completed.
 - Record approved durable decisions with date, scope, and supersession in `DECISIONS.md`; flag conflicting instructions instead of silently choosing a policy.
